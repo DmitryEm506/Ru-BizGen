@@ -1,0 +1,52 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+  <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+  <id>ru.exmpl.rbdg</id>
+
+  <!-- Public plugin name should be written in Title Case.
+       Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+  <name>Rbdg</name>
+
+  <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+  <vendor url="https://www.yourcompany.com">YourCompany</vendor>
+
+  <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+       Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+  <description><![CDATA[
+    Enter short description for your plugin here.<br>
+    <em>most HTML tags may be used</em>
+  ]]></description>
+
+  <!-- Product and plugin compatibility requirements.
+       Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+  <depends>com.intellij.modules.platform</depends>
+
+  <!-- Extension points defined by the plugin.
+       Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceImplementation="ru.exmpl.rbdg.AppPersistentSettings"/>
+
+    <applicationService
+      serviceInterface="ru.exmpl.rbdg.AppSettingsStore"
+      serviceImplementation="ru.exmpl.rbdg.AppPersistentSettings"/>
+
+    <applicationService
+      serviceInterface="ru.exmpl.rbdg.AppSettingsService"
+      serviceImplementation="ru.exmpl.rbdg.AppSettingsServiceImpl"
+    />
+
+    <applicationConfigurable
+      parentId="tools"
+      instance="ru.exmpl.rbdg.AppSettingsConfigurable"
+      id="ru.exmpl.rbdg.AppSettingsConfigurable"
+      displayName="Ru Business Data Generator"
+    />
+  </extensions>
+
+  <actions>
+    <action id="ru.exmpl.rbdg.MainAction" class="ru.exmpl.rbdg.MainAction" text="RbdgMainAction"
+      description="Show action group for generate Russian business data">
+      <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt R"/>
+    </action>
+  </actions>
+</idea-plugin>
