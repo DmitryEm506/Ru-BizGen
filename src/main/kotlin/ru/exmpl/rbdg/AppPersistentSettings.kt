@@ -9,7 +9,7 @@ import com.intellij.openapi.components.Storage
 @State(
   name = "Ru Business Data Generator",
   storages = [
-    Storage("rbdg.xml"),
+    Storage("rbdg_settings.xml"),
   ],
   category = SettingsCategory.PLUGINS,
 )

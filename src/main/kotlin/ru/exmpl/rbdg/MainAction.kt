@@ -48,8 +48,10 @@ class AppSettings {
   var ideaStatus: Boolean = false
 
   var actualActions: List<ActualAction> = listOf(
-    ActualAction("1", 0, "test_1", selected = true),
-    ActualAction("2", 0, "test_1", selected = false),
+    ActualAction("1", 0, "test_0", selected = true),
+    ActualAction("2", 1, "test_1", selected = true),
+    ActualAction("3", 2, "test_2", selected = true),
+    ActualAction("4", 3, "test_3", selected = true),
   )
 
   companion object {
