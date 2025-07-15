@@ -7,11 +7,13 @@ import ru.exmpl.rbdg.AppSettingsService.Direction
 interface AppSettingsService {
   fun getAppSettings(): AppSettings
 
-  fun findActionByIndex(index: Int): ActualAction?
+  fun findActionByPosition(position: Int): ActualAction?
 
   fun moveAction(sourcePosition: Int, direction: Direction): Boolean
 
   fun getActions(): List<ActualAction>
+
+  fun getDefaultActions(): List<ActualAction>
 
   enum class Direction {
     UP,
@@ -31,8 +33,8 @@ class AppSettingsServiceImpl : AppSettingsService {
     return store().getAppSettings()
   }
 
-  override fun findActionByIndex(index: Int): ActualAction? {
-    return store().getAppSettings().actualActions[index]
+  override fun findActionByPosition(position: Int): ActualAction? {
+    return store().getAppSettings().actualActions.find { it.position == position }
   }
 
   override fun moveAction(sourcePosition: Int, direction: Direction): Boolean {
@@ -53,6 +55,12 @@ class AppSettingsServiceImpl : AppSettingsService {
 
   override fun getActions(): List<ActualAction> {
     return actions().sortedBy { it.position }
+  }
+
+  override fun getDefaultActions(): List<ActualAction> {
+    store().getAppSettings().restoreFromDefault()
+
+    return getActions()
   }
 
   private companion object {

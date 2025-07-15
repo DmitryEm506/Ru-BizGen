@@ -54,6 +54,18 @@ class AppSettings {
     ActualAction("4", 3, "test_3", selected = true),
   )
 
+  fun restoreFromDefault() {
+    val default = DEFAULT.actualActions
+
+    actualActions.forEach { action ->
+      default.find { it.id == action.id }?.let { defaultAction ->
+        action.position = defaultAction.position
+        action.description = defaultAction.description
+        action.selected = defaultAction.selected
+      }
+    }
+  }
+
   companion object {
     private val DEFAULT: AppSettings = AppSettings()
 
