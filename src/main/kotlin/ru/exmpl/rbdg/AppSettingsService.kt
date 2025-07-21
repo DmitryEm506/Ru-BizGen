@@ -1,6 +1,5 @@
 package ru.exmpl.rbdg
 
-import com.intellij.openapi.components.Service
 import ru.exmpl.rbdg.AppSettingsService.Direction
 
 
@@ -21,12 +20,28 @@ interface AppSettingsService {
   }
 }
 
+interface AppSettingsNotificationService {
+  fun updateNotificationMode(notificationMode: NotificationMode)
+
+  fun getNotificationMode(): NotificationMode
+}
+
+class AppSettingsNotificationServiceImpl : AppSettingsNotificationService {
+
+  override fun updateNotificationMode(notificationMode: NotificationMode) {
+    getRbdgService<AppSettingsStore>().getAppSettings().notificationMode = notificationMode
+  }
+
+  override fun getNotificationMode(): NotificationMode {
+    return getRbdgService<AppSettingsStore>().getAppSettings().notificationMode
+  }
+}
+
 /**
  * AppSettingsService.
  *
  * @author Dmitry_Emelyanenko
  */
-@Service
 class AppSettingsServiceImpl : AppSettingsService {
 
   override fun getAppSettings(): AppSettings {

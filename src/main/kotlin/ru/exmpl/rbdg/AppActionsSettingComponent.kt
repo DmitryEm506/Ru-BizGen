@@ -11,7 +11,9 @@ import com.intellij.ui.ListUtil
 import com.intellij.ui.ToolbarDecorator
 import com.intellij.util.ui.JBUI
 import ru.exmpl.rbdg.AppSettingsService.Direction
+import ru.exmpl.rbdg.RbdgSelectedActionEvent.Companion.publish
 import javax.swing.JPanel
+import javax.swing.event.ListSelectionListener
 
 /**
  * AppActionsSettingComponent.
@@ -22,6 +24,8 @@ class AppActionsSettingComponent {
 
   fun getComponent(): JPanel {
     return ActionListComponent().let {
+      it.addListSelectionListener(selectionListener(it))
+
       ToolbarDecorator.createDecorator(it)
         .setToolbarPosition(ActionToolbarPosition.TOP)
         .setPanelBorder(JBUI.Borders.empty())
@@ -33,6 +37,18 @@ class AppActionsSettingComponent {
         .setMoveDownAction { _ -> it.moveUpOrDown(false) }
         .addExtraAction(it.reset())
         .createPanel()
+    }
+  }
+
+  private companion object {
+    private fun selectionListener(checkBoxList: CheckBoxList<String>): ListSelectionListener = ListSelectionListener { event ->
+      if (event.valueIsAdjusting) {
+        val selectedIndex = checkBoxList.selectedIndex
+        val settingsService = getRbdgService<AppSettingsService>()
+        settingsService.findActionByPosition(selectedIndex)?.let { action ->
+          publish(action.description)
+        }
+      }
     }
   }
 }
@@ -81,8 +97,8 @@ private class ActionListComponent : CheckBoxList<String>(listener) {
     }
   }
 
-  private companion object {
-    val listener: CheckBoxListListener = CheckBoxListListener { index, value ->
+  companion object {
+    private val listener: CheckBoxListListener = CheckBoxListListener { index, value ->
       val settingsService = getRbdgService<AppSettingsService>()
       settingsService.findActionByPosition(index)?.let { action ->
         action.selected = value

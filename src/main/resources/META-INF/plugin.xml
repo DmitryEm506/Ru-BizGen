@@ -35,6 +35,11 @@
       serviceImplementation="ru.exmpl.rbdg.AppSettingsServiceImpl"
     />
 
+    <applicationService
+      serviceInterface="ru.exmpl.rbdg.AppSettingsNotificationService"
+      serviceImplementation="ru.exmpl.rbdg.AppSettingsNotificationServiceImpl"
+    />
+
     <applicationConfigurable
       parentId="tools"
       instance="ru.exmpl.rbdg.AppSettingsConfigurable"

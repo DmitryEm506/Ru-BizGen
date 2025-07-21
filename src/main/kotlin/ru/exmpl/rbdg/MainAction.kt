@@ -29,7 +29,7 @@ class MainAction : AnAction() {
       action.id = UUID.random().toString()
     }
 
-    AppSettings.getDefault().userId = settings.userId
+    DefaultAppSettings.getDefault().userId = settings.userId
 
     log.info("User ID: ${settings.userId}")
 
@@ -47,31 +47,33 @@ class AppSettings {
   var userId: String = "John Smith"
   var ideaStatus: Boolean = false
 
-  var actualActions: List<ActualAction> = listOf(
+  var notificationMode: NotificationMode = NotificationMode.DISABLE
+
+  var actualActions: MutableList<ActualAction> = listOf(
     ActualAction("1", 0, "test_0", selected = true),
     ActualAction("2", 1, "test_1", selected = true),
     ActualAction("3", 2, "test_2", selected = true),
     ActualAction("4", 3, "test_3", selected = true),
-  )
+  ).toMutableList()
 
   fun restoreFromDefault() {
-    val default = DEFAULT.actualActions
-
-    actualActions.forEach { action ->
-      default.find { it.id == action.id }?.let { defaultAction ->
-        action.position = defaultAction.position
-        action.description = defaultAction.description
-        action.selected = defaultAction.selected
-      }
-    }
+    actualActions.clear()
+    actualActions.addAll(DefaultAppSettings.getDefault().actualActions)
   }
 
-  companion object {
-    private val DEFAULT: AppSettings = AppSettings()
+}
 
-    fun getDefault(): AppSettings {
-      return DEFAULT.deepCopyByJson()
-    }
+enum class NotificationMode(val description: String) {
+  BELL("""Лог событий "Колокольчик""""),
+  HINT("Всплывающее окно"),
+  DISABLE("Выключено"),
+}
+
+internal object DefaultAppSettings {
+  private val DEFAULT: AppSettings = AppSettings()
+
+  fun getDefault(): AppSettings {
+    return DEFAULT.deepCopyByJson()
   }
 }
 

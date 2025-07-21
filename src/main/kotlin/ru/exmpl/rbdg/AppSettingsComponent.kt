@@ -4,12 +4,10 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBTextField
 import com.intellij.util.ui.FormBuilder
 import org.apache.commons.lang3.RandomStringUtils
 import java.awt.BorderLayout
-import javax.swing.JComponent
 import javax.swing.JPanel
 
 /**
@@ -18,15 +16,6 @@ import javax.swing.JPanel
  * @author Dmitry_Emelyanenko
  */
 class AppSettingsComponent : Disposable {
-//  private var myMainPanel: JPanel? = null
-//  init {
-//    myMainPanel = FormBuilder.createFormBuilder()
-//      .addLabeledComponent(JBLabel("User name:"), myUserNameText, 1, false)
-//      .addComponent(myIdeaUserStatus, 1)
-//      .addComponentFillVertically(JPanel(), 0)
-//      .panel
-//  }
-
   private var myMainPanel: JPanel = JPanel(BorderLayout())
   private val myUserNameText = JBTextField()
   private val myIdeaUserStatus = JBCheckBox("IntelliJ IDEA user")
@@ -36,23 +25,17 @@ class AppSettingsComponent : Disposable {
     splitter.firstComponent = AppActionsSettingComponent().getComponent()
 
     splitter.secondComponent = FormBuilder.createFormBuilder()
-      .addLabeledComponent(JBLabel("User name:"), myUserNameText, 1, false)
-      .addComponent(myIdeaUserStatus, 1)
+      .addComponent(NotificationSettingsComponent().configureComponent())
+      .addComponentFillVertically(JPanel(), 0)
       .addComponent(
         ActionResultPreviewComponent({ RandomStringUtils.randomAlphabetic(10) })
         .also { Disposer.register(this, it) }.rootComponent
       )
-      .addComponentFillVertically(JPanel(), 0)
       .panel
   }
 
-
   fun getPanel(): JPanel? {
     return myMainPanel
-  }
-
-  fun getPreferredFocusedComponent(): JComponent {
-    return myUserNameText
   }
 
   fun getUserNameText(): String {
@@ -79,8 +62,9 @@ class AppSettingsComponent : Disposable {
 
     /** The default proportion of the splitter component. */
     const val DEFAULT_SPLITTER_PROPORTION = .25f
-
-    /** Pixels of margin outside the editor panel. */
-    const val EDITOR_PANEL_MARGIN = 10
   }
+}
+
+class SelectedAction {
+  val selectedValueFun: () -> String = { RandomStringUtils.randomAlphabetic(10) }
 }
