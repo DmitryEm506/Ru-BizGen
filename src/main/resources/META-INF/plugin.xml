@@ -40,6 +40,11 @@
       serviceImplementation="ru.exmpl.rbdg.AppSettingsNotificationServiceImpl"
     />
 
+    <applicationService
+      serviceInterface="ru.exmpl.rbdg.actions.GeneratorActionProvider"
+      serviceImplementation="ru.exmpl.rbdg.actions.GeneratorActionProviderImpl"
+    />
+
     <applicationConfigurable
       parentId="tools"
       instance="ru.exmpl.rbdg.AppSettingsConfigurable"
