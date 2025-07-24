@@ -1,9 +1,11 @@
-package ru.exmpl.rbdg
+package ru.exmpl.rbdg.ui
 
 import com.intellij.ui.dsl.builder.actionListener
 import com.intellij.ui.dsl.builder.bind
 import com.intellij.ui.dsl.builder.panel
-import ru.exmpl.rbdg.settings.model.RbdgNotificationMode
+import ru.exmpl.rbdg.di.getRbdgService
+import ru.exmpl.rbdg.notification.NotificationSettingsService
+import ru.exmpl.rbdg.settings.model.RbdgAppSettings.RbdgNotificationMode
 import javax.swing.JComponent
 
 /**
@@ -14,7 +16,7 @@ import javax.swing.JComponent
 class NotificationSettingsComponent {
 
   fun configureComponent(): JComponent {
-    val service = getRbdgService<AppSettingsNotificationService>()
+    val service = getRbdgService<NotificationSettingsService>()
     val chosen = service.getNotificationMode()
 
     return panel {

@@ -1,10 +1,9 @@
-package ru.exmpl.rbdg
+package ru.exmpl.rbdg.ui
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.OnePixelSplitter
 import com.intellij.util.ui.FormBuilder
-import org.apache.commons.lang3.RandomStringUtils
 import java.awt.BorderLayout
 import javax.swing.JPanel
 
@@ -24,7 +23,7 @@ class AppSettingsComponent : Disposable {
       .addComponent(NotificationSettingsComponent().configureComponent())
       .addComponentFillVertically(JPanel(), 0)
       .addComponent(
-        ActionResultPreviewComponent({ RandomStringUtils.randomAlphabetic(10) })
+        ActionResultPreviewComponent()
         .also { Disposer.register(this, it) }.rootComponent
       )
       .panel

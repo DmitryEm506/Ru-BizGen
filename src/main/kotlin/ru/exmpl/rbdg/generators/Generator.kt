@@ -6,7 +6,7 @@ package ru.exmpl.rbdg.generators
  * @param T тип генерируемых данных
  * @author Dmitry_Emelyanenko
  */
-interface Generator<T : Any> {
+fun interface Generator<T : Any> {
 
   /**
    * Генерация данных.

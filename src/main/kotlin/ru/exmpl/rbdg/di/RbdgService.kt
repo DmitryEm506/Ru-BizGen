@@ -10,16 +10,12 @@ import com.intellij.openapi.components.service
  */
 interface RbdgService
 
-/** Обертка через которую происходит получение сервиса. */
-object RbdgServiceGetter {
-
-  /**
-   * Получение сервиса из DI.
-   *
-   * @param T тип сервиса, который обязательно должен быть наследником [RbdgService]
-   * @return возвращаемый сервис или ошибка
-   */
-  inline fun <reified T : RbdgService> getRbdgService(): T {
-    return ApplicationManager.getApplication().service<T>()
-  }
+/**
+ * Получение сервиса плагина из DI.
+ *
+ * @param T тип сервиса, который обязательно должен быть наследником [RbdgService]
+ * @return возвращаемый сервис или ошибка
+ */
+inline fun <reified T : RbdgService> getRbdgService(): T {
+  return ApplicationManager.getApplication().service<T>()
 }

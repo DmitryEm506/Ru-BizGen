@@ -24,25 +24,35 @@
   <!-- Extension points defined by the plugin.
        Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
   <extensions defaultExtensionNs="com.intellij">
-    <applicationService serviceImplementation="ru.exmpl.rbdg.settings.persistent.AppPersistentSettings"/>
+    <applicationService serviceImplementation="ru.exmpl.rbdg.settings.persistent.RbdgAppSettingsPersistent"/>
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.settings.AppSettingsStore"
-      serviceImplementation="ru.exmpl.rbdg.settings.persistent.AppPersistentSettings"/>
+      serviceInterface="ru.exmpl.rbdg.settings.RbdgAppSettingsRepository"
+      serviceImplementation="ru.exmpl.rbdg.settings.persistent.RbdgAppSettingsPersistent"/>
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.AppSettingsService"
-      serviceImplementation="ru.exmpl.rbdg.AppSettingsServiceImpl"
+      serviceInterface="ru.exmpl.rbdg.settings.AppActionSettingsService"
+      serviceImplementation="ru.exmpl.rbdg.settings.AppActionSettingsServiceImpl"
     />
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.AppSettingsNotificationService"
-      serviceImplementation="ru.exmpl.rbdg.AppSettingsNotificationServiceImpl"
+      serviceInterface="ru.exmpl.rbdg.notification.NotificationSettingsService"
+      serviceImplementation="ru.exmpl.rbdg.notification.NotificationSettingsServiceImpl"
     />
 
     <applicationService
       serviceInterface="ru.exmpl.rbdg.actions.GeneratorActionProvider"
       serviceImplementation="ru.exmpl.rbdg.actions.GeneratorActionProviderImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.exmpl.rbdg.actions.GeneratorActionService"
+      serviceImplementation="ru.exmpl.rbdg.actions.GeneratorActionServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.exmpl.rbdg.notification.NotificationService"
+      serviceImplementation="ru.exmpl.rbdg.notification.NotificationServiceImpl"
     />
 
     <applicationConfigurable

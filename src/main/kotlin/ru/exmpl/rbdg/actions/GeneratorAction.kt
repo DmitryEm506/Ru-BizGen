@@ -5,8 +5,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Caret
-import ru.exmpl.rbdg.ApplicationUtils.invokeLater
 import ru.exmpl.rbdg.generators.Generator
+import ru.exmpl.rbdg.invokeLater
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 
@@ -14,15 +14,26 @@ import java.awt.datatransfer.StringSelection
  * Описание действия генератора.
  *
  * @param T тип генерируемого значения
+ * @author Dmitry_Emelyanenko
  */
-interface GeneratorActionDescription<T : Any> {
+interface GeneratorAction<T : Any> {
 
   /** Идентификатор действия. */
   val id: String
 
   /** Название действия. */
   val name: String
+
+  /** Применяемый генератор. */
+  val generator: Generator<T>
 }
+
+/**
+ * Абстрактная обертка над стандартным действием.
+ *
+ * @param name имя действия
+ */
+abstract class GeneratorAnAction(open val id: String, name: String) : AnAction(name)
 
 /**
  * Базовая реализация применения действия.
@@ -35,8 +46,8 @@ interface GeneratorActionDescription<T : Any> {
 abstract class BaseGeneratorAction<T : Any>(
   override val id: String,
   override val name: String,
-  private val generator: Generator<T>
-) : GeneratorActionDescription<T>, AnAction(name) {
+  override val generator: Generator<T>
+) : GeneratorAction<T>, GeneratorAnAction(id, name) {
 
   override fun actionPerformed(event: AnActionEvent) {
     val editor = event.getData(CommonDataKeys.EDITOR) ?: return

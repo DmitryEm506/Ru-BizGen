@@ -1,12 +1,11 @@
 package ru.exmpl.rbdg
 
-import ai.grazie.utils.mpp.UUID
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
-import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import ru.exmpl.rbdg.actions.GeneratorActionService
+import ru.exmpl.rbdg.di.getRbdgService
 
 /**
  * MainAction.
@@ -14,20 +13,28 @@ import com.intellij.openapi.application.ApplicationManager
  * @author Dmitry_Emelyanenko
  */
 class MainAction : AnAction() {
-  override fun actionPerformed(p0: AnActionEvent) {
-    val settings = getRbdgService<AppSettingsService>().getAppSettings()
+  override fun actionPerformed(event: AnActionEvent) {
+    val service = getRbdgService<GeneratorActionService>()
 
-    settings.actualActions.firstOrNull()?.let { action ->
-      action.id = UUID.random().toString()
-    }
-
-    ApplicationManager.getApplication().messageBus.syncPublisher(Notifications.TOPIC).notify(
-      Notification(
-        " ", "ИНН", "Значение ИНН успешно скопировано в буфер обмена",
-        NotificationType.INFORMATION
-      )
-    )
+    JBPopupFactory.getInstance()
+      .createActionGroupPopup(
+        "Генератор тестовых данных",
+        DefaultActionGroup(service.getActiveAnActions()),
+        event.dataContext,
+        JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
+        false,
+      ).apply {
+        showInBestPositionFor(event.dataContext)
+      }
+//    ApplicationManager.getApplication().messageBus.syncPublisher(Notifications.TOPIC).notify(
+//      Notification(
+//        " ", "ИНН", "Значение ИНН успешно скопировано в буфер обмена",
+//        NotificationType.INFORMATION
+//      )
+//    )
   }
+
+
 }
 
 

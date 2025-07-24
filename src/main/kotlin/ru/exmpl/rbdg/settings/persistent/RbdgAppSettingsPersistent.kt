@@ -4,7 +4,7 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.SettingsCategory
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import ru.exmpl.rbdg.settings.AppSettingsStore
+import ru.exmpl.rbdg.settings.RbdgAppSettingsRepository
 import ru.exmpl.rbdg.settings.model.RbdgAppSettings
 
 /**
@@ -16,13 +16,13 @@ import ru.exmpl.rbdg.settings.model.RbdgAppSettings
 @State(
   name = "Ru Business Data Generator",
   storages = [
-    Storage("rbdg_settings.xml"),
+    Storage("rbdg_settings1.xml"),
   ],
   category = SettingsCategory.PLUGINS,
 )
-internal class AppPersistentSettings(
+internal class RbdgAppSettingsPersistent(
   var settings: RbdgAppSettings = RbdgAppSettings()
-) : PersistentStateComponent<RbdgAppSettings>, AppSettingsStore {
+) : PersistentStateComponent<RbdgAppSettings>, RbdgAppSettingsRepository {
 
   override fun getState(): RbdgAppSettings {
     return settings
@@ -32,7 +32,7 @@ internal class AppPersistentSettings(
     settings = rbdgAppSettings
   }
 
-  override fun getAppSettings(): RbdgAppSettings {
+  override fun settings(): RbdgAppSettings {
     return settings
   }
 }

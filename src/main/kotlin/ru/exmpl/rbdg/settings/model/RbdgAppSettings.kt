@@ -1,6 +1,8 @@
 package ru.exmpl.rbdg.settings.model
 
+import ru.exmpl.rbdg.actions.GeneratorActionProvider
 import ru.exmpl.rbdg.deepCopyByJson
+import ru.exmpl.rbdg.di.getRbdgService
 
 /**
  * Основной конфиг плагина.
@@ -13,18 +15,52 @@ class RbdgAppSettings {
   var notificationMode: RbdgNotificationMode = RbdgNotificationMode.DISABLE
 
   /** Актуальный список действий. */
-  var actualActions: MutableList<RbdgGeneratorActionSettings> = listOf(
-    RbdgGeneratorActionSettings("1", 0, "test_0", active = true),
-    RbdgGeneratorActionSettings("2", 1, "test_1", active = true),
-    RbdgGeneratorActionSettings("3", 2, "test_2", active = true),
-    RbdgGeneratorActionSettings("4", 3, "test_3", active = true),
-  ).toMutableList()
-
+  var actualActions: MutableList<ActionSetting> = initSettingActions()
 
   /** Сброс настроек до значений по умолчанию. */
   fun restoreFromDefault() {
     actualActions.clear()
     actualActions.addAll(RbdgDefaultAppSettings.getDefault().actualActions)
+  }
+
+  private fun initSettingActions(): MutableList<ActionSetting> {
+    val actions = getRbdgService<GeneratorActionProvider>().getActions()
+
+    return actions.mapIndexed { index, action ->
+      ActionSetting(
+        id = action.id,
+        position = index,
+        description = action.name,
+        active = "UUID_KT_tests_" !in action.id
+      )
+    }.toMutableList()
+  }
+
+  /**
+   * Настройка для конкретного действия.
+   *
+   * @property id идентификатор действия
+   * @property position позиция в общем списке действий
+   * @property description описание
+   * @property active признак, что действие активное
+   * @author Dmitry_Emelyanenko
+   */
+  data class ActionSetting(
+    var id: String = "",
+    var position: Int = 0,
+    var description: String = "",
+    var active: Boolean = true
+  )
+
+  /**
+   * Режимы уведомлений.
+   *
+   * @author Dmitry_Emelyanenko
+   */
+  enum class RbdgNotificationMode(val description: String) {
+    BELL("""Лог событий "Колокольчик""""),
+    HINT("Всплывающее окно"),
+    DISABLE("Выключено"),
   }
 }
 
@@ -35,7 +71,6 @@ class RbdgAppSettings {
  */
 internal object RbdgDefaultAppSettings {
   private val DEFAULT: RbdgAppSettings = RbdgAppSettings()
-
 
   /**
    * Получение конфига по умолчанию.

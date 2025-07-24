@@ -1,4 +1,4 @@
-package ru.exmpl.rbdg
+package ru.exmpl.rbdg.ui
 
 import com.intellij.openapi.actionSystem.ActionToolbarPosition
 import com.intellij.openapi.actionSystem.AnAction
@@ -10,9 +10,12 @@ import com.intellij.ui.CheckBoxListListener
 import com.intellij.ui.ListUtil
 import com.intellij.ui.ToolbarDecorator
 import com.intellij.util.ui.JBUI
-import ru.exmpl.rbdg.AppSettingsService.Direction
-import ru.exmpl.rbdg.RbdgSelectedActionEvent.Companion.publish
-import ru.exmpl.rbdg.settings.model.RbdgGeneratorActionSettings
+import ru.exmpl.rbdg.actions.GeneratorActionService
+import ru.exmpl.rbdg.actions.RbdgSelectedActionEvent
+import ru.exmpl.rbdg.di.getRbdgService
+import ru.exmpl.rbdg.settings.AppActionSettingsService
+import ru.exmpl.rbdg.settings.AppActionSettingsService.Direction
+import ru.exmpl.rbdg.settings.model.RbdgAppSettings.ActionSetting
 import javax.swing.JPanel
 import javax.swing.event.ListSelectionListener
 
@@ -45,23 +48,24 @@ class AppActionsSettingComponent {
     private fun selectionListener(checkBoxList: CheckBoxList<String>): ListSelectionListener = ListSelectionListener { event ->
       if (event.valueIsAdjusting) {
         val selectedIndex = checkBoxList.selectedIndex
-        val settingsService = getRbdgService<AppSettingsService>()
-        settingsService.findActionByPosition(selectedIndex)?.let { action ->
-          publish(action.description)
-        }
+
+        val actionSetting = getRbdgService<AppActionSettingsService>().findByPosition(selectedIndex) ?: return@ListSelectionListener
+        val generatorAction = getRbdgService<GeneratorActionService>().findActionById(actionSetting.id) ?: return@ListSelectionListener
+
+        RbdgSelectedActionEvent.publish(generatorAction)
       }
     }
   }
 }
 
 private class ActionListComponent : CheckBoxList<String>(listener) {
-  private val availableActions: List<RbdgGeneratorActionSettings> = getRbdgService<AppSettingsService>().getActions()
+  private val availableActions: List<ActionSetting> = getRbdgService<AppActionSettingsService>().getActionSettings()
 
   init {
     fillByActions()
   }
 
-  fun fillByActions(actions: List<RbdgGeneratorActionSettings> = availableActions) {
+  fun fillByActions(actions: List<ActionSetting> = availableActions) {
     actions.forEach { action ->
       addItem(action.id, action.description, action.active)
     }
@@ -69,13 +73,13 @@ private class ActionListComponent : CheckBoxList<String>(listener) {
 
   fun moveUpOrDown(isUp: Boolean) {
     if (isUp) {
-      val service = getRbdgService<AppSettingsService>()
-      if (service.moveAction(selectedIndex, Direction.UP)) {
+      val service = getRbdgService<AppActionSettingsService>()
+      if (service.moveTo(selectedIndex, Direction.UP)) {
         ListUtil.moveSelectedItemsUp(this)
       }
     } else {
-      val service = getRbdgService<AppSettingsService>()
-      if (service.moveAction(selectedIndex, Direction.DOWN)) {
+      val service = getRbdgService<AppActionSettingsService>()
+      if (service.moveTo(selectedIndex, Direction.DOWN)) {
         ListUtil.moveSelectedItemsDown(this)
       }
     }
@@ -91,7 +95,7 @@ private class ActionListComponent : CheckBoxList<String>(listener) {
         ).let {
           if (it == Messages.YES) {
             clear()
-            fillByActions(getRbdgService<AppSettingsService>().getDefaultActions())
+            fillByActions(getRbdgService<AppActionSettingsService>().restoreByDefault())
           }
         }
       }
@@ -100,8 +104,8 @@ private class ActionListComponent : CheckBoxList<String>(listener) {
 
   companion object {
     private val listener: CheckBoxListListener = CheckBoxListListener { index, value ->
-      val settingsService = getRbdgService<AppSettingsService>()
-      settingsService.findActionByPosition(index)?.let { action ->
+      val settingsService = getRbdgService<AppActionSettingsService>()
+      settingsService.findByPosition(index)?.let { action ->
         action.active = value
       }
     }

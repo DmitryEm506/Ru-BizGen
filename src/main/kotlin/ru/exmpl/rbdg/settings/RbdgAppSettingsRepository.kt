@@ -1,5 +1,6 @@
 package ru.exmpl.rbdg.settings
 
+import ru.exmpl.rbdg.di.RbdgService
 import ru.exmpl.rbdg.settings.model.RbdgAppSettings
 
 /**
@@ -7,12 +8,12 @@ import ru.exmpl.rbdg.settings.model.RbdgAppSettings
  *
  * @author Dmitry_Emelyanenko
  */
-interface AppSettingsStore {
+interface RbdgAppSettingsRepository : RbdgService {
 
   /**
    * Получить настройки плагина.
    *
    * @return настройки плагина
    */
-  fun getAppSettings(): RbdgAppSettings
+  fun settings(): RbdgAppSettings
 }

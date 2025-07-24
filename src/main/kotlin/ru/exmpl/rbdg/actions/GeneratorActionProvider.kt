@@ -1,6 +1,5 @@
 package ru.exmpl.rbdg.actions
 
-import com.intellij.openapi.actionSystem.AnAction
 import ru.exmpl.rbdg.actions.impl.UuidForTestGeneratorAction
 import ru.exmpl.rbdg.actions.impl.UuidGeneratorAction
 import ru.exmpl.rbdg.di.RbdgService
@@ -17,14 +16,14 @@ interface GeneratorActionProvider : RbdgService {
    *
    * @return перечень описаний действий
    */
-  fun getActions(): List<GeneratorActionDescription<*>>
+  fun getActions(): List<GeneratorAction<*>>
 
   /**
    * Получение всех действия для применения.
    *
    * @return перечень действия для применения
    */
-  fun getAnActions(): List<AnAction>
+  fun getAnActions(): List<GeneratorAnAction>
 }
 
 /** Реализация [GeneratorActionProvider]. */
@@ -34,11 +33,11 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
     UuidForTestGeneratorAction()
   )
 
-  override fun getActions(): List<GeneratorActionDescription<*>> {
+  override fun getActions(): List<GeneratorAction<*>> {
     return actions
   }
 
-  override fun getAnActions(): List<AnAction> {
+  override fun getAnActions(): List<GeneratorAnAction> {
     return actions
   }
 }

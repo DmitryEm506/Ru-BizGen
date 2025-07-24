@@ -4,7 +4,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.util.Disposer
 import org.jetbrains.annotations.Nls
-import ru.exmpl.rbdg.AppSettingsComponent
+import ru.exmpl.rbdg.ui.AppSettingsComponent
 import javax.swing.JComponent
 
 /**
