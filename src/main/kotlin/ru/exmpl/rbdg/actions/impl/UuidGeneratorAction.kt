@@ -10,7 +10,7 @@ import java.util.UUID
  * @author Dmitry_Emelyanenko
  */
 class UuidGeneratorAction : BaseGeneratorAction<UUID>(
-  id = "ee2bca00-0586-4a7c-869c-bee1285d0732",
+  id = "UUID_ee2bca00-0586-4a7c-869c-bee1285d0732",
   name = "UUID",
   generator = UuidGenerator()
 )

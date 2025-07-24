@@ -12,6 +12,7 @@ import com.intellij.ui.ToolbarDecorator
 import com.intellij.util.ui.JBUI
 import ru.exmpl.rbdg.AppSettingsService.Direction
 import ru.exmpl.rbdg.RbdgSelectedActionEvent.Companion.publish
+import ru.exmpl.rbdg.settings.model.RbdgGeneratorActionSettings
 import javax.swing.JPanel
 import javax.swing.event.ListSelectionListener
 
@@ -54,15 +55,15 @@ class AppActionsSettingComponent {
 }
 
 private class ActionListComponent : CheckBoxList<String>(listener) {
-  private val availableActions: List<ActualAction> = getRbdgService<AppSettingsService>().getActions()
+  private val availableActions: List<RbdgGeneratorActionSettings> = getRbdgService<AppSettingsService>().getActions()
 
   init {
     fillByActions()
   }
 
-  fun fillByActions(actions: List<ActualAction> = availableActions) {
+  fun fillByActions(actions: List<RbdgGeneratorActionSettings> = availableActions) {
     actions.forEach { action ->
-      addItem(action.id, action.description, action.selected)
+      addItem(action.id, action.description, action.active)
     }
   }
 
@@ -101,7 +102,7 @@ private class ActionListComponent : CheckBoxList<String>(listener) {
     private val listener: CheckBoxListListener = CheckBoxListListener { index, value ->
       val settingsService = getRbdgService<AppSettingsService>()
       settingsService.findActionByPosition(index)?.let { action ->
-        action.selected = value
+        action.active = value
       }
     }
   }

@@ -10,7 +10,7 @@ import java.util.UUID
  * @author Dmitry_Emelyanenko
  */
 class UuidForTestGeneratorAction : BaseGeneratorAction<UUID>(
-  id = "5ff2bc21-3f47-4c4f-978b-6335fe3d0c9d",
+  id = "UUID_KT_tests_5ff2bc21-3f47-4c4f-978b-6335fe3d0c9d",
   name = "UUID для Котлин тестов",
   generator = UuidForTestGenerator()
 )

@@ -3,6 +3,7 @@ package ru.exmpl.rbdg
 import com.intellij.ui.dsl.builder.actionListener
 import com.intellij.ui.dsl.builder.bind
 import com.intellij.ui.dsl.builder.panel
+import ru.exmpl.rbdg.settings.model.RbdgNotificationMode
 import javax.swing.JComponent
 
 /**
@@ -18,14 +19,14 @@ class NotificationSettingsComponent {
 
     return panel {
       buttonsGroup("Уведомления") {
-        NotificationMode.entries.forEach { mode ->
+        RbdgNotificationMode.entries.forEach { mode ->
           row {
             radioButton(mode.description, mode)
               .applyToComponent {
                 actionCommand = mode.name
                 if (chosen == mode) isSelected = true
               }.actionListener { _, button ->
-                service.updateNotificationMode(NotificationMode.valueOf(button.actionCommand))
+                service.updateNotificationMode(RbdgNotificationMode.valueOf(button.actionCommand))
               }
           }
         }

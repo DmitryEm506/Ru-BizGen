@@ -1,18 +1,22 @@
 package ru.exmpl.rbdg
 
 import ru.exmpl.rbdg.AppSettingsService.Direction
+import ru.exmpl.rbdg.settings.AppSettingsStore
+import ru.exmpl.rbdg.settings.model.RbdgAppSettings
+import ru.exmpl.rbdg.settings.model.RbdgGeneratorActionSettings
+import ru.exmpl.rbdg.settings.model.RbdgNotificationMode
 
 
 interface AppSettingsService {
-  fun getAppSettings(): AppSettings
+  fun getAppSettings(): RbdgAppSettings
 
-  fun findActionByPosition(position: Int): ActualAction?
+  fun findActionByPosition(position: Int): RbdgGeneratorActionSettings?
 
   fun moveAction(sourcePosition: Int, direction: Direction): Boolean
 
-  fun getActions(): List<ActualAction>
+  fun getActions(): List<RbdgGeneratorActionSettings>
 
-  fun getDefaultActions(): List<ActualAction>
+  fun getDefaultActions(): List<RbdgGeneratorActionSettings>
 
   enum class Direction {
     UP,
@@ -21,18 +25,18 @@ interface AppSettingsService {
 }
 
 interface AppSettingsNotificationService {
-  fun updateNotificationMode(notificationMode: NotificationMode)
+  fun updateNotificationMode(notificationMode: RbdgNotificationMode)
 
-  fun getNotificationMode(): NotificationMode
+  fun getNotificationMode(): RbdgNotificationMode
 }
 
 class AppSettingsNotificationServiceImpl : AppSettingsNotificationService {
 
-  override fun updateNotificationMode(notificationMode: NotificationMode) {
+  override fun updateNotificationMode(notificationMode: RbdgNotificationMode) {
     getRbdgService<AppSettingsStore>().getAppSettings().notificationMode = notificationMode
   }
 
-  override fun getNotificationMode(): NotificationMode {
+  override fun getNotificationMode(): RbdgNotificationMode {
     return getRbdgService<AppSettingsStore>().getAppSettings().notificationMode
   }
 }
@@ -44,11 +48,11 @@ class AppSettingsNotificationServiceImpl : AppSettingsNotificationService {
  */
 class AppSettingsServiceImpl : AppSettingsService {
 
-  override fun getAppSettings(): AppSettings {
+  override fun getAppSettings(): RbdgAppSettings {
     return store().getAppSettings()
   }
 
-  override fun findActionByPosition(position: Int): ActualAction? {
+  override fun findActionByPosition(position: Int): RbdgGeneratorActionSettings? {
     return store().getAppSettings().actualActions.find { it.position == position }
   }
 
@@ -68,18 +72,18 @@ class AppSettingsServiceImpl : AppSettingsService {
     return true
   }
 
-  override fun getActions(): List<ActualAction> {
+  override fun getActions(): List<RbdgGeneratorActionSettings> {
     return actions().sortedBy { it.position }
   }
 
-  override fun getDefaultActions(): List<ActualAction> {
+  override fun getDefaultActions(): List<RbdgGeneratorActionSettings> {
     store().getAppSettings().restoreFromDefault()
 
     return getActions()
   }
 
   private companion object {
-    fun actions(): List<ActualAction> {
+    fun actions(): List<RbdgGeneratorActionSettings> {
       return store().getAppSettings().actualActions
     }
 
