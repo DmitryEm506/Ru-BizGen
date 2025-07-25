@@ -3,6 +3,7 @@ package ru.exmpl.rbdg.actions
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.util.messages.Topic
+import ru.exmpl.rbdg.invokeLater
 
 /**
  * Общий интерфейс, который обеспечивает возможность работы с выбранным действием генератора.
@@ -44,11 +45,7 @@ internal fun interface RbdgSelectedActionEvent {
      */
     internal fun subscribeAsync(parentDisposable: Disposable, handler: (GeneratorAction<*>) -> Unit) {
       ApplicationManager.getApplication().messageBus.connect(parentDisposable)
-        .subscribe(TOPIC, RbdgSelectedActionEvent { action ->
-          ApplicationManager.getApplication().invokeLater {
-            handler(action)
-          }
-        })
+        .subscribe(TOPIC, RbdgSelectedActionEvent { action -> invokeLater { handler(action) } })
     }
   }
 }
