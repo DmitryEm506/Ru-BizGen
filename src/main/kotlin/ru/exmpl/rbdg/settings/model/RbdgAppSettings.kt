@@ -1,6 +1,7 @@
 package ru.exmpl.rbdg.settings.model
 
 import ru.exmpl.rbdg.actions.GeneratorActionProvider
+import ru.exmpl.rbdg.actions.impl.UuidInKtTestGeneratorAction.Companion.UUID_IN_KT_TEST_GENERATOR_ACTION_ID
 import ru.exmpl.rbdg.deepCopyByJson
 import ru.exmpl.rbdg.di.getRbdgService
 
@@ -31,7 +32,7 @@ class RbdgAppSettings {
         id = action.id,
         position = index,
         description = action.name,
-        active = "UUID_KT_tests_" !in action.id
+        active = UUID_IN_KT_TEST_GENERATOR_ACTION_ID != action.id
       )
     }.toMutableList()
   }

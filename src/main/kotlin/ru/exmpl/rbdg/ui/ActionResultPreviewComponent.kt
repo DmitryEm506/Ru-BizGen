@@ -73,7 +73,7 @@ class ActionResultPreviewComponent() : Disposable {
     val result = selectedGenerator?.generate() ?: return
 
     val resultText = """
-      Вставляемый текст: ${result.byFormatToInsert}
+      Вставляемый текст: ${result.escaped}
       Копируемый в буфер: ${result.data}
     """.trimIndent()
 

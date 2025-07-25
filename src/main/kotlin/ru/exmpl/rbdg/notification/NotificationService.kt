@@ -1,64 +1,87 @@
 package ru.exmpl.rbdg.notification
 
-import com.intellij.codeInsight.hint.HintManager
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.ui.popup.Balloon
+import com.intellij.openapi.ui.popup.JBPopupFactory
+import com.intellij.ui.JBColor
 import ru.exmpl.rbdg.di.RbdgService
 import ru.exmpl.rbdg.di.getRbdgService
 import ru.exmpl.rbdg.generators.GeneratorResult
-import ru.exmpl.rbdg.settings.model.RbdgAppSettings.RbdgNotificationMode
+import ru.exmpl.rbdg.settings.model.RbdgAppSettings
 
 /**
- * NotificationService.
+ * Сервис уведомлений.
  *
  * @author Dmitry_Emelyanenko
  */
 interface NotificationService : RbdgService {
-  fun sendNotification(editor: Editor, result: GeneratorResult<*>)
+
+  /**
+   * Отправить уведомление.
+   *
+   * @param ctx контекст уведомления
+   */
+  fun sendNotification(ctx: NotificationCtx<*>)
 }
 
+/** Реализация [NotificationService]. */
 class NotificationServiceImpl : NotificationService {
 
-  private val notificationsByMode = Map/////////////
-
-  override fun sendNotification(editor: Editor, result: GeneratorResult<*>) {
+  override fun sendNotification(ctx: NotificationCtx<*>) {
     val settingsService = getRbdgService<NotificationSettingsView>()
-    settingsService.getNotificationMode()
+
+    getNotificator(settingsService.getNotificationMode()).sendNotification(ctx)
+  }
+
+  private companion object {
+    fun getNotificator(mode: RbdgAppSettings.RbdgNotificationMode): NotificationService {
+      return when (mode) {
+        RbdgAppSettings.RbdgNotificationMode.BELL -> BellNotification()
+        RbdgAppSettings.RbdgNotificationMode.HINT -> HintNotification()
+        RbdgAppSettings.RbdgNotificationMode.DISABLE -> SkipNotification()
+      }
+    }
   }
 }
 
-private sealed interface NotificationByMode {
-
-  val applyingMode: RbdgNotificationMode
-
-  fun notify(editor: Editor, result: GeneratorResult<*>)
-}
-
-private class HintNotification(
-  override val applyingMode: RbdgNotificationMode = RbdgNotificationMode.HINT
-) : NotificationByMode {
-
-  override fun notify(editor: Editor, result: GeneratorResult<*>) {
-    HintManager.getInstance().showSuccessHint(editor, "${result.data} скопирован в буфер обмена")
+/** Уведомление через всплывающую подсказку. */
+private class HintNotification : NotificationService {
+  override fun sendNotification(ctx: NotificationCtx<*>) {
+    JBPopupFactory.getInstance()
+      .createHtmlTextBalloonBuilder(bufferInfo(ctx.result), null, JBColor.background(), null)
+      .setFadeoutTime(3000) // Автоматическое закрытие через 3 секунды
+      .createBalloon()
+      .show(
+        JBPopupFactory.getInstance().guessBestPopupLocation(ctx.editor),
+        Balloon.Position.below
+      )
   }
 }
 
-private class BellNotification(
-  override val applyingMode: RbdgNotificationMode = RbdgNotificationMode.BELL,
-) : NotificationByMode {
-
-  override fun notify(editor: Editor, result: GeneratorResult<*>) {
+/** Уведомление через стандартный механизм уведомлений (колокольчик). */
+private class BellNotification : NotificationService {
+  override fun sendNotification(ctx: NotificationCtx<*>) {
     ApplicationManager.getApplication().messageBus.syncPublisher(Notifications.TOPIC).notify(
-      Notification(" ", "", result.data.toString(), NotificationType.INFORMATION)
+      Notification(" ", "Generator: ${ctx.actionInfo.name}", bufferInfo(ctx.result), NotificationType.INFORMATION)
     )
   }
 }
 
-private class DisableNotification(
-  override val applyingMode: RbdgNotificationMode = RbdgNotificationMode.DISABLE
-) : NotificationByMode {
-  override fun notify(editor: Editor, result: GeneratorResult<*>) = Unit
+/** Не отправлять уведомление. */
+private class SkipNotification() : NotificationService {
+  override fun sendNotification(ctx: NotificationCtx<*>) = Unit
+}
+
+/**
+ * Генерирование сообщения, что результат добавлен в буфер.
+ *
+ * @param T тип результата
+ * @param result результат работы генератора
+ * @return полученный текст
+ */
+private fun <T : Any> bufferInfo(result: GeneratorResult<T>): String {
+  return "${result.data} добавлен в буфер"
 }

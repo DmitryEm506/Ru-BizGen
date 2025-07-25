@@ -5,11 +5,11 @@ package ru.exmpl.rbdg.generators
  *
  * @param T тип генерируемых данных
  * @property data сгенерированные данные
- * @property byFormatToInsert значение, для вставки в документ
+ * @property escaped значение, для вставки в документ
  */
 open class GeneratorResult<T : Any>(
   val data: T,
-  val byFormatToInsert: String
+  val escaped: String
 )
 
 /**

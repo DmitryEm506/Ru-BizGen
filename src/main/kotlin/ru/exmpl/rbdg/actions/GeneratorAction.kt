@@ -5,8 +5,13 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Caret
+import com.intellij.openapi.editor.Editor
+import ru.exmpl.rbdg.di.getRbdgService
 import ru.exmpl.rbdg.generators.Generator
+import ru.exmpl.rbdg.generators.GeneratorResult
 import ru.exmpl.rbdg.invokeLater
+import ru.exmpl.rbdg.notification.NotificationCtx
+import ru.exmpl.rbdg.notification.NotificationService
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 
@@ -38,6 +43,8 @@ abstract class GeneratorAnAction(open val id: String, name: String) : AnAction(n
 /**
  * Базовая реализация применения действия.
  *
+ * *После создания действия не забудьте добавить его в общий контейнер [GeneratorActionProvider]*
+ *
  * @param T тип генерируемого значения
  * @property id идентификатор действия
  * @property name название действия
@@ -60,19 +67,22 @@ abstract class BaseGeneratorAction<T : Any>(
       Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(rsp.data.toString()), null)
 
       invokeLater {
-        WriteCommandAction.runWriteCommandAction(project) { editor.document.insertString(start, rsp.byFormatToInsert) }
+        WriteCommandAction.runWriteCommandAction(project) { editor.document.insertString(start, rsp.escaped) }
         primaryCaret.removeSelection()
       }
 
-//      блок с уведомлениями
-//      HintManager.getInstance().showSuccessHint(editor, "${rsp.source} скопирован в буфер обмена")
-//      ApplicationManager.getApplication().messageBus.syncPublisher(Notifications.TOPIC).notify(
-//        Notification(
-//          " ", "", rsp.source,
-//          NotificationType.INFORMATION
-//        )
-//      )
-//      Messages.showInfoMessage(rsp.source, "awdaw")
+      getRbdgService<NotificationService>().sendNotification(configureNotifCtx(rsp, editor))
     }
+  }
+
+  private fun <T : Any> configureNotifCtx(result: GeneratorResult<T>, editor: Editor): NotificationCtx<T> {
+    return NotificationCtx(
+      actionInfo = NotificationCtx.ActionInfo(
+        id = this.id,
+        name = this.name,
+      ),
+      editor = editor,
+      result = result,
+    )
   }
 }

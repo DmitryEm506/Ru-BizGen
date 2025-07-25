@@ -35,9 +35,9 @@ class GeneratorActionServiceImpl() : GeneratorActionService {
   }
 
   override fun getActiveAnActions(): List<GeneratorAnAction> {
-    val activeActions = getRbdgService<AppActionSettingsService>().getActiveActionSettings()
+    val activeSettings = getRbdgService<AppActionSettingsService>().getActiveActionSettings()
     val actions = getRbdgService<GeneratorActionProvider>().getAnActions().associateBy { it.id }
 
-    return activeActions.mapNotNull { active -> actions[active.id] }
+    return activeSettings.mapNotNull { actionSetting -> actions[actionSetting.id] }
   }
 }

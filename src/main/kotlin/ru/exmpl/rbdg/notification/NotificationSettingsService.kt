@@ -5,6 +5,11 @@ import ru.exmpl.rbdg.di.getRbdgService
 import ru.exmpl.rbdg.settings.RbdgAppSettingsRepository
 import ru.exmpl.rbdg.settings.model.RbdgAppSettings
 
+/**
+ * Сервис для просмотра настроек уведомлений.
+ *
+ * @author Dmitry_Emelyanenko
+ */
 interface NotificationSettingsView : RbdgService {
 
   /**
@@ -20,7 +25,7 @@ interface NotificationSettingsView : RbdgService {
  *
  * @author Dmitry_Emelyanenko
  */
-interface NotificationSettingsService : NotificationSettingsView, RbdgService {
+interface NotificationSettingsService : NotificationSettingsView {
 
   /**
    * Обновление режима уведомлений.

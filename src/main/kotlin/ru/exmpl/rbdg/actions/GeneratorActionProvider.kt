@@ -1,7 +1,7 @@
 package ru.exmpl.rbdg.actions
 
-import ru.exmpl.rbdg.actions.impl.UuidForTestGeneratorAction
 import ru.exmpl.rbdg.actions.impl.UuidGeneratorAction
+import ru.exmpl.rbdg.actions.impl.UuidInKtTestGeneratorAction
 import ru.exmpl.rbdg.di.RbdgService
 
 /**
@@ -28,9 +28,20 @@ interface GeneratorActionProvider : RbdgService {
 
 /** Реализация [GeneratorActionProvider]. */
 class GeneratorActionProviderImpl : GeneratorActionProvider {
+
+  /**
+   * Основной компонент плагина.
+   *
+   * Должен содержать все действия, с которыми предполагается работа.
+   *
+   * ***ВАЖНО***
+   * - от порядка добавления действий зависит порядок отображаемых действий, когда вызывается плагин и при отображении настроек
+   * - после добавления действия необходимо скинуть настройки через пункт меню всех настроек *Settings --> Tools --> Ru Business Data
+   *   Generator --> Список с генераторами --> Иконка "Reset"*
+   */
   private val actions: List<BaseGeneratorAction<*>> = listOf(
     UuidGeneratorAction(),
-    UuidForTestGeneratorAction()
+    UuidInKtTestGeneratorAction()
   )
 
   override fun getActions(): List<GeneratorAction<*>> {

@@ -41,6 +41,11 @@
     />
 
     <applicationService
+      serviceInterface="ru.exmpl.rbdg.notification.NotificationSettingsView"
+      serviceImplementation="ru.exmpl.rbdg.notification.NotificationSettingsServiceImpl"
+    />
+
+    <applicationService
       serviceInterface="ru.exmpl.rbdg.actions.GeneratorActionProvider"
       serviceImplementation="ru.exmpl.rbdg.actions.GeneratorActionProviderImpl"
     />

@@ -11,6 +11,6 @@ import java.util.UUID
  */
 class UuidGeneratorAction : BaseGeneratorAction<UUID>(
   id = "UUID_ee2bca00-0586-4a7c-869c-bee1285d0732",
-  name = "UUID as Str",
+  name = "UUID как строка",
   generator = UuidAsStrGenerator()
 )

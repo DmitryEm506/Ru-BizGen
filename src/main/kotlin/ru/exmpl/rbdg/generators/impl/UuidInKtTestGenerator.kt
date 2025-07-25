@@ -9,13 +9,13 @@ import java.util.UUID
  *
  * @author Dmitry_Emelyanenko
  */
-class UuidForTestGenerator : Generator<UUID> {
+class UuidInKtTestGenerator : Generator<UUID> {
   override fun generate(): GeneratorResult<UUID> {
     val uuid = UUID.randomUUID()
     val uuidStr = """
       "$uuid".toUUID()
       """.trimIndent()
 
-    return GeneratorResult(data = uuid, byFormatToInsert = uuidStr)
+    return GeneratorResult(data = uuid, escaped = uuidStr)
   }
 }
