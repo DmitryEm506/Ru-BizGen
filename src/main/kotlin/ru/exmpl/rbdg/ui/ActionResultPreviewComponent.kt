@@ -53,9 +53,9 @@ class ActionResultPreviewComponent() : Disposable {
     header.add(refreshButton, BorderLayout.EAST)
 
     val previewEditorComponent = previewEditor.component.apply {
-      preferredSize = JBUI.size(600, 200) // HiDPI-корректный размер
+      preferredSize = JBUI.size(600, 200)
       minimumSize = preferredSize
-      maximumSize = preferredSize // Фиксируем, чтобы не растягивался
+      maximumSize = preferredSize
     }
 
     rootComponent.add(header, BorderLayout.NORTH)

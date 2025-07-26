@@ -1,5 +1,12 @@
 package ru.exmpl.rbdg.actions
 
+import ru.exmpl.rbdg.actions.impl.BankAccountActionGenerator
+import ru.exmpl.rbdg.actions.impl.BikActionGenerator
+import ru.exmpl.rbdg.actions.impl.InnIndividualActionGenerator
+import ru.exmpl.rbdg.actions.impl.InnLegalActionGenerator
+import ru.exmpl.rbdg.actions.impl.KppActionGenerator
+import ru.exmpl.rbdg.actions.impl.OgrnIpActionGenerator
+import ru.exmpl.rbdg.actions.impl.OgrnLegalActionGenerator
 import ru.exmpl.rbdg.actions.impl.UuidGeneratorAction
 import ru.exmpl.rbdg.actions.impl.UuidInKtTestGeneratorAction
 import ru.exmpl.rbdg.di.RbdgService
@@ -24,6 +31,13 @@ interface GeneratorActionProvider : RbdgService {
    * @return перечень действия для применения
    */
   fun getAnActions(): List<GeneratorAnAction>
+
+  /**
+   * Получение общего количества зарегистрированных действий.
+   *
+   * @return количество зарегистрированных действий в провайдере
+   */
+  fun actionCount(): Int
 }
 
 /** Реализация [GeneratorActionProvider]. */
@@ -41,7 +55,14 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
    */
   private val actions: List<BaseGeneratorAction<*>> = listOf(
     UuidGeneratorAction(),
-    UuidInKtTestGeneratorAction()
+    UuidInKtTestGeneratorAction(),
+    InnIndividualActionGenerator(),
+    InnLegalActionGenerator(),
+    BikActionGenerator(),
+    BankAccountActionGenerator(),
+    KppActionGenerator(),
+    OgrnIpActionGenerator(),
+    OgrnLegalActionGenerator(),
   )
 
   override fun getActions(): List<GeneratorAction<*>> {
@@ -50,5 +71,9 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
 
   override fun getAnActions(): List<GeneratorAnAction> {
     return actions
+  }
+
+  override fun actionCount(): Int {
+    return actions.size
   }
 }

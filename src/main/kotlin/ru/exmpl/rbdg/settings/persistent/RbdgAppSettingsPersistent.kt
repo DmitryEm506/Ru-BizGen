@@ -4,6 +4,8 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.SettingsCategory
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import ru.exmpl.rbdg.actions.GeneratorActionProvider
+import ru.exmpl.rbdg.di.getRbdgService
 import ru.exmpl.rbdg.settings.RbdgAppSettingsRepository
 import ru.exmpl.rbdg.settings.model.RbdgAppSettings
 
@@ -29,6 +31,12 @@ internal class RbdgAppSettingsPersistent(
   }
 
   override fun loadState(rbdgAppSettings: RbdgAppSettings) {
+    // если сохраненное количество действий не равно общему количеству актуальных действий,
+    // то происходит автоматическое восстановление настроек по умолчанию
+    if (rbdgAppSettings.actualActions.size != getRbdgService<GeneratorActionProvider>().actionCount()) {
+      rbdgAppSettings.restoreFromDefault()
+    }
+
     settings = rbdgAppSettings
   }
 
