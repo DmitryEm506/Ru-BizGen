@@ -64,10 +64,10 @@ abstract class BaseGeneratorAction<T : Any>(
     val start = primaryCaret.selectionStart
 
     generator.generate().let { rsp ->
-      Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(rsp.data.toString()), null)
+      Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(rsp.toClipboard.toString()), null)
 
       invokeLater {
-        WriteCommandAction.runWriteCommandAction(project) { editor.document.insertString(start, rsp.escaped) }
+        WriteCommandAction.runWriteCommandAction(project) { editor.document.insertString(start, rsp.toEditor) }
         primaryCaret.removeSelection()
       }
 

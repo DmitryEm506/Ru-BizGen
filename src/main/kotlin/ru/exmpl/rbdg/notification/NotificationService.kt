@@ -83,5 +83,5 @@ private class SkipNotification() : NotificationService {
  * @return полученный текст
  */
 private fun <T : Any> bufferInfo(result: GeneratorResult<T>): String {
-  return "${result.data} добавлен в буфер"
+  return "${result.toClipboard} добавлен в буфер"
 }

@@ -4,12 +4,12 @@ package ru.exmpl.rbdg.generators
  * Ответ генератора.
  *
  * @param T тип генерируемых данных
- * @property data сгенерированные данные
- * @property escaped значение, для вставки в документ
+ * @property toClipboard данные для вставки в буфер
+ * @property toEditor значение, для вставки в документ
  */
 open class GeneratorResult<T : Any>(
-  val data: T,
-  val escaped: String
+  val toClipboard: T,
+  val toEditor: String
 )
 
 /**

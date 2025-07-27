@@ -16,6 +16,6 @@ class UuidInKtTestGenerator : Generator<UUID> {
       "$uuid".toUUID()
       """.trimIndent()
 
-    return GeneratorResult(data = uuid, escaped = uuidStr)
+    return GeneratorResult(toClipboard = uuid, toEditor = uuidStr)
   }
 }
