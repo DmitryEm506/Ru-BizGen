@@ -1,8 +1,11 @@
 package ru.exmpl.rbdg.actions
 
+import ru.exmpl.rbdg.actions.impl.AccountCnyActionGenerator
+import ru.exmpl.rbdg.actions.impl.AccountRubActionGenerator
 import ru.exmpl.rbdg.actions.impl.BankAccountActionGenerator
 import ru.exmpl.rbdg.actions.impl.BikActionGenerator
 import ru.exmpl.rbdg.actions.impl.IbanRuActionGenerator
+import ru.exmpl.rbdg.actions.impl.IbanTurkishActionGenerator
 import ru.exmpl.rbdg.actions.impl.InnIndividualActionGenerator
 import ru.exmpl.rbdg.actions.impl.InnLegalActionGenerator
 import ru.exmpl.rbdg.actions.impl.KppActionGenerator
@@ -61,6 +64,10 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
   private val actions: List<BaseGeneratorAction<*>> = listOf(
     UuidGeneratorAction(),
     UuidInKtTestGeneratorAction(),
+    AccountRubActionGenerator(),
+    AccountCnyActionGenerator(),
+    Swift8ActionGenerator(),
+    Swift11ActionGenerator(),
     InnIndividualActionGenerator(),
     InnLegalActionGenerator(),
     BikActionGenerator(),
@@ -70,9 +77,8 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
     OgrnLegalActionGenerator(),
     Oktmo8ActionGenerator(),
     Oktmo11ActionGenerator(),
-    Swift8ActionGenerator(),
-    Swift11ActionGenerator(),
     IbanRuActionGenerator(),
+    IbanTurkishActionGenerator()
   )
 
   override fun getActions(): List<GeneratorAction<*>> {
