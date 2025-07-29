@@ -11,7 +11,7 @@ import com.intellij.ui.InplaceButton
 import com.intellij.ui.SeparatorFactory
 import com.intellij.ui.components.JBPanel
 import com.intellij.util.ui.JBUI
-import ru.exmpl.rbdg.actions.RbdgSelectedActionEvent
+import ru.exmpl.rbdg.actions.RbdgSelectedActionEvent.Companion.subscribeAsync
 import ru.exmpl.rbdg.generators.Generator
 import java.awt.BorderLayout
 import javax.swing.JComponent
@@ -37,6 +37,7 @@ class ActionResultPreviewComponent() : Disposable {
     refreshButton =
       InplaceButton("Generate", AllIcons.Actions.Refresh) {
         seed = Random.Default.nextInt()
+        updatePreviewTextByGenerator()
       }
 
     val factory = EditorFactory.getInstance()
@@ -61,7 +62,7 @@ class ActionResultPreviewComponent() : Disposable {
     rootComponent.add(header, BorderLayout.NORTH)
     rootComponent.add(previewEditorComponent, BorderLayout.SOUTH)
 
-    RbdgSelectedActionEvent.Companion.subscribeAsync(this) { action ->
+    subscribeAsync(this) { action ->
       selectedGenerator = action.generator
 
       separator.text = "ActionID: ${action.id}"
@@ -73,8 +74,11 @@ class ActionResultPreviewComponent() : Disposable {
     val result = selectedGenerator?.generate() ?: return
 
     val resultText = """
-      Вставляемый текст: ${result.toEditor}
-      Копируемый в буфер: ${result.toClipboard}
+      Вставляемый текст в редактор:
+      ${result.toEditor}
+      
+      Копируемый в текст в буфер обмена:
+      ${result.toClipboard}
     """.trimIndent()
 
     runWriteAction { previewDocument.setTextInReadOnly(resultText) }

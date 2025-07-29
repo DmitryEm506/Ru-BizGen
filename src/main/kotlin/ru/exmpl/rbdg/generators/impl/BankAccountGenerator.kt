@@ -9,6 +9,15 @@ import kotlin.random.Random
 /**
  * Корреспондентский счёт Генератор.
  *
+ * *Генерирует корреспондентский счет банка на основе БИК.*
+ *
+ * *Формат: 30101810KXXXXX000NNN (20 цифр)*
+ * - *30101810 — префикс коррсчёта*
+ * - *K - контрольное число*
+ * - *XXXXX — последние 5 цифр БИК (кроме контрольных)*
+ * - *000 - фиксированные нули*
+ * - *NNN — условный номер (случайные цифры)*
+ *
  * **See Also:**
  * [Корреспондентский счёт](https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%80%D1%80%D0%B5%D1%81%D0%BF%D0%BE%D0%BD%D0%B4%D0%B5%D0%BD%D1%82%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D1%87%D1%91%D1%82)
  *
@@ -33,7 +42,7 @@ class BankAccountGenerator : Generator<String> {
      * @param bik банковский идентификационный код (9 цифр)
      * @throws IllegalArgumentException если БИК некорректен
      */
-    private fun randomCorrespondentAccount(bik: String): String {
+    fun randomCorrespondentAccount(bik: String): String {
       require(bik.length == 9 && bik.all { it.isDigit() }) {
         "БИК должен содержать ровно 9 цифр"
       }

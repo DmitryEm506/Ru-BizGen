@@ -2,11 +2,16 @@ package ru.exmpl.rbdg.actions
 
 import ru.exmpl.rbdg.actions.impl.BankAccountActionGenerator
 import ru.exmpl.rbdg.actions.impl.BikActionGenerator
+import ru.exmpl.rbdg.actions.impl.IbanRuActionGenerator
 import ru.exmpl.rbdg.actions.impl.InnIndividualActionGenerator
 import ru.exmpl.rbdg.actions.impl.InnLegalActionGenerator
 import ru.exmpl.rbdg.actions.impl.KppActionGenerator
 import ru.exmpl.rbdg.actions.impl.OgrnIpActionGenerator
 import ru.exmpl.rbdg.actions.impl.OgrnLegalActionGenerator
+import ru.exmpl.rbdg.actions.impl.Oktmo11ActionGenerator
+import ru.exmpl.rbdg.actions.impl.Oktmo8ActionGenerator
+import ru.exmpl.rbdg.actions.impl.Swift11ActionGenerator
+import ru.exmpl.rbdg.actions.impl.Swift8ActionGenerator
 import ru.exmpl.rbdg.actions.impl.UuidGeneratorAction
 import ru.exmpl.rbdg.actions.impl.UuidInKtTestGeneratorAction
 import ru.exmpl.rbdg.di.RbdgService
@@ -63,6 +68,11 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
     KppActionGenerator(),
     OgrnIpActionGenerator(),
     OgrnLegalActionGenerator(),
+    Oktmo8ActionGenerator(),
+    Oktmo11ActionGenerator(),
+    Swift8ActionGenerator(),
+    Swift11ActionGenerator(),
+    IbanRuActionGenerator(),
   )
 
   override fun getActions(): List<GeneratorAction<*>> {
