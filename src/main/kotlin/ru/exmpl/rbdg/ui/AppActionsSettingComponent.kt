@@ -15,7 +15,7 @@ import ru.exmpl.rbdg.actions.RbdgSelectedActionEvent
 import ru.exmpl.rbdg.di.getRbdgService
 import ru.exmpl.rbdg.settings.AppActionSettingsService
 import ru.exmpl.rbdg.settings.AppActionSettingsService.Direction
-import ru.exmpl.rbdg.settings.model.RbdgAppSettings.ActionSetting
+import ru.exmpl.rbdg.settings.model.RbdgAppSettings.ActionSettingsView
 import javax.swing.JPanel
 import javax.swing.event.ListSelectionListener
 
@@ -59,13 +59,13 @@ class AppActionsSettingComponent {
 }
 
 private class ActionListComponent : CheckBoxList<String>(listener) {
-  private val availableActions: List<ActionSetting> = getRbdgService<AppActionSettingsService>().getActionSettings()
+  private val availableActions: List<ActionSettingsView> = getRbdgService<AppActionSettingsService>().getActionSettings()
 
   init {
     fillByActions()
   }
 
-  fun fillByActions(actions: List<ActionSetting> = availableActions) {
+  fun fillByActions(actions: List<ActionSettingsView> = availableActions) {
     actions.forEach { action ->
       addItem(action.id, action.description, action.active)
     }
@@ -104,9 +104,8 @@ private class ActionListComponent : CheckBoxList<String>(listener) {
 
   companion object {
     private val listener: CheckBoxListListener = CheckBoxListListener { index, value ->
-      val settingsService = getRbdgService<AppActionSettingsService>()
-      settingsService.findByPosition(index)?.let { action ->
-        action.active = value
+      getRbdgService<AppActionSettingsService>().run {
+        changeActivity(index, value)
       }
     }
   }

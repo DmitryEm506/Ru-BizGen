@@ -3,7 +3,8 @@ package ru.exmpl.rbdg.settings
 import ru.exmpl.rbdg.di.RbdgService
 import ru.exmpl.rbdg.di.getRbdgService
 import ru.exmpl.rbdg.settings.AppActionSettingsService.Direction
-import ru.exmpl.rbdg.settings.model.RbdgAppSettings.ActionSetting
+import ru.exmpl.rbdg.settings.model.RbdgAppSettings.ActionSettingsView
+import ru.exmpl.rbdg.settings.model.RbdgAppSettings.PersistenceActionSetting
 
 /**
  * Сервис по работе с настройками плагина.
@@ -18,7 +19,17 @@ interface AppActionSettingsService : RbdgService {
    * @param position позиция в общем списке действий
    * @return действие или null
    */
-  fun findByPosition(position: Int): ActionSetting?
+  fun findByPosition(position: Int): ActionSettingsView?
+
+
+  /**
+   * Изменение признака [ActionSettingsView.active] для выбранного действия.
+   *
+   * @param position позиция действия в общем списке
+   * @param isActive признак, что действие стало активным или нет
+   * @return измененное действие, если нашли по позиции
+   */
+  fun changeActivity(position: Int, isActive: Boolean): ActionSettingsView?
 
   /**
    * Перемещение действия.
@@ -34,22 +45,21 @@ interface AppActionSettingsService : RbdgService {
    *
    * @return настройки действий
    */
-  fun getActionSettings(): List<ActionSetting>
+  fun getActionSettings(): List<ActionSettingsView>
 
   /**
    * Получение всех активных настроек для действий.
    *
    * @return настройки действий
    */
-  fun getActiveActionSettings(): List<ActionSetting>
+  fun getActiveActionSettings(): List<ActionSettingsView>
 
   /**
    * Восстановление настроек действий до состояния по умолчанию.
    *
    * @return восстановленные настройки
    */
-  fun restoreByDefault(): List<ActionSetting>
-
+  fun restoreByDefault(): List<ActionSettingsView>
 
   /** Направление перемещения действия. */
   enum class Direction {
@@ -65,8 +75,12 @@ interface AppActionSettingsService : RbdgService {
 /** Реализация [AppActionSettingsService]. */
 class AppActionSettingsServiceImpl : AppActionSettingsService {
 
-  override fun findByPosition(position: Int): ActionSetting? {
-    return store().settings().actualActions.find { it.position == position }
+  override fun findByPosition(position: Int): ActionSettingsView? {
+    return findByPositionInner(position)
+  }
+
+  override fun changeActivity(position: Int, isActive: Boolean): ActionSettingsView? {
+    return findByPositionInner(position)?.apply { active = isActive }
   }
 
   override fun moveTo(sourcePosition: Int, direction: Direction): Boolean {
@@ -85,26 +99,30 @@ class AppActionSettingsServiceImpl : AppActionSettingsService {
     return true
   }
 
-  override fun getActionSettings(): List<ActionSetting> {
+  override fun getActionSettings(): List<ActionSettingsView> {
     return actions().sortedBy { it.position }
   }
 
-  override fun getActiveActionSettings(): List<ActionSetting> {
+  override fun getActiveActionSettings(): List<ActionSettingsView> {
     return getActionSettings().filter { it.active }
   }
 
-  override fun restoreByDefault(): List<ActionSetting> {
+  override fun restoreByDefault(): List<ActionSettingsView> {
     store().settings().restoreFromDefault()
 
     return getActionSettings()
   }
 
   private companion object {
-    fun actions(): List<ActionSetting> {
+    private fun findByPositionInner(position: Int): PersistenceActionSetting? {
+      return actions().find { it.position == position }
+    }
+
+    private fun actions(): List<PersistenceActionSetting> {
       return store().settings().actualActions
     }
 
-    fun store(): RbdgAppSettingsRepository {
+    private fun store(): RbdgAppSettingsRepository {
       return getRbdgService<RbdgAppSettingsRepository>()
     }
   }

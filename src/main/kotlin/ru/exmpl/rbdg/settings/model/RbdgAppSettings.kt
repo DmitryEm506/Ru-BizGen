@@ -16,7 +16,7 @@ class RbdgAppSettings {
   var notificationMode: RbdgNotificationMode = RbdgNotificationMode.DISABLE
 
   /** Актуальный список действий. */
-  var actualActions: MutableList<ActionSetting> = initSettingActions()
+  var actualActions: MutableList<PersistenceActionSetting> = initSettingActions()
 
   /** Сброс настроек до значений по умолчанию. */
   fun restoreFromDefault() {
@@ -24,11 +24,11 @@ class RbdgAppSettings {
     actualActions.addAll(RbdgDefaultAppSettings.getDefault().actualActions)
   }
 
-  private fun initSettingActions(): MutableList<ActionSetting> {
+  private fun initSettingActions(): MutableList<PersistenceActionSetting> {
     val actions = getRbdgService<GeneratorActionProvider>().getActions()
 
     return actions.mapIndexed { index, action ->
-      ActionSetting(
+      PersistenceActionSetting(
         id = action.id,
         position = index,
         description = action.name,
@@ -46,12 +46,28 @@ class RbdgAppSettings {
    * @property active признак, что действие активное
    * @author Dmitry_Emelyanenko
    */
-  data class ActionSetting(
-    var id: String = "",
-    var position: Int = 0,
-    var description: String = "",
-    var active: Boolean = true
-  )
+  data class PersistenceActionSetting(
+    override var id: String = "",
+    override var position: Int = 0,
+    override var description: String = "",
+    override var active: Boolean = true
+  ) : ActionSettingsView
+
+  /** Отражение настроек для конкретного действия. */
+  interface ActionSettingsView {
+
+    /** Идентификатор действия. */
+    val id: String
+
+    /** Позиция в общем списке действий. */
+    val position: Int
+
+    /** Описание. */
+    val description: String
+
+    /** Признак, что действие активное. */
+    val active: Boolean
+  }
 
   /**
    * Режимы уведомлений.
