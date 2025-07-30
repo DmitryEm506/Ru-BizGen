@@ -3,8 +3,6 @@ package ru.exmpl.rbdg.generators.impl
 import ru.exmpl.rbdg.generators.Generator
 import ru.exmpl.rbdg.generators.GeneratorResult
 import ru.exmpl.rbdg.generators.GeneratorResultWithEscape
-import ru.exmpl.rbdg.generators.impl.InnGeneratorBase.randomIndividualInn
-import ru.exmpl.rbdg.generators.impl.InnGeneratorBase.randomLegalInn
 import kotlin.random.Random
 
 /**
@@ -14,7 +12,7 @@ import kotlin.random.Random
  * [Идентификационный номер налогоплательщика](https://ru.wikipedia.org/wiki/%D0%98%D0%B4%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9_%D0%BD%D0%BE%D0%BC%D0%B5%D1%80_%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3%D0%BE%D0%BF%D0%BB%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%89%D0%B8%D0%BA%D0%B0)
  */
 internal class InnIndividualGenerator : Generator<String> {
-  override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomIndividualInn())
+  override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = InnGeneratorBase.randomIndividualInn())
 }
 
 /**
@@ -24,7 +22,7 @@ internal class InnIndividualGenerator : Generator<String> {
  * [Идентификационный номер налогоплательщика](https://ru.wikipedia.org/wiki/%D0%98%D0%B4%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D1%8B%D0%B9_%D0%BD%D0%BE%D0%BC%D0%B5%D1%80_%D0%BD%D0%B0%D0%BB%D0%BE%D0%B3%D0%BE%D0%BF%D0%BB%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%89%D0%B8%D0%BA%D0%B0)
  */
 internal class InnLegalGenerator : Generator<String> {
-  override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomLegalInn())
+  override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = InnGeneratorBase.randomLegalInn())
 }
 
 /**
@@ -33,51 +31,64 @@ internal class InnLegalGenerator : Generator<String> {
  * @author Dmitry_Emelyanenko
  */
 private object InnGeneratorBase {
-  private const val SEQUENCE_NUMBER = 7
+  private const val MIN_REGION = 1
+  private const val MAX_REGION = 99
+
   private val P10 = intArrayOf(2, 4, 10, 3, 5, 9, 4, 6, 8)
   private val P11 = intArrayOf(7, 2, 4, 10, 3, 5, 9, 4, 6, 8)
   private val P12 = intArrayOf(3, 7, 2, 4, 10, 3, 5, 9, 4, 6, 8)
 
+  private enum class InnType {
+    LEGAL,
+    INDIVIDUAL
+  }
+
   /** ИНН ЮЛ. */
-  fun randomLegalInn() = inn("LEGAL")
+  fun randomLegalInn(): String = generateInn(InnType.LEGAL)
 
   /** ИНН ФЛ. */
-  fun randomIndividualInn() = inn("INDIVIDUAL")
+  fun randomIndividualInn(): String = generateInn(InnType.INDIVIDUAL)
 
-  fun inn(kind: String): String {
-    val sequence = Random(SEQUENCE_NUMBER)
-    val region = findRegionNumber(null, sequence)
-    val sequenceDigits = findDigits(kind, sequence)
+  private fun generateInn(type: InnType): String {
+    val random = Random.Default
+    val region = generateRegion(random)
+    val sequence = generateSequence(type, random)
 
-    val innWithoutCheckDigit = region + sequenceDigits
-    return innWithoutCheckDigit + checkDigit(innWithoutCheckDigit)
+    val baseInn = region + sequence
+    return baseInn + calculateCheckDigits(baseInn)
   }
 
-  private fun findDigits(kind: String, sequence: Random): String {
-    return when (kind) {
-      "LEGAL" -> (sequence.nextInt(1_000_000, 10_000_000)).toString()
-      "INDIVIDUAL" -> (sequence.nextInt(10_000_000, 100_000_000)).toString()
-      else -> throw IllegalArgumentException("Unknown kind: $kind. Available kinds: LEGAL, INDIVIDUAL")
+  private fun generateRegion(random: Random): String {
+    return random.nextInt(MIN_REGION, MAX_REGION).toString().padStart(2, '0')
+  }
+
+  private fun generateSequence(type: InnType, random: Random): String {
+    return when (type) {
+      InnType.LEGAL -> random.nextInt(1_000_000, 10_000_000).toString()
+      InnType.INDIVIDUAL -> random.nextInt(10_000_000, 100_000_000).toString()
     }
   }
 
-  private fun checkDigit(digits: String): String {
-    return if (digits.length == 9) {
-      calcInn(P10, digits)
-    } else {
-      val p11Digit = calcInn(P11, digits)
-      p11Digit + calcInn(P12, digits + p11Digit)
+  private fun calculateCheckDigits(baseInn: String): String {
+    return when (baseInn.length) {
+      9 -> calculateCheckDigit(P10, baseInn)
+      10 -> {
+        val firstDigit = calculateCheckDigit(P11, baseInn)
+        val secondDigit = calculateCheckDigit(P12, baseInn + firstDigit)
+        firstDigit + secondDigit
+      }
+
+      else -> throw IllegalArgumentException("Invalid base INN length: ${baseInn.length}. Available values: 9 or 10")
     }
   }
 
-  private fun calcInn(p: IntArray, inn: String): String {
-    val sum = p.mapIndexed { index, value -> value * (inn[index] - '0') }.sum()
+  private fun calculateCheckDigit(weights: IntArray, digits: String): String {
+    require(digits.length == weights.size) { "Digits length must match weights size" }
+
+    val sum = digits.foldIndexed(0) { index, acc, c ->
+      acc + weights[index] * (c - '0')
+    }
+
     return ((sum % 11) % 10).toString()
-  }
-
-  @Suppress("SameParameterValue")
-  private fun findRegionNumber(regionNumber: Int?, sequence: Random): String {
-    return regionNumber?.let { String.format("%02d", it) }
-      ?: String.format("%02d", sequence.nextInt(1, 100))
   }
 }
