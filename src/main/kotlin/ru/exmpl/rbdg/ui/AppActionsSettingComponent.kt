@@ -46,7 +46,8 @@ class AppActionsSettingComponent {
 
   private companion object {
     private fun selectionListener(checkBoxList: CheckBoxList<String>): ListSelectionListener = ListSelectionListener { event ->
-      if (event.valueIsAdjusting) {
+      // обработка идёт только финального события
+      if (!event.valueIsAdjusting) {
         val selectedIndex = checkBoxList.selectedIndex
 
         val actionSetting = getRbdgService<AppActionSettingsService>().findByPosition(selectedIndex) ?: return@ListSelectionListener
