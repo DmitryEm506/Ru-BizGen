@@ -13,16 +13,13 @@ import javax.swing.JComponent
  */
 class AppSettingsConfigurable : Configurable, Disposable {
 
-  lateinit var settingsComponent: AppSettingsComponent private set
-
   @Nls(capitalization = Nls.Capitalization.Title)
   override fun getDisplayName(): String {
     return SETTINGS_DISPLAY_NAME
   }
 
   override fun createComponent(): JComponent? {
-    settingsComponent = AppSettingsComponent()
-    return settingsComponent.getPanel()
+    return AppSettingsComponent().createComponent()
   }
 
   override fun isModified(): Boolean = false

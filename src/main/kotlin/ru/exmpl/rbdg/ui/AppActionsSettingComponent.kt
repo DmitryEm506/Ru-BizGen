@@ -30,7 +30,7 @@ import javax.swing.event.ListSelectionListener
  */
 class AppActionsSettingComponent {
 
-  fun getComponent(): JPanel = panel {
+  fun createComponent(): JPanel = panel {
     val actionListComponent = ActionListComponent().apply {
       addListSelectionListener(selectionListener(this))
     }

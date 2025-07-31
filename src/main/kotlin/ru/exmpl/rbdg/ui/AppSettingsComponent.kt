@@ -8,39 +8,39 @@ import java.awt.BorderLayout
 import javax.swing.JPanel
 
 /**
- * AppSettingsComponent.
+ * Основной компонент настроек плагина.
+ *
+ * Включает в себя две области, разделенные вертикально:
+ * - Левая область - перечень доступных генераторов и их настройка
+ * - Правая область - настройки уведомлений и окно пред просмотра работы выбранного генератора
  *
  * @author Dmitry_Emelyanenko
  */
 class AppSettingsComponent : Disposable {
-  private var myMainPanel: JPanel = JPanel(BorderLayout())
+  private val mainPanel = JPanel(BorderLayout())
+  private val splitter = OnePixelSplitter(false, SPLITTER_PROPORTION_KEY, DEFAULT_SPLITTER_PROPORTION).apply {
+    firstComponent = AppActionsSettingComponent().createComponent()
+    secondComponent = createNotifyAndPreviewPanel()
+  }
 
   init {
-    var splitter = OnePixelSplitter(false, SPLITTER_PROPORTION_KEY, DEFAULT_SPLITTER_PROPORTION).also(myMainPanel::add)
-    splitter.firstComponent = AppActionsSettingComponent().getComponent()
+    mainPanel.add(splitter)
+  }
 
-    splitter.secondComponent = FormBuilder.createFormBuilder()
-      .addComponent(NotificationSettingsComponent().configureComponent())
-      .addComponentFillVertically(JPanel(), 0)
-      .addComponent(
-        ActionResultPreviewComponent()
+  fun createComponent(): JPanel = mainPanel
+
+  private fun createNotifyAndPreviewPanel(): JPanel = FormBuilder.createFormBuilder()
+    .addComponent(NotificationSettingsComponent().createComponent())
+    .addComponentFillVertically(JPanel(), 0)
+    .addComponent(
+      ActionResultPreviewComponent()
         .also { Disposer.register(this, it) }.rootComponent
-      )
-      .panel
-  }
-
-  fun getPanel(): JPanel? {
-    return myMainPanel
-  }
-
+    ).panel
 
   override fun dispose() = Unit
 
   companion object {
-    /** The key to store the user's last-used splitter proportion under. */
     const val SPLITTER_PROPORTION_KEY = "ru.exmpl.rbdg.AppSettingsComponent"
-
-    /** The default proportion of the splitter component. */
-    const val DEFAULT_SPLITTER_PROPORTION = .25f
+    const val DEFAULT_SPLITTER_PROPORTION = 0.25f
   }
 }

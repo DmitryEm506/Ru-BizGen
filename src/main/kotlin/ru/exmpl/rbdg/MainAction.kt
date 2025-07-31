@@ -8,7 +8,11 @@ import ru.exmpl.rbdg.actions.GeneratorActionService
 import ru.exmpl.rbdg.di.getRbdgService
 
 /**
- * MainAction.
+ * Основное действие плагина.
+ *
+ * Показывает диалоговое окно с выбором активных генераторов.
+ *
+ * Для изменения отображаемого списка генераторов и их очередностью необходимо воспользоваться настройкой плагина.
  *
  * @author Dmitry_Emelyanenko
  */
@@ -18,7 +22,7 @@ class MainAction : AnAction() {
 
     JBPopupFactory.getInstance()
       .createActionGroupPopup(
-        "Генератор тестовых данных",
+        "Сгенерировать данные",
         DefaultActionGroup(service.getActiveAnActions()),
         event.dataContext,
         JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
@@ -26,15 +30,7 @@ class MainAction : AnAction() {
       ).apply {
         showInBestPositionFor(event.dataContext)
       }
-//    ApplicationManager.getApplication().messageBus.syncPublisher(Notifications.TOPIC).notify(
-//      Notification(
-//        " ", "ИНН", "Значение ИНН успешно скопировано в буфер обмена",
-//        NotificationType.INFORMATION
-//      )
-//    )
   }
-
-
 }
 
 
