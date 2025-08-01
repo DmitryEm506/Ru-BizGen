@@ -24,21 +24,46 @@
   <!-- Extension points defined by the plugin.
        Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
   <extensions defaultExtensionNs="com.intellij">
-    <applicationService serviceImplementation="ru.exmpl.rbdg.AppPersistentSettings"/>
+    <applicationService serviceImplementation="ru.exmpl.rbdg.settings.persistent.RbdgAppSettingsPersistent"/>
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.AppSettingsStore"
-      serviceImplementation="ru.exmpl.rbdg.AppPersistentSettings"/>
+      serviceInterface="ru.exmpl.rbdg.settings.RbdgAppSettingsRepository"
+      serviceImplementation="ru.exmpl.rbdg.settings.persistent.RbdgAppSettingsPersistent"/>
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.AppSettingsService"
-      serviceImplementation="ru.exmpl.rbdg.AppSettingsServiceImpl"
+      serviceInterface="ru.exmpl.rbdg.settings.AppActionSettingsService"
+      serviceImplementation="ru.exmpl.rbdg.settings.AppActionSettingsServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.exmpl.rbdg.notification.NotificationSettingsService"
+      serviceImplementation="ru.exmpl.rbdg.notification.NotificationSettingsServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.exmpl.rbdg.notification.NotificationSettingsView"
+      serviceImplementation="ru.exmpl.rbdg.notification.NotificationSettingsServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.exmpl.rbdg.actions.GeneratorActionProvider"
+      serviceImplementation="ru.exmpl.rbdg.actions.GeneratorActionProviderImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.exmpl.rbdg.actions.GeneratorActionService"
+      serviceImplementation="ru.exmpl.rbdg.actions.GeneratorActionServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.exmpl.rbdg.notification.NotificationService"
+      serviceImplementation="ru.exmpl.rbdg.notification.NotificationServiceImpl"
     />
 
     <applicationConfigurable
       parentId="tools"
-      instance="ru.exmpl.rbdg.AppSettingsConfigurable"
-      id="ru.exmpl.rbdg.AppSettingsConfigurable"
+      instance="ru.exmpl.rbdg.ui.AppSettingsConfigurable"
+      id="ru.exmpl.rbdg.ui.AppSettingsConfigurable"
       displayName="Ru Business Data Generator"
     />
   </extensions>

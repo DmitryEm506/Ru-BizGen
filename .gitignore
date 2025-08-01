@@ -1,3 +1,21 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+.gradle/*
+build/*
+
+### IntelliJ IDEA ###
+# Project files
+.idea/*
+
+# File-based project format
+*.iws
+*.iml
+*.ipr
+
+.flattened-pom.xml
+
 # Compiled class file
 *.class
 
