@@ -1,77 +1,60 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-  <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-  <id>ru.exmpl.rbdg</id>
+  <id>ru.person.bizgen</id>
+  <name>Ru BizGen</name>
 
-  <!-- Public plugin name should be written in Title Case.
-       Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-  <name>Rbdg</name>
+  <vendor url="https://github.com/DmitryEm506/bizgen">Emelyanenko Dmitry</vendor>
 
-  <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-  <vendor url="https://www.yourcompany.com">YourCompany</vendor>
-
-  <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
-       Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
-  <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
-  ]]></description>
-
-  <!-- Product and plugin compatibility requirements.
-       Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
   <depends>com.intellij.modules.platform</depends>
 
-  <!-- Extension points defined by the plugin.
-       Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
   <extensions defaultExtensionNs="com.intellij">
-    <applicationService serviceImplementation="ru.exmpl.rbdg.settings.persistent.RbdgAppSettingsPersistent"/>
+    <applicationService serviceImplementation="ru.person.bizgen.settings.persistent.BizGenAppSettingsPersistent"/>
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.settings.RbdgAppSettingsRepository"
-      serviceImplementation="ru.exmpl.rbdg.settings.persistent.RbdgAppSettingsPersistent"/>
+      serviceInterface="ru.person.bizgen.settings.BizGenAppSettingsRepository"
+      serviceImplementation="ru.person.bizgen.settings.persistent.BizGenAppSettingsPersistent"/>
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.settings.AppActionSettingsService"
-      serviceImplementation="ru.exmpl.rbdg.settings.AppActionSettingsServiceImpl"
+      serviceInterface="ru.person.bizgen.settings.AppActionSettingsService"
+      serviceImplementation="ru.person.bizgen.settings.AppActionSettingsServiceImpl"
     />
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.notification.NotificationSettingsService"
-      serviceImplementation="ru.exmpl.rbdg.notification.NotificationSettingsServiceImpl"
+      serviceInterface="ru.person.bizgen.notification.NotificationSettingsService"
+      serviceImplementation="ru.person.bizgen.notification.NotificationSettingsServiceImpl"
     />
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.notification.NotificationSettingsView"
-      serviceImplementation="ru.exmpl.rbdg.notification.NotificationSettingsServiceImpl"
+      serviceInterface="ru.person.bizgen.notification.NotificationSettingsView"
+      serviceImplementation="ru.person.bizgen.notification.NotificationSettingsServiceImpl"
     />
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.actions.GeneratorActionProvider"
-      serviceImplementation="ru.exmpl.rbdg.actions.GeneratorActionProviderImpl"
+      serviceInterface="ru.person.bizgen.actions.GeneratorActionProvider"
+      serviceImplementation="ru.person.bizgen.actions.GeneratorActionProviderImpl"
     />
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.actions.GeneratorActionService"
-      serviceImplementation="ru.exmpl.rbdg.actions.GeneratorActionServiceImpl"
+      serviceInterface="ru.person.bizgen.actions.GeneratorActionService"
+      serviceImplementation="ru.person.bizgen.actions.GeneratorActionServiceImpl"
     />
 
     <applicationService
-      serviceInterface="ru.exmpl.rbdg.notification.NotificationService"
-      serviceImplementation="ru.exmpl.rbdg.notification.NotificationServiceImpl"
+      serviceInterface="ru.person.bizgen.notification.NotificationService"
+      serviceImplementation="ru.person.bizgen.notification.NotificationServiceImpl"
     />
 
     <applicationConfigurable
       parentId="tools"
-      instance="ru.exmpl.rbdg.ui.AppSettingsConfigurable"
-      id="ru.exmpl.rbdg.ui.AppSettingsConfigurable"
-      displayName="Ru Business Data Generator"
+      instance="ru.person.bizgen.ui.AppSettingsConfigurable"
+      id="ru.person.bizgen.ui.AppSettingsConfigurable"
+      displayName="Ru BizGen"
     />
   </extensions>
 
   <actions>
-    <action id="ru.exmpl.rbdg.MainAction" class="ru.exmpl.rbdg.MainAction" text="RbdgMainAction"
+    <action id="ru.person.bizgen.BizGenMainAction" class="ru.person.bizgen.BizGenMainAction" text="BizGenMainAction"
       description="Show action group for generate Russian business data">
-      <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt R"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="alt ctrl E"/>
     </action>
   </actions>
 </idea-plugin>
