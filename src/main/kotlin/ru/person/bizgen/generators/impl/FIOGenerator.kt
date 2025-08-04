@@ -112,7 +112,7 @@ private object FIOGeneratorInner {
     return when (format) {
       NameFormat.FULL -> "$lastName $firstName $middleName"
       NameFormat.SHORT -> "$lastName ${firstName.first()}.${middleName.first()}."
-      NameFormat.INITIALS -> "${firstName.first()}. ${middleName.first()}. $lastName"
+      NameFormat.INITIALS -> "${firstName.first()}.${middleName.first()}. $lastName"
     }.trim()
   }
 
