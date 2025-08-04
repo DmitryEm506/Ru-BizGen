@@ -2,6 +2,7 @@ package ru.person.bizgen.actions
 
 import ru.person.bizgen.actions.impl.AccountCnyActionGenerator
 import ru.person.bizgen.actions.impl.AccountRubActionGenerator
+import ru.person.bizgen.actions.impl.AddressActionGenerator
 import ru.person.bizgen.actions.impl.BankAccountActionGenerator
 import ru.person.bizgen.actions.impl.BikActionGenerator
 import ru.person.bizgen.actions.impl.IbanRuActionGenerator
@@ -13,6 +14,8 @@ import ru.person.bizgen.actions.impl.OgrnIpActionGenerator
 import ru.person.bizgen.actions.impl.OgrnLegalActionGenerator
 import ru.person.bizgen.actions.impl.Oktmo11ActionGenerator
 import ru.person.bizgen.actions.impl.Oktmo8ActionGenerator
+import ru.person.bizgen.actions.impl.OrgEngNameActionGenerator
+import ru.person.bizgen.actions.impl.OrgRuNameActionGenerator
 import ru.person.bizgen.actions.impl.Swift11ActionGenerator
 import ru.person.bizgen.actions.impl.Swift8ActionGenerator
 import ru.person.bizgen.actions.impl.UuidGeneratorAction
@@ -70,6 +73,9 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
     Swift11ActionGenerator(),
     InnIndividualActionGenerator(),
     InnLegalActionGenerator(),
+    AddressActionGenerator(),
+    OrgRuNameActionGenerator(),
+    OrgEngNameActionGenerator(),
     BikActionGenerator(),
     BankAccountActionGenerator(),
     KppActionGenerator(),

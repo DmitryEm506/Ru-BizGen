@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "ru.person.bizgen"
-version = "1.0.0-SNAPSHOT"
+version = "1.2.243-SNAPSHOT"
 
 repositories {
   mavenCentral()
@@ -19,7 +19,7 @@ repositories {
 
 dependencies {
   intellijPlatform {
-    create("IC", "2025.1")
+    create("IC", "2024.3")
     testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
   }
 }
@@ -27,7 +27,7 @@ dependencies {
 intellijPlatform {
   pluginConfiguration {
     ideaVersion {
-      sinceBuild = "251"
+      sinceBuild = "243"
     }
 
     description = file("src/main/resources/META-INF/description.html").readText()
