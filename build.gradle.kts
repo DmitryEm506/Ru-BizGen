@@ -1,13 +1,15 @@
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   id("java")
   id("org.jetbrains.kotlin.jvm") version "2.1.0"
   id("org.jetbrains.intellij.platform") version "2.5.0"
+  id("org.jetbrains.changelog") version "2.2.0"
 }
 
 group = "ru.person.bizgen"
-version = "1.0.0-SNAPSHOT"
+version = "1.3.243-SNAPSHOT"
 
 repositories {
   mavenCentral()
@@ -19,7 +21,7 @@ repositories {
 
 dependencies {
   intellijPlatform {
-    create("IC", "2025.1")
+    create("IC", "2024.3")
     testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
   }
 }
@@ -27,21 +29,33 @@ dependencies {
 intellijPlatform {
   pluginConfiguration {
     ideaVersion {
-      sinceBuild = "251"
+      sinceBuild = "243"
     }
 
     description = file("src/main/resources/META-INF/description.html").readText()
-
-    changeNotes = """
-      Initial version
-    """.trimIndent()
   }
+}
+
+changelog {
+  version.set(project.version.toString())
+  headerParserRegex = """(\d+\.\d+)""".toRegex()
 }
 
 tasks {
   withType<JavaCompile> {
     sourceCompatibility = "21"
     targetCompatibility = "21"
+  }
+
+  patchPluginXml {
+    val changeNotesProvider = provider {
+      changelog.renderItem(
+        changelog.getLatest(),
+        Changelog.OutputType.HTML
+      )
+    }
+
+    changeNotes.set(changeNotesProvider)
   }
 
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
