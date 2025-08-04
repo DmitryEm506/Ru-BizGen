@@ -1,4 +1,4 @@
-package ru.person.bizgen.actions.impl
+package ru.person.bizgen.actions.impl.org
 
 import ru.person.bizgen.actions.BaseGeneratorAction
 import ru.person.bizgen.generators.impl.OrgRuNameGenerator

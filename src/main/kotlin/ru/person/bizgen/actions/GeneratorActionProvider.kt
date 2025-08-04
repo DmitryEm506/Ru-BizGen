@@ -1,25 +1,28 @@
 package ru.person.bizgen.actions
 
-import ru.person.bizgen.actions.impl.AccountCnyActionGenerator
-import ru.person.bizgen.actions.impl.AccountRubActionGenerator
 import ru.person.bizgen.actions.impl.AddressActionGenerator
 import ru.person.bizgen.actions.impl.BankAccountActionGenerator
 import ru.person.bizgen.actions.impl.BikActionGenerator
-import ru.person.bizgen.actions.impl.IbanRuActionGenerator
-import ru.person.bizgen.actions.impl.IbanTurkishActionGenerator
-import ru.person.bizgen.actions.impl.InnIndividualActionGenerator
-import ru.person.bizgen.actions.impl.InnLegalActionGenerator
 import ru.person.bizgen.actions.impl.KppActionGenerator
-import ru.person.bizgen.actions.impl.OgrnIpActionGenerator
-import ru.person.bizgen.actions.impl.OgrnLegalActionGenerator
-import ru.person.bizgen.actions.impl.Oktmo11ActionGenerator
-import ru.person.bizgen.actions.impl.Oktmo8ActionGenerator
-import ru.person.bizgen.actions.impl.OrgEngNameActionGenerator
-import ru.person.bizgen.actions.impl.OrgRuNameActionGenerator
-import ru.person.bizgen.actions.impl.Swift11ActionGenerator
-import ru.person.bizgen.actions.impl.Swift8ActionGenerator
 import ru.person.bizgen.actions.impl.UuidGeneratorAction
 import ru.person.bizgen.actions.impl.UuidInKtTestGeneratorAction
+import ru.person.bizgen.actions.impl.account.AccountCnyActionGenerator
+import ru.person.bizgen.actions.impl.account.AccountRubActionGenerator
+import ru.person.bizgen.actions.impl.fio.FIOFullActionGenerator
+import ru.person.bizgen.actions.impl.fio.FIOInitialsActionGenerator
+import ru.person.bizgen.actions.impl.fio.FIOShortActionGenerator
+import ru.person.bizgen.actions.impl.iban.IbanRuActionGenerator
+import ru.person.bizgen.actions.impl.iban.IbanTurkishActionGenerator
+import ru.person.bizgen.actions.impl.inn.InnIndividualActionGenerator
+import ru.person.bizgen.actions.impl.inn.InnLegalActionGenerator
+import ru.person.bizgen.actions.impl.ogrn.OgrnIpActionGenerator
+import ru.person.bizgen.actions.impl.ogrn.OgrnLegalActionGenerator
+import ru.person.bizgen.actions.impl.oktmo.Oktmo11ActionGenerator
+import ru.person.bizgen.actions.impl.oktmo.Oktmo8ActionGenerator
+import ru.person.bizgen.actions.impl.org.OrgEngNameActionGenerator
+import ru.person.bizgen.actions.impl.org.OrgRuNameActionGenerator
+import ru.person.bizgen.actions.impl.swift.Swift11ActionGenerator
+import ru.person.bizgen.actions.impl.swift.Swift8ActionGenerator
 import ru.person.bizgen.di.BizGenService
 
 /**
@@ -73,9 +76,12 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
     Swift11ActionGenerator(),
     InnIndividualActionGenerator(),
     InnLegalActionGenerator(),
-    AddressActionGenerator(),
     OrgRuNameActionGenerator(),
     OrgEngNameActionGenerator(),
+    FIOFullActionGenerator(),
+    FIOShortActionGenerator(),
+    FIOInitialsActionGenerator(),
+    AddressActionGenerator(),
     BikActionGenerator(),
     BankAccountActionGenerator(),
     KppActionGenerator(),
