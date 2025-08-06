@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "ru.person.bizgen"
-version = "1.3.243-SNAPSHOT"
+version = "1.4.243-SNAPSHOT"
 
 repositories {
   mavenCentral()
@@ -48,14 +48,11 @@ tasks {
   }
 
   patchPluginXml {
-    val changeNotesProvider = provider {
-      changelog.renderItem(
-        changelog.getLatest(),
-        Changelog.OutputType.HTML
-      )
-    }
+    val changes = changelog.getAll().values.joinToString("<hr>\n") { changelogItem ->
+        changelog.renderItem(changelogItem, Changelog.OutputType.HTML)
+      }
 
-    changeNotes.set(changeNotesProvider)
+    changeNotes.set(provider { changes })
   }
 
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {

@@ -23,7 +23,7 @@ import ru.person.bizgen.settings.model.BizGenAppSettings
   category = SettingsCategory.PLUGINS,
 )
 internal class BizGenAppSettingsPersistent(
-  var settings: BizGenAppSettings = BizGenAppSettings()
+  var settings: BizGenAppSettings = BizGenAppSettings(),
 ) : PersistentStateComponent<BizGenAppSettings>, BizGenAppSettingsRepository {
 
   override fun getState(): BizGenAppSettings {
@@ -33,7 +33,10 @@ internal class BizGenAppSettingsPersistent(
   override fun loadState(bizGenAppSettings: BizGenAppSettings) {
     // если сохраненное количество действий не равно общему количеству актуальных действий,
     // то происходит автоматическое восстановление настроек по умолчанию
-    if (bizGenAppSettings.actualActions.size != getBizGenService<GeneratorActionProvider>().actionCount()) {
+    val persistentActionIds = bizGenAppSettings.actualActions.map { it.id }
+    val availableActionsIds = getBizGenService<GeneratorActionProvider>().getActions().map { it.id }
+
+    if (persistentActionIds != availableActionsIds) {
       bizGenAppSettings.restoreFromDefault()
     }
 
