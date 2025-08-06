@@ -96,12 +96,14 @@ class ActionResultPreviewComponent : Disposable {
     val result = selectedGenerator?.generate() ?: return
 
     val resultText = """
-            Вставляемый текст в редактор:
-            ${result.toEditor}
-            
-            Копируемый в текст в буфер обмена:
-            ${result.toClipboard}
-        """.trimIndent()
+      Общая длина вставляемого текста: ${result.toEditor.length}
+      
+      Вставляемый текст в редактор:
+      ${result.toEditor}
+      
+      Копируемый в текст в буфер обмена:
+      ${result.toClipboard}
+      """.trimIndent()
 
     runWriteAction {
       previewEditor.document.setTextInReadOnly(resultText)

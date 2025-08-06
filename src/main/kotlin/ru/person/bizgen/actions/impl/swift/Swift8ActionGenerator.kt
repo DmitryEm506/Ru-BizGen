@@ -1,15 +1,15 @@
 package ru.person.bizgen.actions.impl.swift
 
 import ru.person.bizgen.actions.BaseGeneratorAction
-import ru.person.bizgen.generators.impl.Swift8Generator
+import ru.person.bizgen.generators.impl.Swift8RuGenerator
 
 /**
- * Действие, которое использует [Swift8Generator].
+ * Действие, которое использует [Swift8RuGenerator].
  *
  * @author Dmitry_Emelyanenko
  */
 class Swift8ActionGenerator : BaseGeneratorAction<String>(
-  id = "Swift8_17e65ece-fb80-4a2d-a65e-cefb802a2d35",
-  name = "SWIFT (8)",
-  generator = Swift8Generator()
+  id = "SwiftRu8_59ed6b1a-57cf-4e61-ad6b-1a57cf6e616d",
+  name = "SWIFT RU (8)",
+  generator = Swift8RuGenerator()
 )
