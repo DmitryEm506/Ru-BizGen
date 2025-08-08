@@ -21,7 +21,6 @@ interface AppActionSettingsService : BizGenService {
    */
   fun findByPosition(position: Int): ActionSettingsView?
 
-
   /**
    * Изменение признака [ActionSettingsView.active] для выбранного действия.
    *

@@ -18,6 +18,9 @@ class BizGenAppSettings {
   /** Актуальный список действий. */
   var actualActions: MutableList<PersistenceActionSetting> = initSettingActions()
 
+  /** Признак, что необходимо вставить результат работы генератора в буфер обмена. */
+  var insToClipboard: Boolean = true
+
   /** Сброс настроек до значений по умолчанию. */
   fun restoreFromDefault() {
     actualActions.clear()

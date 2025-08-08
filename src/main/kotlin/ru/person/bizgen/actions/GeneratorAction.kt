@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
+import ru.person.bizgen.clipboard.BizGenClipboardSettingsServiceView
 import ru.person.bizgen.di.getBizGenService
 import ru.person.bizgen.generators.Generator
 import ru.person.bizgen.generators.GeneratorResult
@@ -53,7 +54,7 @@ abstract class GeneratorAnAction(open val id: String, name: String) : AnAction(n
 abstract class BaseGeneratorAction<T : Any>(
   override val id: String,
   override val name: String,
-  override val generator: Generator<T>
+  override val generator: Generator<T>,
 ) : GeneratorAction<T>, GeneratorAnAction(id, name) {
 
   override fun actionPerformed(event: AnActionEvent) {
@@ -64,14 +65,18 @@ abstract class BaseGeneratorAction<T : Any>(
     val start = primaryCaret.selectionStart
 
     generator.generate().let { rsp ->
-      Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(rsp.toClipboard.toString()), null)
+      val generatedText = rsp.toEditor.takeIf { it.isNotBlank() } ?: return
 
       invokeLater {
-        WriteCommandAction.runWriteCommandAction(project) { editor.document.insertString(start, rsp.toEditor) }
+        WriteCommandAction.runWriteCommandAction(project) { editor.document.insertString(start, generatedText) }
         primaryCaret.removeSelection()
+        primaryCaret.moveToOffset(start + generatedText.length)
       }
 
-      getBizGenService<NotificationService>().sendNotification(configureNotifCtx(rsp, editor))
+      if (getBizGenService<BizGenClipboardSettingsServiceView>().needToIns()) {
+        Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(rsp.toClipboard.toString()), null)
+        getBizGenService<NotificationService>().sendNotification(configureNotifCtx(rsp, editor))
+      }
     }
   }
 
