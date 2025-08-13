@@ -30,7 +30,7 @@ class AppSettingsComponent : Disposable {
   fun createComponent(): JPanel = mainPanel
 
   private fun createNotifyAndPreviewPanel(): JPanel = FormBuilder.createFormBuilder()
-    .addComponent(NotificationSettingsComponent().createComponent())
+    .addComponent(NotificationAndClipboardSettingsComponent().createComponent())
     .addComponentFillVertically(JPanel(), 0)
     .addComponent(
       ActionResultPreviewComponent()

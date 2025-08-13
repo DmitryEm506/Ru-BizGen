@@ -43,6 +43,16 @@
       serviceImplementation="ru.person.bizgen.notification.NotificationServiceImpl"
     />
 
+    <applicationService
+      serviceInterface="ru.person.bizgen.clipboard.BizGenClipboardSettingsService"
+      serviceImplementation="ru.person.bizgen.clipboard.BizGenClipboardSettingsServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.person.bizgen.clipboard.BizGenClipboardSettingsServiceView"
+      serviceImplementation="ru.person.bizgen.clipboard.BizGenClipboardSettingsServiceImpl"
+    />
+
     <applicationConfigurable
       parentId="tools"
       instance="ru.person.bizgen.ui.AppSettingsConfigurable"
@@ -54,6 +64,7 @@
   <actions>
     <action id="ru.person.bizgen.BizGenMainAction" class="ru.person.bizgen.BizGenMainAction" text="BizGenMainAction"
       description="Show action group for generate Russian business data">
+      <add-to-group group-id="GenerateGroup" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="alt ctrl E"/>
     </action>
   </actions>

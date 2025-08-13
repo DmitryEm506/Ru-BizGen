@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "ru.person.bizgen"
-version = "1.4.243-SNAPSHOT"
+version = "1.6.243-SNAPSHOT"
 
 repositories {
   mavenCentral()
@@ -49,13 +49,32 @@ tasks {
 
   patchPluginXml {
     val changes = changelog.getAll().values.joinToString("<hr>\n") { changelogItem ->
-        changelog.renderItem(changelogItem, Changelog.OutputType.HTML)
-      }
+      changelog.renderItem(changelogItem, Changelog.OutputType.HTML)
+    }
 
     changeNotes.set(provider { changes })
   }
 
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
+  }
+
+  afterEvaluate {
+    tasks.named("buildPlugin") {
+      doLast {
+        val jarDir = layout.buildDirectory.dir("libs").get().asFile
+        val releasesDir = layout.projectDirectory.dir("releases").asFile
+
+        releasesDir.mkdirs()
+
+        val pluginName = "${rootProject.name}-$version.jar"
+
+        jarDir.listFiles { file -> file.name == pluginName }
+          ?.forEach { jarFile ->
+            println("Copying plugin ${jarFile.name} to releases folder")
+            jarFile.copyTo(File(releasesDir, jarFile.name), overwrite = true)
+          }
+      }
+    }
   }
 }

@@ -3,6 +3,7 @@ package ru.person.bizgen.actions
 import ru.person.bizgen.actions.impl.AddressActionGenerator
 import ru.person.bizgen.actions.impl.BankAccountActionGenerator
 import ru.person.bizgen.actions.impl.BikActionGenerator
+import ru.person.bizgen.actions.impl.CountryActionGenerator
 import ru.person.bizgen.actions.impl.KppActionGenerator
 import ru.person.bizgen.actions.impl.UuidGeneratorAction
 import ru.person.bizgen.actions.impl.UuidInKtTestGeneratorAction
@@ -82,6 +83,7 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
     FIOShortActionGenerator(),
     FIOInitialsActionGenerator(),
     AddressActionGenerator(),
+    CountryActionGenerator(),
     BikActionGenerator(),
     BankAccountActionGenerator(),
     KppActionGenerator(),
