@@ -6,10 +6,11 @@ package ru.bizgen.polygon;
  * @author Dmitry_Emelyanenko
  */
 public class Main {
-    public static void main(String[] args) {
 
-        // Testing plugin here
+  public static void main(String[] args) {
 
-        System.out.print("Testing plugin here");
-    }
+    // Testing plugin here
+
+    System.out.print("Testing plugin here");
+  }
 }

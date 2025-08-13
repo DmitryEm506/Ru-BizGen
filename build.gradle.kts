@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "ru.person.bizgen"
-version = "1.5.243-SNAPSHOT"
+version = "1.6.243-SNAPSHOT"
 
 repositories {
   mavenCentral()
