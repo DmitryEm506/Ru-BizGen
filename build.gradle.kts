@@ -3,13 +3,13 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   id("java")
-  id("org.jetbrains.kotlin.jvm") version "2.1.0"
+  id("org.jetbrains.kotlin.jvm") version "2.2.21"
   id("org.jetbrains.intellij.platform") version "2.5.0"
   id("org.jetbrains.changelog") version "2.2.0"
 }
 
-group = "ru.person.bizgen"
-version = "1.6.243-SNAPSHOT"
+group = "ru.eda.plgn.bizgen"
+version = "1.7.242-SNAPSHOT"
 
 repositories {
   mavenCentral()
@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
   intellijPlatform {
-    create("IC", "2024.3")
+    create("IC", "2024.2")
     testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
   }
 }
@@ -29,7 +29,7 @@ dependencies {
 intellijPlatform {
   pluginConfiguration {
     ideaVersion {
-      sinceBuild = "243"
+      sinceBuild = "242"
     }
 
     description = file("src/main/resources/META-INF/description.html").readText()

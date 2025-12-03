@@ -1,12 +1,64 @@
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path
-    d="M32.0845 7.94025V4H24.0203V7.9896H16.029V4H7.91553V7.94025H4V36H16.0044V32.0045C16.0058 30.9457 16.4274 29.9308 17.1766 29.1826C17.9258 28.4345 18.9412 28.0143 20 28.0143C21.0588 28.0143 22.0743 28.4345 22.8234 29.1826C23.5726 29.9308 23.9942 30.9457 23.9956 32.0045V36H36V7.94025H32.0845Z"
-    fill="url(#paint0_linear)"/>
-  <defs>
-    <linearGradient id="paint0_linear" x1="2.94192" y1="4.89955" x2="37.7772" y2="39.7345" gradientUnits="userSpaceOnUse">
-      <stop offset="0.15937" stop-color="#3BEA62"/>
-      <stop offset="0.5404" stop-color="#3C99CC"/>
-      <stop offset="0.93739" stop-color="#6B57FF"/>
-    </linearGradient>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="48" fill="#1e252f"/>
+
+  <!-- TOP data bubbles -->
+  <g opacity="0.9">
+    <circle cx="120" cy="40" r="18" fill="#4fc3f7"/>
+    <circle cx="200" cy="30" r="16" fill="#81c784"/>
+    <circle cx="280" cy="45" r="20" fill="#ffb74d"/>
+    <circle cx="360" cy="35" r="17" fill="#ef5350"/>
+
+    <circle cx="155" cy="100" r="15" fill="#4fc3f7"/>
+    <circle cx="235" cy="85" r="16" fill="#81c784"/>
+    <circle cx="335" cy="80" r="15" fill="#ffb74d"/>
+  </g>
+
+  <!-- BOTTOM data bubbles -->
+  <g opacity="0.9">
+    <circle cx="130" cy="470" r="18" fill="#4fc3f7"/>
+    <circle cx="210" cy="480" r="20" fill="#ffb74d"/>
+    <circle cx="290" cy="460" r="16" fill="#81c784"/>
+    <circle cx="360" cy="475" r="19" fill="#ef5350"/>
+
+    <circle cx="170" cy="420" r="15" fill="#4fc3f7"/>
+    <circle cx="250" cy="415" r="14" fill="#ffb74d"/>
+    <circle cx="330" cy="410" r="16" fill="#81c784"/>
+  </g>
+
+  <!-- GEAR с уменьшенной толщиной -->
+  <g transform="translate(256 256)">
+    <!-- Основной круг шестеренки (немного меньше) -->
+    <circle r="85" fill="#344057"/>
+
+    <!-- Зубцы шестеренки (уменьшена ширина) -->
+    <g fill="#344057">
+      <!-- Вертикальные зубцы (уже) -->
+      <rect x="-8" y="-125" width="16" height="35" rx="4"/>
+      <rect x="-8" y="90" width="16" height="35" rx="4"/>
+
+      <!-- Горизонтальные зубцы (уже) -->
+      <rect x="90" y="-8" width="35" height="16" rx="4"/>
+      <rect x="-125" y="-8" width="35" height="16" rx="4"/>
+
+      <!-- Диагональные зубцы (меньше) -->
+      <rect x="70" y="-105" width="20" height="20" rx="4" transform="rotate(45 80 -95)"/>
+      <rect x="70" y="85" width="20" height="20" rx="4" transform="rotate(45 80 95)"/>
+      <rect x="-105" y="-105" width="20" height="20" rx="4" transform="rotate(45 -95 -95)"/>
+      <rect x="-105" y="85" width="20" height="20" rx="4" transform="rotate(45 -95 95)"/>
+    </g>
+
+    <!-- Центральное отверстие (немного больше для контраста) -->
+    <circle r="60" fill="#1e252f"/>
+
+    <!-- SIN WAVE -->
+    <path d="M -40 0
+             Q -30 -18, -20 0
+             Q -10 18, 0 0
+             Q 10 -18, 20 0
+             Q 30 18, 40 0"
+      stroke="#57b3ff"
+      stroke-width="10"
+      fill="none"
+      stroke-linecap="round"/>
+  </g>
 </svg>

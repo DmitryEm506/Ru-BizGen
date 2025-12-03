@@ -1,5 +1,5 @@
 <idea-plugin>
-  <id>ru.person.bizgen</id>
+  <id>ru.eda.plgn.bizgen</id>
   <name>Ru BizGen</name>
 
   <vendor url="https://github.com/DmitryEm506/bizgen">Emelyanenko Dmitry</vendor>
@@ -7,62 +7,62 @@
   <depends>com.intellij.modules.platform</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <applicationService serviceImplementation="ru.person.bizgen.settings.persistent.BizGenAppSettingsPersistent"/>
+    <applicationService serviceImplementation="ru.eda.plgn.bizgen.settings.persistent.BizGenAppSettingsPersistent"/>
 
     <applicationService
-      serviceInterface="ru.person.bizgen.settings.BizGenAppSettingsRepository"
-      serviceImplementation="ru.person.bizgen.settings.persistent.BizGenAppSettingsPersistent"/>
+      serviceInterface="ru.eda.plgn.bizgen.settings.BizGenAppSettingsRepository"
+      serviceImplementation="ru.eda.plgn.bizgen.settings.persistent.BizGenAppSettingsPersistent"/>
 
     <applicationService
-      serviceInterface="ru.person.bizgen.settings.AppActionSettingsService"
-      serviceImplementation="ru.person.bizgen.settings.AppActionSettingsServiceImpl"
+      serviceInterface="ru.eda.plgn.bizgen.settings.AppActionSettingsService"
+      serviceImplementation="ru.eda.plgn.bizgen.settings.AppActionSettingsServiceImpl"
     />
 
     <applicationService
-      serviceInterface="ru.person.bizgen.notification.NotificationSettingsService"
-      serviceImplementation="ru.person.bizgen.notification.NotificationSettingsServiceImpl"
+      serviceInterface="ru.eda.plgn.bizgen.notification.NotificationSettingsService"
+      serviceImplementation="ru.eda.plgn.bizgen.notification.NotificationSettingsServiceImpl"
     />
 
     <applicationService
-      serviceInterface="ru.person.bizgen.notification.NotificationSettingsView"
-      serviceImplementation="ru.person.bizgen.notification.NotificationSettingsServiceImpl"
+      serviceInterface="ru.eda.plgn.bizgen.notification.NotificationSettingsView"
+      serviceImplementation="ru.eda.plgn.bizgen.notification.NotificationSettingsServiceImpl"
     />
 
     <applicationService
-      serviceInterface="ru.person.bizgen.actions.GeneratorActionProvider"
-      serviceImplementation="ru.person.bizgen.actions.GeneratorActionProviderImpl"
+      serviceInterface="ru.eda.plgn.bizgen.actions.GeneratorActionProvider"
+      serviceImplementation="ru.eda.plgn.bizgen.actions.GeneratorActionProviderImpl"
     />
 
     <applicationService
-      serviceInterface="ru.person.bizgen.actions.GeneratorActionService"
-      serviceImplementation="ru.person.bizgen.actions.GeneratorActionServiceImpl"
+      serviceInterface="ru.eda.plgn.bizgen.actions.GeneratorActionService"
+      serviceImplementation="ru.eda.plgn.bizgen.actions.GeneratorActionServiceImpl"
     />
 
     <applicationService
-      serviceInterface="ru.person.bizgen.notification.NotificationService"
-      serviceImplementation="ru.person.bizgen.notification.NotificationServiceImpl"
+      serviceInterface="ru.eda.plgn.bizgen.notification.NotificationService"
+      serviceImplementation="ru.eda.plgn.bizgen.notification.NotificationServiceImpl"
     />
 
     <applicationService
-      serviceInterface="ru.person.bizgen.clipboard.BizGenClipboardSettingsService"
-      serviceImplementation="ru.person.bizgen.clipboard.BizGenClipboardSettingsServiceImpl"
+      serviceInterface="ru.eda.plgn.bizgen.clipboard.BizGenClipboardSettingsService"
+      serviceImplementation="ru.eda.plgn.bizgen.clipboard.BizGenClipboardSettingsServiceImpl"
     />
 
     <applicationService
-      serviceInterface="ru.person.bizgen.clipboard.BizGenClipboardSettingsServiceView"
-      serviceImplementation="ru.person.bizgen.clipboard.BizGenClipboardSettingsServiceImpl"
+      serviceInterface="ru.eda.plgn.bizgen.clipboard.BizGenClipboardSettingsServiceView"
+      serviceImplementation="ru.eda.plgn.bizgen.clipboard.BizGenClipboardSettingsServiceImpl"
     />
 
     <applicationConfigurable
       parentId="tools"
-      instance="ru.person.bizgen.ui.AppSettingsConfigurable"
-      id="ru.person.bizgen.ui.AppSettingsConfigurable"
+      instance="ru.eda.plgn.bizgen.ui.AppSettingsConfigurable"
+      id="ru.eda.plgn.bizgen.ui.AppSettingsConfigurable"
       displayName="Ru BizGen"
     />
   </extensions>
 
   <actions>
-    <action id="ru.person.bizgen.BizGenMainAction" class="ru.person.bizgen.BizGenMainAction" text="BizGenMainAction"
+    <action id="ru.eda.plgn.bizgen.BizGenMainAction" class="ru.eda.plgn.bizgen.BizGenMainAction" text="BizGenMainAction"
       description="Show action group for generate Russian business data">
       <add-to-group group-id="GenerateGroup" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="alt ctrl E"/>
