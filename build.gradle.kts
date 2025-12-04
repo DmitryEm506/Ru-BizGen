@@ -1,6 +1,8 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+fun environment(key: String) = providers.environmentVariable(key)
+
 plugins {
   id("java")
   id("org.jetbrains.kotlin.jvm") version "2.2.21"
@@ -9,7 +11,13 @@ plugins {
 }
 
 group = "ru.eda.plgn.bizgen"
-version = "1.7.242-SNAPSHOT"
+version = "1.7.252"
+
+apply(from = "gradle/ic-version.gradle.kts")
+
+// Получаем значения из extra properties
+val buildNumber: String by extra
+val icVersion: String by extra
 
 repositories {
   mavenCentral()
@@ -21,18 +29,26 @@ repositories {
 
 dependencies {
   intellijPlatform {
-    create("IC", "2024.2")
+    create("IC", icVersion)
     testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
+    pluginVerifier()
+    zipSigner()
   }
 }
 
 intellijPlatform {
   pluginConfiguration {
     ideaVersion {
-      sinceBuild = "242"
+      sinceBuild = buildNumber
     }
 
     description = file("src/main/resources/META-INF/description.html").readText()
+  }
+
+  signing {
+    certificateChain.set(environment("CERTIFICATE_CHAIN"))
+    privateKey.set(environment("PRIVATE_KEY"))
+    password.set("test")
   }
 }
 
