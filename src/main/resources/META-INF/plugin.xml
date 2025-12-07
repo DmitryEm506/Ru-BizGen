@@ -2,7 +2,7 @@
   <id>ru.eda.plgn.bizgen</id>
   <name>Ru BizGen</name>
 
-  <vendor url="https://github.com/DmitryEm506/bizgen">Emelyanenko Dmitry</vendor>
+  <vendor url="https://github.com/DmitryEm506/Ru-BizGen">Emelyanenko Dmitry</vendor>
 
   <depends>com.intellij.modules.platform</depends>
 
