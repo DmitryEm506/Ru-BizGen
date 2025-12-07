@@ -33,7 +33,7 @@
 
 ## Как использовать:
 
-<img src=".github/img/work-sample.gif" width="512" alt="wort sample" />
+<img src=".github/img/main.gif" width="512" alt="wort sample" />
 
 
 Просто вызовите окно генератора с помощью горячей клавиши для доступа к различным типам тестовых данных. Интуитивный интерфейс позволяет
@@ -50,7 +50,7 @@
 
 Доступны по пути: **Настройки → Tools → Ru BizGen**
 
-<img src=".github/img/settings.png" width="256" alt="settings" />
+<img src=".github/img/work-sample.gif" width="512" alt="settings" />
 
 ### Управление генераторами
 
