@@ -1,1 +1,1 @@
-rootProject.name = "bizgen"
+rootProject.name = "ru-bizgen"

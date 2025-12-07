@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "ru.eda.plgn.bizgen"
-version = "1.8.242"
+version = "1.8.252"
 
 apply(from = "gradle/ic-version.gradle.kts")
 
@@ -26,7 +26,7 @@ val buildNumber: String by extra
 val icVersion: String by extra
 
 kotlin {
-  jvmToolchain(21)
+  jvmToolchain(libs.versions.java.get().toInt())
 }
 
 repositories {
@@ -74,7 +74,7 @@ intellijPlatform {
   signing {
     certificateChain.set(environment("CERTIFICATE_CHAIN"))
     privateKey.set(environment("PRIVATE_KEY"))
-    password.set("test")
+    password.set("PRIVATE_KEY_PASSWORD")
   }
 
   pluginVerification {
@@ -90,7 +90,7 @@ changelog {
 
 tasks {
   withType<KotlinCompile> {
-    compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
+    compilerOptions.jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.java.get()}"))
   }
 
   patchPluginXml {
@@ -115,7 +115,7 @@ tasks {
     moduleVersion.set(version.toString())
 
     dokkaSourceSets.main {
-      jdkVersion.set(21)
+      jdkVersion.set(libs.versions.java.get().toInt())
       languageVersion.set(libs.versions.kotlin.get())
 
       documentedVisibilities.set(

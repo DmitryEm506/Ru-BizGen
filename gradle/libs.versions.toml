@@ -1,6 +1,7 @@
 [versions]
 # plugins
 kotlin = "2.2.21"
+java = "21"
 changelog = "2.2.1"
 gradleIntelliJPlugin = "2.5.0"
 intellijJunit = "4.13.2"
