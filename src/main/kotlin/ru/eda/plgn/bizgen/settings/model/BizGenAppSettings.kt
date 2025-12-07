@@ -1,7 +1,6 @@
 package ru.eda.plgn.bizgen.settings.model
 
 import ru.eda.plgn.bizgen.actions.GeneratorActionProvider
-import ru.eda.plgn.bizgen.actions.impl.UuidInKtTestGeneratorAction.Companion.UUID_IN_KT_TEST_GENERATOR_ACTION_ID
 import ru.eda.plgn.bizgen.deepCopyByJson
 import ru.eda.plgn.bizgen.di.getBizGenService
 
@@ -35,7 +34,7 @@ class BizGenAppSettings {
         id = action.id,
         position = index,
         description = action.name,
-        active = UUID_IN_KT_TEST_GENERATOR_ACTION_ID != action.id
+        active = true
       )
     }.toMutableList()
   }

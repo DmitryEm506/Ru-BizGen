@@ -6,7 +6,6 @@ import ru.eda.plgn.bizgen.actions.impl.BikActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.CountryActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.KppActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.UuidGeneratorAction
-import ru.eda.plgn.bizgen.actions.impl.UuidInKtTestGeneratorAction
 import ru.eda.plgn.bizgen.actions.impl.account.AccountCnyActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.account.AccountRubActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.fio.FIOFullActionGenerator
@@ -70,7 +69,6 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
    */
   private val actions: List<BaseGeneratorAction<*>> = listOf(
     UuidGeneratorAction(),
-    UuidInKtTestGeneratorAction(),
     AccountRubActionGenerator(),
     AccountCnyActionGenerator(),
     Swift8ActionGenerator(),

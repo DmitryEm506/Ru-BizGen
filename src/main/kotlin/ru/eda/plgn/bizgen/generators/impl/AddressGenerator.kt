@@ -132,17 +132,17 @@ class AddressGenerator : Generator<String> {
         building = buildingNames.random(),
         floor = (1 + random.nextInt(20)).toString(),
         apartment = (1 + random.nextInt(300)).toString(),
-        postOfficeBox = "P.O. Box ${1 + random.nextInt(500)}",
+        postOfficeBox = "P.O. BOX ${1 + random.nextInt(500)}",
       ).apply {
         fullAddress = buildString {
           append(zipCode).append(", ")
           append(region).append(", ")
           append(city).append(", ")
-          append(district).append(" District, ")
-          append(street).append(" St., ")
-          append("Bld. ").append(houseNum)
+          append(district).append(" DISTRICT, ")
+          append(street).append(" ST., ")
+          append("BLD. ").append(houseNum)
           append(", ").append(building)
-          append(", Apt. ").append(apartment)
+          append(", APT. ").append(apartment)
           append(", ").append(postOfficeBox)
         }
       }

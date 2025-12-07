@@ -5,6 +5,7 @@ import ru.eda.plgn.bizgen.generators.GeneratorResult
 import ru.eda.plgn.bizgen.generators.GeneratorResultWithEscape
 import ru.eda.plgn.bizgen.generators.impl.SwiftRuGeneratorInner.generate11
 import ru.eda.plgn.bizgen.generators.impl.SwiftRuGeneratorInner.generate8
+import kotlin.random.Random
 
 /**
  * **SWIFT-код российских банков.**
@@ -50,7 +51,7 @@ class Swift11RuGenerator : Generator<String> {
 private object SwiftRuGeneratorInner {
   fun generate8() = russianBankSwiftCodes.random()
 
-  fun generate11() = russianBankSwiftCodes.random() + (100..999).random().toString()
+  fun generate11() = russianBankSwiftCodes.random() + "%03d".format(Random.nextInt(1, 1_000))
 
 
   private val russianBankSwiftCodes = setOf(
@@ -117,7 +118,7 @@ private object SwiftRuGeneratorInner {
     "BKRURUMM", // 52. БКР (Башкортостан)
     "TATRRUMM", // 53. Татфондбанк
     "UDMURUMM", // 54. Удмуртский
-    "ORGRUMM",  // 55. Оргбанк
+    "MBOGRUMM", // 55. Оргбанк
     "DVCCRUMM", // 56. Дальневосточный
     "NSVZRUMM", // 57. НС Банк (Новосибирск)
     "SLMKRUMM", // 58. Славия (Краснодар)
@@ -171,7 +172,7 @@ private object SwiftRuGeneratorInner {
     "EXIARUMM", // 96. ЭКСАР (экспортное страхование)
     "RUSMRU8X", // 97. Росмединвест (медицинские проекты)
     "DOMBRUMM", // 98. Дом.РФ (ипотечный)
-    "SVYAZUMM", // 99. Связь-Банк (почтовые услуги)
+    "SVIZRUMM", // 99. Связь-Банк (почтовые услуги)
     "ROSNRUMM"  // 100. Роснефтебанк (топливный сектор)
   )
 }

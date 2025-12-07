@@ -32,7 +32,7 @@ class BikGenerator : Generator<String> {
      * - 04 — код России (для рублёвых счетов)
      * - XXXXXXX — 7 цифр (регион + номер банка).
      */
-    fun randomBik() = randomBik(61)
+    fun randomBik() = randomBik(null)
 
     /**
      * Генерирует случайный БИК (Банковский идентификационный код).

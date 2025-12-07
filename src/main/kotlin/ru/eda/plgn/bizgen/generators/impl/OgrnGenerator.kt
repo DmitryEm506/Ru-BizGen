@@ -64,10 +64,11 @@ private object OgrnGenerator {
     val sign = if (Random.nextBoolean()) "1" else "5" // 1 или 5
     val year = "%02d".format(Random.nextInt(0, 100)) // 00-99
     val region = "%02d".format(regCode)
+    val inspectCode = "%02d".format(Random.nextInt(0, 100))
     val number = "%05d".format(Random.nextInt(0, 100000))
 
-    val base = "$sign$year$region$number"
-    val checksum = (base.toLong() % 11).toString().last()
+    val base = "$sign$year$region$inspectCode$number"
+    val checksum = (base.toBigInteger() % 13.toBigInteger()).toString().last()
 
     return base + checksum
   }
@@ -97,8 +98,8 @@ private object OgrnGenerator {
 
     // 5. Контрольная цифра (mod 13)
     val base = "$type$year$region$number" // 1 + 2 + 2 + 9 = 14 цифр
-    val checksum = (base.toLong() % 13).let {
-      if (it == 10L) 0 else it
+    val checksum = (base.toBigInteger() % 11.toBigInteger()).let {
+      if (it == 10.toBigInteger()) 0 else it
     }.toString()
 
     // Собираем итоговый ОГРНИП (15 цифр)
