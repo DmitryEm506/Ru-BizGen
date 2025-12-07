@@ -1,38 +1,79 @@
+
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
-  id("java")
-  id("org.jetbrains.kotlin.jvm") version "2.2.21"
-  id("org.jetbrains.intellij.platform") version "2.5.0"
-  id("org.jetbrains.changelog") version "2.2.0"
+  alias(libs.plugins.kotlin)
+  alias(libs.plugins.gradleIntelliJPlugin)
+  alias(libs.plugins.changelog)
+  alias(libs.plugins.dokka)
 }
 
 group = "ru.eda.plgn.bizgen"
-version = "1.7.242-SNAPSHOT"
+version = "1.8.242"
+
+apply(from = "gradle/ic-version.gradle.kts")
+
+val buildNumber: String by extra
+val icVersion: String by extra
+
+kotlin {
+  jvmToolchain(21)
+}
 
 repositories {
   mavenCentral()
-
   intellijPlatform {
     defaultRepositories()
   }
 }
 
 dependencies {
+  testImplementation(libs.bundles.test)
+  testRuntimeOnly(libs.junit.jupiter.engine)
+
+
   intellijPlatform {
-    create("IC", "2024.2")
-    testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
+    create("IC", icVersion)
+
+    pluginVerifier()
+    zipSigner()
+    testFramework(TestFrameworkType.JUnit5)
+  }
+
+}
+
+// Критично. Принудительный переход на JUnit 6. В рамках платформы intellij осталась основа ещё на 4 версии, но Jetbrains рекомендует
+// переходить как минимум на версию 5, решил сразу "прыгнуть" на версию 6, так как сейчас только unit тесты
+testing {
+  suites {
+    @Suppress("unused") val test by getting(JvmTestSuite::class) {
+      useJUnitJupiter()
+    }
   }
 }
 
 intellijPlatform {
   pluginConfiguration {
     ideaVersion {
-      sinceBuild = "242"
+      sinceBuild = buildNumber
     }
 
     description = file("src/main/resources/META-INF/description.html").readText()
+  }
+
+  signing {
+    certificateChain.set(environment("CERTIFICATE_CHAIN"))
+    privateKey.set(environment("PRIVATE_KEY"))
+    password.set("test")
+  }
+
+  pluginVerification {
+    ides { recommended() }
   }
 }
 
@@ -41,22 +82,17 @@ changelog {
   headerParserRegex = """(\d+\.\d+)""".toRegex()
 }
 
+
 tasks {
-  withType<JavaCompile> {
-    sourceCompatibility = "21"
-    targetCompatibility = "21"
+  withType<KotlinCompile> {
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
   }
 
   patchPluginXml {
-    val changes = changelog.getAll().values.joinToString("<hr>\n") { changelogItem ->
-      changelog.renderItem(changelogItem, Changelog.OutputType.HTML)
+    val changes = changelog.getAll().values.joinToString("<hr>\n") {
+      changelog.renderItem(it, Changelog.OutputType.HTML)
     }
-
     changeNotes.set(provider { changes })
-  }
-
-  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
   }
 
   afterEvaluate {

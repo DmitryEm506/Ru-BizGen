@@ -1,5 +1,7 @@
 package ru.eda.plgn.bizgen.generators
 
+import ru.eda.plgn.bizgen.utils.withEscape
+
 /**
  * Ответ генератора.
  *
@@ -18,7 +20,7 @@ open class GeneratorResult<T : Any>(
  * @param T тип генерируемых данных
  * @property data сгенерированные данные
  */
-class GeneratorResultWithEscape<T : Any>(data: T) : GeneratorResult<T>(data, """"$data"""")
+class GeneratorResultWithEscape<T : Any>(data: T) : GeneratorResult<T>(data, data.toString().withEscape())
 
 /**
  * Ответ генератора в котором данные для вставки - сгенерированные данные.
