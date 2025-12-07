@@ -1,16 +1,20 @@
-
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.time.Year
 
 fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
-  alias(libs.plugins.kotlin)
-  alias(libs.plugins.gradleIntelliJPlugin)
-  alias(libs.plugins.changelog)
   alias(libs.plugins.dokka)
+  alias(libs.plugins.kover)
+  alias(libs.plugins.kotlin)
+  alias(libs.plugins.changelog)
+  alias(libs.plugins.gradleIntelliJPlugin)
 }
 
 group = "ru.eda.plgn.bizgen"
@@ -45,6 +49,7 @@ dependencies {
     testFramework(TestFrameworkType.JUnit5)
   }
 
+  dokkaHtmlPlugin(libs.dokkaVersioningPlugin)
 }
 
 // Критично. Принудительный переход на JUnit 6. В рамках платформы intellij осталась основа ещё на 4 версии, но Jetbrains рекомендует
@@ -93,6 +98,59 @@ tasks {
       changelog.renderItem(it, Changelog.OutputType.HTML)
     }
     changeNotes.set(provider { changes })
+  }
+
+  test {
+    useJUnitPlatform()
+
+    testLogging {
+      events = setOf(TestLogEvent.FAILED)
+      exceptionFormat = TestExceptionFormat.FULL
+    }
+  }
+
+  // Documentation
+  dokka {
+    moduleName.set(rootProject.name)
+    moduleVersion.set(version.toString())
+
+    dokkaSourceSets.main {
+      jdkVersion.set(21)
+      languageVersion.set(libs.versions.kotlin.get())
+
+      documentedVisibilities.set(
+        setOf(
+          VisibilityModifier.Public,
+          VisibilityModifier.Private,
+          VisibilityModifier.Protected,
+          VisibilityModifier.Internal,
+          VisibilityModifier.Package,
+        )
+      )
+      reportUndocumented.set(true)
+
+      sourceLink {
+        localDirectory.set(file("src/main/kotlin"))
+        remoteUrl("https://github.com/DmitryEm506/Plugin_EDA_Bizgen/blob/main/src/main/kotlin")
+        remoteLineSuffix.set("#L")
+      }
+    }
+    dokkaPublications.html {
+      suppressInheritedMembers.set(true)
+      offlineMode.set(true)
+    }
+    pluginsConfiguration.html {
+      // TODO: Пока костыль, необходимо ждать исправления https://github.com/Kotlin/dokka/issues/4369
+      customAssets.from(file(".config/dokka/logo-icon.svg"))
+      footerMessage.set("&copy; ${Year.now().value} Dmitry&nbsp;A.&nbsp;Emelyanenko")
+    }
+    pluginsConfiguration.versioning {
+      if (project.hasProperty("dokka.pagesDir")) {
+        val pagesDir = project.property("dokka.pagesDir")
+        olderVersions.setFrom(file("$pagesDir"))
+        olderVersionsDir.set(file("$pagesDir/older/"))
+      }
+    }
   }
 
   afterEvaluate {
