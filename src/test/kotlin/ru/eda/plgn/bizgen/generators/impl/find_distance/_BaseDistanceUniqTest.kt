@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty
 import ru.eda.plgn.bizgen.BaseTest
 import ru.eda.plgn.bizgen.generators.Generator
 import java.util.Stack
@@ -163,6 +164,12 @@ internal abstract class PercentileDistanceUniqTest<T : Any>(private val percenti
 }
 
 @Tag("distanceFinderTests")
+@Retention(value = AnnotationRetention.RUNTIME)
+@Target(allowedTargets = [AnnotationTarget.CLASS])
+@EnabledIfSystemProperty(named = "runDistanceFinderTests", matches = "true")
+annotation class DistanceFinderTest
+
+@DistanceFinderTest
 internal abstract class BaseDistanceUniqTest : BaseTest()
 
 /**
