@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "ru.eda.plgn.bizgen"
-version = "1.8.252"
+version = "1.9.252"
 
 apply(from = "gradle/ic-version.gradle.kts")
 
@@ -102,7 +102,13 @@ tasks {
 
   test {
     useJUnitPlatform {
-//      excludeTags.add("distanceFinderTests")
+      val distanceFinderEnabled = project.hasProperty("runDistanceFinderTests") || System.getProperty("runDistanceFinderTests") == "true"
+
+      if (distanceFinderEnabled) {
+        includeTags("distanceFinderTests")
+      } else {
+        excludeTags("distanceFinderTests")
+      }
     }
 
     testLogging {
@@ -110,18 +116,6 @@ tasks {
       exceptionFormat = TestExceptionFormat.FULL
     }
   }
-
-//  register<Test>("distanceFinderTests") {
-////    enabled = false
-//    useJUnitPlatform {
-//      includeTags.add("distanceFinderTests")
-//    }
-//
-//    jvmArgs(
-//      "--add-opens", "java.base/java.lang=ALL-UNNAMED",
-//      "--add-opens", "java.desktop/javax.swing=ALL-UNNAMED"
-//    )
-//  }
 
   // Documentation
   dokka {

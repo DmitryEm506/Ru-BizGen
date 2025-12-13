@@ -3,6 +3,7 @@ package ru.eda.plgn.bizgen.generators.impl.find_distance
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestFactory
 import ru.eda.plgn.bizgen.BaseTest
 import ru.eda.plgn.bizgen.generators.Generator
@@ -161,7 +162,7 @@ internal abstract class PercentileDistanceUniqTest<T : Any>(private val percenti
   }
 }
 
-//@Tag("distanceFinderTests")
+@Tag("distanceFinderTests")
 internal abstract class BaseDistanceUniqTest : BaseTest()
 
 /**
