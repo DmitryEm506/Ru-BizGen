@@ -19,7 +19,7 @@ class KppGenerator : Generator<String> {
   private companion object {
 
     fun randomKpp(): String {
-      return generateKpp(61)
+      return generateKpp(null)
     }
 
     /**
