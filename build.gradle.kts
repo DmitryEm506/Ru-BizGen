@@ -101,13 +101,27 @@ tasks {
   }
 
   test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+//      excludeTags.add("distanceFinderTests")
+    }
 
     testLogging {
       events = setOf(TestLogEvent.FAILED)
       exceptionFormat = TestExceptionFormat.FULL
     }
   }
+
+//  register<Test>("distanceFinderTests") {
+////    enabled = false
+//    useJUnitPlatform {
+//      includeTags.add("distanceFinderTests")
+//    }
+//
+//    jvmArgs(
+//      "--add-opens", "java.base/java.lang=ALL-UNNAMED",
+//      "--add-opens", "java.desktop/javax.swing=ALL-UNNAMED"
+//    )
+//  }
 
   // Documentation
   dokka {
