@@ -153,22 +153,22 @@ tasks {
     }
   }
 
-  afterEvaluate {
-    tasks.named("buildPlugin") {
-      doLast {
-        val jarDir = layout.buildDirectory.dir("libs").get().asFile
-        val releasesDir = layout.projectDirectory.dir("releases").asFile
-
-        releasesDir.mkdirs()
-
-        val pluginName = "${rootProject.name}-$version.jar"
-
-        jarDir.listFiles { file -> file.name == pluginName }
-          ?.forEach { jarFile ->
-            println("Copying plugin ${jarFile.name} to releases folder")
-            jarFile.copyTo(File(releasesDir, jarFile.name), overwrite = true)
-          }
-      }
-    }
-  }
+//  afterEvaluate {
+//    tasks.named("buildPlugin") {
+//      doLast {
+//        val jarDir = layout.buildDirectory.dir("libs").get().asFile
+//        val releasesDir = layout.projectDirectory.dir("releases").asFile
+//
+//        releasesDir.mkdirs()
+//
+//        val pluginName = "${rootProject.name}-$version.jar"
+//
+//        jarDir.listFiles { file -> file.name == pluginName }
+//          ?.forEach { jarFile ->
+//            println("Copying plugin ${jarFile.name} to releases folder")
+//            jarFile.copyTo(File(releasesDir, jarFile.name), overwrite = true)
+//          }
+//      }
+//    }
+//  }
 }
