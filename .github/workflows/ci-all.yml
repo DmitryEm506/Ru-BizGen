@@ -40,3 +40,6 @@ jobs:
         with:
           name: kover-html-report
           path: build/reports/kover/html
+
+      - name: Build documentation (Dokka)
+        run: ./gradlew dokkaHtml --no-daemon
