@@ -87,6 +87,18 @@ changelog {
   headerParserRegex = """(\d+\.\d+)""".toRegex()
 }
 
+kover {
+  reports {
+    total {
+      xml {
+        onCheck.set(true)
+      }
+      html {
+        onCheck.set(true)
+      }
+    }
+  }
+}
 
 tasks {
   withType<KotlinCompile> {
