@@ -141,10 +141,6 @@ tasks {
       documentedVisibilities.set(
         setOf(
           VisibilityModifier.Public,
-          VisibilityModifier.Private,
-          VisibilityModifier.Protected,
-          VisibilityModifier.Internal,
-          VisibilityModifier.Package,
         )
       )
       reportUndocumented.set(true)
