@@ -31,8 +31,14 @@ jobs:
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Run fast tests
-        run: ./gradlew test --no-daemon
+      - name: Run fast tests with coverage
+        run: ./gradlew check --no-daemon
 
       - name: Build plugin
         run: ./gradlew buildPlugin --no-daemon
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: kover-html-report
+          path: build/reports/kover/html

@@ -29,8 +29,14 @@ jobs:
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Run full test suite (with distanceFinderTests)
-        run: ./gradlew test --no-daemon -PrunDistanceFinderTests
+      - name: Run full test suite (with distanceFinderTests) with coverage
+        run: ./gradlew check --no-daemon -PrunDistanceFinderTests
 
       - name: Build plugin
         run: ./gradlew buildPlugin --no-daemon
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: kover-html-report
+          path: build/reports/kover/html
