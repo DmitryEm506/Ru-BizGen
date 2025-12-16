@@ -1,0 +1,33 @@
+name: CI (all)
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Contains heavy tests, therefore it is run manually"
+        required: false
+        default: "manual run"
+
+jobs:
+  build:
+    name: Build & Full Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Run full test suite (with distanceFinderTests)
+        run: ./gradlew test --no-daemon -PrunDistanceFinderTests
+
+      - name: Build plugin
+        run: ./gradlew buildPlugin --no-daemon
