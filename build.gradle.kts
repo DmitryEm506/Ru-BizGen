@@ -18,7 +18,7 @@ plugins {
 }
 
 group = "ru.eda.plgn.bizgen"
-version = "1.8.252"
+version = "1.9.252"
 
 apply(from = "gradle/ic-version.gradle.kts")
 
@@ -101,7 +101,15 @@ tasks {
   }
 
   test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+      val distanceFinderEnabled = project.hasProperty("runDistanceFinderTests") || System.getProperty("runDistanceFinderTests") == "true"
+
+      if (distanceFinderEnabled) {
+        includeTags("distanceFinderTests")
+      } else {
+        excludeTags("distanceFinderTests")
+      }
+    }
 
     testLogging {
       events = setOf(TestLogEvent.FAILED)
