@@ -45,3 +45,9 @@ jobs:
 
       - name: Build documentation (Dokka)
         run: ./gradlew dokkaGenerateHtml --no-daemon
+
+      - name: Upload Dokka HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: dokka-html
+          path: build/dokka/html
