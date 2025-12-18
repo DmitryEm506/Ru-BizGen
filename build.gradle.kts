@@ -146,13 +146,9 @@ tasks {
     dokkaSourceSets.main {
       jdkVersion.set(libs.versions.java.get().toInt())
       languageVersion.set(libs.versions.kotlin.get())
-
-      documentedVisibilities.set(
-        setOf(
-          VisibilityModifier.Public,
-        )
-      )
       reportUndocumented.set(true)
+
+      documentedVisibilities(VisibilityModifier.Public)
 
       sourceLink {
         localDirectory.set(file("src/main/kotlin"))
@@ -160,10 +156,12 @@ tasks {
         remoteLineSuffix.set("#L")
       }
     }
+
     dokkaPublications.html {
       suppressInheritedMembers.set(true)
       offlineMode.set(true)
     }
+
     pluginsConfiguration.html {
       // TODO: Нет возможности стандартным образом прокинуть логотип и указать путь до него. Поэтому приходится называть именно так файл https://github.com/Kotlin/dokka/issues/4369
       customAssets.from(
@@ -177,6 +175,7 @@ tasks {
         """.trimIndent()
       )
     }
+
     pluginsConfiguration.versioning {
       if (project.hasProperty("dokka.pagesDir")) {
         val pagesDir = project.property("dokka.pagesDir")
