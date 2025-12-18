@@ -91,20 +91,22 @@ changelog {
 kover {
   reports {
     total {
-      xml {
-        onCheck.set(true)
-      }
-      html {
-        onCheck.set(true)
-      }
+      xml { onCheck = true }
+      html { onCheck = true }
     }
   }
 }
 
+/**
+ * Принудительное копирование отчета покрытия тестов в dokka.
+ *
+ * Причем приходится копировать именно в папку "dokka/html/images", так как она используется как рутовая папка для относительных ссылок,
+ * вставляемых в Докка отчёт.
+ */
 val copyKoverToDokka by tasks.registering(Copy::class) {
   dependsOn("koverHtmlReport")
   from(layout.buildDirectory.dir("reports/kover/html"))
-  into(layout.buildDirectory.dir("dokka/html/kover"))
+  into(layout.buildDirectory.dir("dokka/html/images/kover"))
 }
 
 tasks {
@@ -163,13 +165,15 @@ tasks {
       offlineMode.set(true)
     }
     pluginsConfiguration.html {
-      // TODO: Пока костыль, необходимо ждать исправления https://github.com/Kotlin/dokka/issues/4369
-      customAssets.from( file(".config/dokka/logo-icon.svg"))
+      // TODO: Нет возможности стандартным образом прокинуть логотип и указать путь до него. Поэтому приходится называть именно так файл https://github.com/Kotlin/dokka/issues/4369
+      customAssets.from(
+        file(".config/dokka/logo-icon.svg")
+      )
 
       footerMessage.set(
         """
             &copy; ${Year.now().value} Dmitry&nbsp;A.&nbsp;Emelyanenko | 
-            <a href="kover/index.html">Code Coverage</a>
+            <a href="images/kover/index.html">Code Coverage</a>
         """.trimIndent()
       )
     }
@@ -183,7 +187,7 @@ tasks {
   }
 
   withType<DokkaGenerateTask>().configureEach {
-    dependsOn(copyKoverToDokka)
+    finalizedBy(copyKoverToDokka)
   }
 
 //  afterEvaluate {
