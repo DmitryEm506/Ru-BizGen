@@ -14,6 +14,8 @@ import kotlin.random.Random
  * @author Dmitry_Emelyanenko
  */
 class KppGenerator : Generator<String> {
+  override val uniqueDistance: Int = 130
+
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(randomKpp())
 
   private companion object {

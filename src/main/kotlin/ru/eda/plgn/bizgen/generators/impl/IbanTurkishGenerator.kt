@@ -19,6 +19,8 @@ import java.math.BigInteger
  * @author Dmitry_Emelyanenko
  */
 class IbanTurkishGenerator : Generator<String> {
+  override val uniqueDistance: Int = 130
+
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomTurkishIBAN())
 
   /**

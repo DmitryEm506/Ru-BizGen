@@ -17,6 +17,8 @@ import ru.eda.plgn.bizgen.generators.impl.BikGenerator.Companion.randomBik
  * @author Dmitry_Emelyanenko
  */
 class AccountRubGenerator : Generator<String> {
+  override val uniqueDistance: Int = 130
+
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomAccount("RUB", randomBik()))
 }
 
@@ -31,6 +33,8 @@ class AccountRubGenerator : Generator<String> {
  * @author Dmitry_Emelyanenko
  */
 class AccountCnyGenerator : Generator<String> {
+  override val uniqueDistance: Int = 130
+
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomAccount("CNY", randomBik()))
 }
 

@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.util.Disposer
 import com.intellij.ui.InplaceButton
 import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import ru.eda.plgn.bizgen.actions.BizGenSelectedActionEvent.Companion.subscribeAsync
@@ -44,6 +45,8 @@ class ActionResultPreviewComponent : Disposable {
   /** Содержит идентификатор генератора. */
   private lateinit var actionIdLabel: JLabel
 
+  private var uniqueDistanceLabel: JLabel = JLabel("")
+
   val rootComponent: JPanel = panel {
     // разделитель с отображением идентификатора выбранного генератора и кнопкой для повторного запуска выбранного генератора
     row {
@@ -62,6 +65,13 @@ class ActionResultPreviewComponent : Disposable {
         updatePreviewTextByGenerator()
       }
       cell(refreshButton).align(AlignX.RIGHT)
+    }
+
+    row {
+      label("Дистанция уникальности").gap(RightGap.SMALL)
+      contextHelp("Количество вызовов генератора, при котором с вероятностью 95% получается разный результат").gap(RightGap.SMALL)
+      label(":")
+      cell(uniqueDistanceLabel)
     }
 
     // содержит область для отображения результатов выбранного генератора
@@ -88,6 +98,7 @@ class ActionResultPreviewComponent : Disposable {
     subscribeAsync(this) { action ->
       selectedGenerator = action.generator
       actionIdLabel.text = "ActionID: ${action.id}"
+      uniqueDistanceLabel.text = "${action.generator.uniqueDistance}"
       updatePreviewTextByGenerator()
     }
   }

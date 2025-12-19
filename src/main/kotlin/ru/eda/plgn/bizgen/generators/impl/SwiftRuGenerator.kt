@@ -24,6 +24,8 @@ import kotlin.random.Random
  * @author Dmitry_Emelyanenko
  */
 class Swift8RuGenerator : Generator<String> {
+  override val uniqueDistance: Int = 3
+
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generate8())
 }
 
@@ -45,6 +47,8 @@ class Swift8RuGenerator : Generator<String> {
  * @author Dmitry_Emelyanenko
  */
 class Swift11RuGenerator : Generator<String> {
+  override val uniqueDistance: Int = 50
+
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generate11())
 }
 

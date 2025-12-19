@@ -12,8 +12,9 @@ import kotlin.random.Random
  * @author Dmitry_Emelyanenko
  */
 class OrgRuNameGenerator : Generator<String> {
-  override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generateOrganizationName())
+  override val uniqueDistance: Int = 25
 
+  override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generateOrganizationName())
 
   private object OrganizationRuNameGeneratorInner {
     private val companyTypes = listOf("ООО", "ИП", "АО", "ФКП")
