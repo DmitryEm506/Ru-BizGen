@@ -9,6 +9,7 @@ import ru.eda.plgn.bizgen.generators.GeneratorResult
  * @author Dmitry_Emelyanenko
  */
 class CountryGenerator : Generator<String> {
+  override val uniqueDistance: Int = 5
 
   override fun generate(): GeneratorResult<String> =
     getCountryStructAsStr().let { (country, info) -> GeneratorResult(toClipboard = country.toString(), toEditor = info) }

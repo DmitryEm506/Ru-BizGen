@@ -11,5 +11,7 @@ import java.util.UUID
  * @author Dmitry_Emelyanenko
  */
 class UuidAsStrGenerator : Generator<UUID> {
+  override val uniqueDistance: Int = 130
+
   override fun generate(): GeneratorResult<UUID> = GeneratorResultWithEscape(data = UUID.randomUUID())
 }

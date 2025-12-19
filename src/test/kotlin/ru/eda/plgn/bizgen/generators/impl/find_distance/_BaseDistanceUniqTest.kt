@@ -1,9 +1,11 @@
 package ru.eda.plgn.bizgen.generators.impl.find_distance
 
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.DynamicTest
 import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty
 import ru.eda.plgn.bizgen.BaseTest
@@ -33,6 +35,11 @@ internal abstract class Percentile95DistanceUniqStrTest(generator: Generator<Str
 internal abstract class Percentile95DistanceUniqTest<T : Any>(
   generator: Generator<T>, protected val distanceLimit: IntRange, protected val minimalUniqueDistance: Int,
 ) : PercentileDistanceUniqTest<T>(Percentile.PERCENTILE_95, generator) {
+
+  @Test
+  internal fun `The specified distance in the generator should match the distance being verified`() {
+    generator.uniqueDistance shouldBe minimalUniqueDistance
+  }
 
   @TestFactory
   internal fun `Generator distance should NotBeLess than expected`(): Iterable<DynamicTest> {

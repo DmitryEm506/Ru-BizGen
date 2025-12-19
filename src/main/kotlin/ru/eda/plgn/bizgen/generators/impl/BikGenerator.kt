@@ -20,6 +20,7 @@ import kotlin.random.Random
  * @author Dmitry_Emelyanenko
  */
 class BikGenerator : Generator<String> {
+  override val uniqueDistance: Int = 130
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomBik())
 

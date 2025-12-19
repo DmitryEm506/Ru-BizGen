@@ -11,6 +11,7 @@ import kotlin.random.Random
  * @author Dmitry_Emelyanenko
  */
 class AddressGenerator : Generator<String> {
+  override val uniqueDistance: Int = 130
 
   override fun generate(): GeneratorResult<String> {
     val address = AddressGeneratorInner.generateAddress()

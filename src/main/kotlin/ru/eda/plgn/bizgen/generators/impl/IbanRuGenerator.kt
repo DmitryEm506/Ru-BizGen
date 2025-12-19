@@ -27,6 +27,8 @@ import java.math.BigInteger
  * @author Dmitry_Emelyanenko
  */
 class IbanRuGenerator : Generator<String> {
+  override val uniqueDistance: Int = 130
+
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(
     data = generateRussianIBAN(
       accountNumber = BankAccountGenerator.randomCorrespondentAccount(
