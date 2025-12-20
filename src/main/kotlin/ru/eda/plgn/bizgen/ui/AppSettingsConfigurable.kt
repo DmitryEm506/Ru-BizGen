@@ -13,27 +13,51 @@ import javax.swing.JComponent
  */
 class AppSettingsConfigurable : Configurable, Disposable {
 
+  /**
+   * Наименование плагина, которое будет отображаться в секции настроек.
+   *
+   * @return наименование, отображаемое в секции настроек
+   */
   @Nls(capitalization = Nls.Capitalization.Title)
   override fun getDisplayName(): String {
     return SETTINGS_DISPLAY_NAME
   }
 
+  /**
+   * Создание основного UI компонента, описывающий блок настроек для плагина.
+   *
+   * @return UI компонент блока настроек
+   */
   override fun createComponent(): JComponent {
     return AppSettingsComponent()
       .also { Disposer.register(this, it) }
       .createComponent()
   }
 
+  /**
+   * Признак, что были изменения в компоненте.
+   *
+   * В текущей парадигме всегда будет возвращаться false, так как все изменения сохраняются сразу.
+   *
+   * @return true - были изменения.
+   */
   override fun isModified(): Boolean = false
 
+  /** Сохраняет значения настроек из Swing-формы в конфигурируемый компонент. Метод вызывается в EDT по запросу пользователя. */
   override fun apply() = Unit
 
+  /**
+   * Загружает настройки из конфигурируемого компонента в форму Swing. Метод вызывается в EDT сразу после создания формы или позже по
+   * запросу пользователя.
+   */
   override fun reset() = Unit
 
+  /** Освобождение UI ресурса. */
   override fun disposeUIResources() {
     Disposer.dispose(this)
   }
 
+  /** Освобождение ресурса. */
   override fun dispose() = Unit
 
   private companion object {

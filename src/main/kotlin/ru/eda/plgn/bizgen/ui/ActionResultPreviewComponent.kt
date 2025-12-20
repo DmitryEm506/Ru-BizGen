@@ -47,6 +47,7 @@ class ActionResultPreviewComponent : Disposable {
 
   private var uniqueDistanceLabel: JLabel = JLabel("")
 
+  /** Основной компонент панели "Настройки плагина". */
   val rootComponent: JPanel = panel {
     // разделитель с отображением идентификатора выбранного генератора и кнопкой для повторного запуска выбранного генератора
     row {
@@ -121,6 +122,7 @@ class ActionResultPreviewComponent : Disposable {
     }
   }
 
+  /** Освобождение ресурса. */
   override fun dispose() {
     Disposer.dispose(this)
   }

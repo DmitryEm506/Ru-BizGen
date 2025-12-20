@@ -12,8 +12,8 @@ import com.intellij.ui.ToolbarDecorator.createDecorator
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
-import ru.eda.plgn.bizgen.actions.GeneratorActionService
 import ru.eda.plgn.bizgen.actions.BizGenSelectedActionEvent
+import ru.eda.plgn.bizgen.actions.GeneratorActionService
 import ru.eda.plgn.bizgen.di.getBizGenService
 import ru.eda.plgn.bizgen.settings.AppActionSettingsService
 import ru.eda.plgn.bizgen.settings.AppActionSettingsService.Direction
@@ -30,6 +30,12 @@ import javax.swing.event.ListSelectionListener
  */
 class AppActionsSettingComponent {
 
+
+  /**
+   * Создание компонента отображения доступных генераторов.
+   *
+   * @return созданный компонент
+   */
   fun createComponent(): JPanel = panel {
     val actionListComponent = ActionListComponent().apply {
       addListSelectionListener(selectionListener(this))
