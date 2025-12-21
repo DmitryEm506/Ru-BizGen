@@ -37,6 +37,7 @@ interface GeneratorAction<T : Any> {
 /**
  * Абстрактная обертка над стандартным действием.
  *
+ * @param id идентификатор генератора. **Должен быть уникальным среди всех генераторов.**
  * @param name имя действия
  */
 abstract class GeneratorAnAction(open val id: String, name: String) : AnAction(name)
@@ -57,6 +58,11 @@ abstract class BaseGeneratorAction<T : Any>(
   override val generator: Generator<T>,
 ) : GeneratorAction<T>, GeneratorAnAction(id, name) {
 
+  /**
+   * Запускает выполнение логики действия.
+   *
+   * @param event действие
+   */
   override fun actionPerformed(event: AnActionEvent) {
     val editor = event.getData(CommonDataKeys.EDITOR) ?: return
     val project = event.getData(CommonDataKeys.PROJECT) ?: return

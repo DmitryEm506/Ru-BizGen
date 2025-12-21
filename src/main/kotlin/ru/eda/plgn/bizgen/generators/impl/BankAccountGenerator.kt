@@ -26,9 +26,9 @@ import kotlin.random.Random
 class BankAccountGenerator : Generator<String> {
   override val uniqueDistance: Int = 130
 
-
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomCorrespondentAccount(randomBik()))
 
+  /** Логика формирования корреспондентского счета. */
   companion object {
 
     /**

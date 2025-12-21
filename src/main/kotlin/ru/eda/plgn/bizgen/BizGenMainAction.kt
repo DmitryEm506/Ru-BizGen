@@ -17,6 +17,12 @@ import ru.eda.plgn.bizgen.di.getBizGenService
  * @author Dmitry_Emelyanenko
  */
 class BizGenMainAction : AnAction() {
+
+  /**
+   * Запускает выполнение логики действия.
+   *
+   * @param event действие
+   */
   override fun actionPerformed(event: AnActionEvent) {
     val service = getBizGenService<GeneratorActionService>()
 

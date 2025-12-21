@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "ru.eda.plgn.bizgen"
-version = "1.9.252"
+version = "1.9.242"
 
 apply(from = "gradle/ic-version.gradle.kts")
 
@@ -40,7 +40,6 @@ repositories {
 dependencies {
   testImplementation(libs.bundles.test)
   testRuntimeOnly(libs.junit.jupiter.engine)
-
 
   intellijPlatform {
     create("IC", icVersion)
@@ -67,6 +66,7 @@ intellijPlatform {
   pluginConfiguration {
     ideaVersion {
       sinceBuild = buildNumber
+      untilBuild = provider { null }
     }
 
     description = file("src/main/resources/META-INF/description.html").readText()
@@ -148,7 +148,7 @@ tasks {
       languageVersion.set(libs.versions.kotlin.get())
       reportUndocumented.set(true)
 
-      documentedVisibilities(VisibilityModifier.Public)
+      documentedVisibilities(VisibilityModifier.Public, VisibilityModifier.Protected)
 
       sourceLink {
         localDirectory.set(file("src/main/kotlin"))

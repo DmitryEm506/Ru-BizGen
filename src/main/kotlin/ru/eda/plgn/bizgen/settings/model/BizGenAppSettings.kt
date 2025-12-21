@@ -52,7 +52,7 @@ class BizGenAppSettings {
     override var id: String = "",
     override var position: Int = 0,
     override var description: String = "",
-    override var active: Boolean = true
+    override var active: Boolean = true,
   ) : ActionSettingsView
 
   /** Отражение настроек для конкретного действия. */
@@ -74,11 +74,18 @@ class BizGenAppSettings {
   /**
    * Режимы уведомлений.
    *
+   * @property description описание режима, которое будет отображаться в UI компоненте
    * @author Dmitry_Emelyanenko
    */
   enum class BizGenNotificationMode(val description: String) {
+
+    /** Лог событий "Колокольчик". */
     BELL("""Лог событий "Колокольчик""""),
+
+    /** Всплывающее окно. */
     HINT("Всплывающее окно"),
+
+    /** Выключено. */
     DISABLE("Выключено"),
   }
 }
