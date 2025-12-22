@@ -9,13 +9,15 @@ build/*
 # Project files
 .idea/*
 
-# File-based project format
-*.iws
-*.iml
-*.ipr
-
 .flattened-pom.xml
 
+## Custom
+# Error reporter token
+/token.bin
+/.intellijPlatform
+
+
+## Java
 # Compiled class file
 *.class
 
@@ -29,6 +31,9 @@ build/*
 .mtj.tmp/
 
 # Package Files #
+*.iws
+*.iml
+*.ipr
 *.jar
 *.war
 *.nar
@@ -43,5 +48,30 @@ replay_pid*
 
 # Kotlin Gradle plugin data, see https://kotlinlang.org/docs/whatsnew20.html#new-directory-for-kotlin-data-in-gradle-projects
 .kotlin/
+
+
+## Gradle
+.gradle
+**/build/
+!**/src/**/build/
+.run
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Avoid ignore Gradle wrappper properties
+!gradle-wrapper.properties
+
+# Cache of project
+.gradletasknamecache
+
+# Eclipse Gradle plugin generated files
+# Eclipse Core
+.project
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
 
 _polygon/.idea

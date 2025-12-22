@@ -75,11 +75,15 @@ intellijPlatform {
   signing {
     certificateChain.set(environment("CERTIFICATE_CHAIN"))
     privateKey.set(environment("PRIVATE_KEY"))
-    password.set("PRIVATE_KEY_PASSWORD")
+    password.set(environment("PRIVATE_KEY_PASSWORD"))
   }
 
   pluginVerification {
     ides { recommended() }
+  }
+
+  publishing {
+    token.set(environment("PUBLISH_TOKEN"))
   }
 }
 
