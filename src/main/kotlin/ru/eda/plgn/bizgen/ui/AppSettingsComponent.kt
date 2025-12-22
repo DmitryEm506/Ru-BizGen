@@ -27,6 +27,11 @@ class AppSettingsComponent : Disposable {
     mainPanel.add(splitter)
   }
 
+  /**
+   * Создание компонента настроек плагина.
+   *
+   * @return созданный компонент
+   */
   fun createComponent(): JPanel = mainPanel
 
   private fun createNotifyAndPreviewPanel(): JPanel = FormBuilder.createFormBuilder()
@@ -37,10 +42,13 @@ class AppSettingsComponent : Disposable {
         .also { Disposer.register(this, it) }.rootComponent
     ).panel
 
+  /** Освобождение ресурса. */
   override fun dispose() = Unit
 
-  companion object {
+  private companion object {
+
     const val SPLITTER_PROPORTION_KEY = "ru.eda.plgn.bizgen.AppSettingsComponent"
+
     const val DEFAULT_SPLITTER_PROPORTION = 0.25f
   }
 }

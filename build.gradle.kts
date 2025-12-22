@@ -2,6 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
+import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -18,7 +19,7 @@ plugins {
 }
 
 group = "ru.eda.plgn.bizgen"
-version = "1.9.252"
+version = "1.9.242"
 
 apply(from = "gradle/ic-version.gradle.kts")
 
@@ -39,7 +40,6 @@ repositories {
 dependencies {
   testImplementation(libs.bundles.test)
   testRuntimeOnly(libs.junit.jupiter.engine)
-
 
   intellijPlatform {
     create("IC", icVersion)
@@ -66,6 +66,7 @@ intellijPlatform {
   pluginConfiguration {
     ideaVersion {
       sinceBuild = buildNumber
+      untilBuild = provider { null }
     }
 
     description = file("src/main/resources/META-INF/description.html").readText()
@@ -74,11 +75,15 @@ intellijPlatform {
   signing {
     certificateChain.set(environment("CERTIFICATE_CHAIN"))
     privateKey.set(environment("PRIVATE_KEY"))
-    password.set("PRIVATE_KEY_PASSWORD")
+    password.set(environment("PRIVATE_KEY_PASSWORD"))
   }
 
   pluginVerification {
     ides { recommended() }
+  }
+
+  publishing {
+    token.set(environment("PUBLISH_TOKEN"))
   }
 }
 
@@ -87,6 +92,26 @@ changelog {
   headerParserRegex = """(\d+\.\d+)""".toRegex()
 }
 
+kover {
+  reports {
+    total {
+      xml { onCheck = true }
+      html { onCheck = true }
+    }
+  }
+}
+
+/**
+ * Принудительное копирование отчета покрытия тестов в dokka.
+ *
+ * Причем приходится копировать именно в папку "dokka/html/images", так как она используется как рутовая папка для относительных ссылок,
+ * вставляемых в Докка отчёт.
+ */
+val copyKoverToDokka by tasks.registering(Copy::class) {
+  dependsOn("koverHtmlReport")
+  from(layout.buildDirectory.dir("reports/kover/html"))
+  into(layout.buildDirectory.dir("dokka/html/images/kover"))
+}
 
 tasks {
   withType<KotlinCompile> {
@@ -125,17 +150,9 @@ tasks {
     dokkaSourceSets.main {
       jdkVersion.set(libs.versions.java.get().toInt())
       languageVersion.set(libs.versions.kotlin.get())
-
-      documentedVisibilities.set(
-        setOf(
-          VisibilityModifier.Public,
-          VisibilityModifier.Private,
-          VisibilityModifier.Protected,
-          VisibilityModifier.Internal,
-          VisibilityModifier.Package,
-        )
-      )
       reportUndocumented.set(true)
+
+      documentedVisibilities(VisibilityModifier.Public, VisibilityModifier.Protected)
 
       sourceLink {
         localDirectory.set(file("src/main/kotlin"))
@@ -143,15 +160,26 @@ tasks {
         remoteLineSuffix.set("#L")
       }
     }
+
     dokkaPublications.html {
       suppressInheritedMembers.set(true)
       offlineMode.set(true)
     }
+
     pluginsConfiguration.html {
-      // TODO: Пока костыль, необходимо ждать исправления https://github.com/Kotlin/dokka/issues/4369
-      customAssets.from(file(".config/dokka/logo-icon.svg"))
-      footerMessage.set("&copy; ${Year.now().value} Dmitry&nbsp;A.&nbsp;Emelyanenko")
+      // TODO: Нет возможности стандартным образом прокинуть логотип и указать путь до него. Поэтому приходится называть именно так файл https://github.com/Kotlin/dokka/issues/4369
+      customAssets.from(
+        file(".config/dokka/logo-icon.svg")
+      )
+
+      footerMessage.set(
+        """
+            &copy; ${Year.now().value} Dmitry&nbsp;A.&nbsp;Emelyanenko | 
+            <a href="images/kover/index.html">Code Coverage</a>
+        """.trimIndent()
+      )
     }
+
     pluginsConfiguration.versioning {
       if (project.hasProperty("dokka.pagesDir")) {
         val pagesDir = project.property("dokka.pagesDir")
@@ -159,6 +187,10 @@ tasks {
         olderVersionsDir.set(file("$pagesDir/older/"))
       }
     }
+  }
+
+  withType<DokkaGenerateTask>().configureEach {
+    finalizedBy(copyKoverToDokka)
   }
 
 //  afterEvaluate {

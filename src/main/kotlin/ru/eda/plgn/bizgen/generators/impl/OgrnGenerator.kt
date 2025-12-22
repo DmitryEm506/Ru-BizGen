@@ -16,6 +16,8 @@ import kotlin.random.Random
  * @author Dmitry_Emelyanenko
  */
 class OgrnIpGenerator : Generator<String> {
+  override val uniqueDistance: Int = 130
+
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomOgrnIp())
 }
 
@@ -28,6 +30,8 @@ class OgrnIpGenerator : Generator<String> {
  * @author Dmitry_Emelyanenko
  */
 class OgrnLegalGenerator : Generator<String> {
+  override val uniqueDistance: Int = 130
+
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomOgrnLegal())
 }
 

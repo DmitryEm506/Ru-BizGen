@@ -20,9 +20,11 @@ import kotlin.random.Random
  * @author Dmitry_Emelyanenko
  */
 class BikGenerator : Generator<String> {
+  override val uniqueDistance: Int = 130
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomBik())
 
+  /** Логика формирования БИКа. */
   companion object {
 
     /**
@@ -37,14 +39,14 @@ class BikGenerator : Generator<String> {
     /**
      * Генерирует случайный БИК (Банковский идентификационный код).
      *
-     * Формат БИК: 04XXXXXXX
+     * Формат БИК: 04XXXXXXX.
      * - 04 — код России (для рублёвых счетов)
      * - XXXXXXX — 7 цифр (регион + номер банка).
      *
      * @param regionCode код региона (1-99), если не указан — выбирается случайный.
      */
     @Suppress("SameParameterValue")
-    private fun randomBik(regionCode: Int? = null): String {
+    fun randomBik(regionCode: Int? = null): String {
       val actualRegionCode = regionCode ?: Random.nextInt(1, 100)
       require(actualRegionCode in 1..99) { "Код региона должен быть в диапазоне 1-99" }
 

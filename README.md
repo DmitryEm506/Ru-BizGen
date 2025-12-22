@@ -1,8 +1,22 @@
-<p style="text-align: center;">
+<h1 align="center">
   <img src=".github/img/pluginIcon.png" width="128"  alt="pluginIcon"/>
+    <br />
+    Ru BizGen
+</h1>
+
+<p align="center">
+    <a href="https://plugins.jetbrains.com/plugin/29294-ru-bizgen"><img src="https://img.shields.io/jetbrains/plugin/v/29294?style=for-the-badge" alt="Download"/></a>
+    <a href="https://plugins.jetbrains.com/plugin/29294-ru-bizgen/reviews"><img src="https://img.shields.io/jetbrains/plugin/r/rating/29294?style=for-the-badge" alt="Rating" /></a>
+    <a href="https://plugins.jetbrains.com/plugin/29294-ru-bizgen"><img src="https://img.shields.io/jetbrains/plugin/d/29294?style=for-the-badge" alt="Rating" /></a>
+    <br />
+    <a href="https://github.com/DmitryEm506/Ru-BizGen/actions"><img src="https://img.shields.io/github/actions/workflow/status/DmitryEm506/Ru-BizGen/ci-fast.yml?branch=main&style=for-the-badge" alt="CI status" /></a>
+    <a href="https://dmitryem506.github.io/Ru-BizGen/"><img src="https://img.shields.io/badge/kdoc-ready-blue?style=for-the-badge" alt="Documentation" /></a>
+    <a href="https://dmitryem506.github.io/Ru-BizGen/images/kover/index.html"><img src="https://img.shields.io/badge/coverage-Kover-blue?style=for-the-badge" alt="Kover" /></a>
+    <a><img src="https://img.shields.io/badge/JetBrains-Verified-blue?style=for-the-badge" alt="Verified" /></a>
+    <a><img src="https://img.shields.io/badge/IntelliJ%20IDEA-2024.2+-blue?style=for-the-badge&logo=intellij-idea" alt="IntelliJ" /></a>
 </p>
 
-# Ru BizGen - Генератор российских (по большей части) тестовых данных
+# Генератор российских (по большей части) тестовых данных
 
 Ускоряйте разработку с мгновенной генерацией приближенных к реалистичным тестовых данных прямо в редакторе кода!
 

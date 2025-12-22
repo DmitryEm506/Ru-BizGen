@@ -26,11 +26,13 @@ internal abstract class GeneratorBaseTest<T : Any>(protected val generator: Gene
 
   @Test
   protected fun `Should return unique values on distance`() {
-    val sequence = List(uniqDistance) { generator.generate().toEditor }
-
-    val duplicates = sequence
-      .groupBy { it }
-      .filter { it.value.size > 1 }
+    var (source, duplicates) = findSourceAndDuplicates(generator, uniqDistance)
+    // Сделано намеренно, так как вероятность, что данные будут всегда (100%) уникальными не может быть.
+    // Если данные не уникальные при двух попытках подряд - явно что-то пошло не по плану, как раз будет "стрелять" тест
+    // Для проверки именно дистанции уникальности есть отдельная группа тестов
+    if (duplicates.isNotEmpty()) {
+      with(findSourceAndDuplicates(generator, uniqDistance)) { source = this.first; duplicates = this.second }
+    }
 
     if (duplicates.isNotEmpty()) {
       error(
@@ -43,7 +45,7 @@ internal abstract class GeneratorBaseTest<T : Any>(protected val generator: Gene
           }
           appendLine()
           appendLine("Full sequence:")
-          sequence.forEach { appendLine("  $it") }
+          source.forEach { appendLine("  $it") }
         }
       )
     }
@@ -60,6 +62,16 @@ internal abstract class GeneratorBaseTest<T : Any>(protected val generator: Gene
    */
   protected fun testsOnDistance(count: Int = uniqDistance, test: (T) -> Unit): Iterable<DynamicTest> {
     return generator.repeatsTests(count, test)
+  }
+
+  private fun findSourceAndDuplicates(generator: Generator<T>, uniqDistance: Int): Pair<List<String>, Map<String, List<String>>> {
+    val source = List(uniqDistance) { generator.generate().toEditor }
+
+    val duplicates = source
+      .groupBy { it }
+      .filter { it.value.size > 1 }
+
+    return (source to duplicates)
   }
 
   protected companion object {

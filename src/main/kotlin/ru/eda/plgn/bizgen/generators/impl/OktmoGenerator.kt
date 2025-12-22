@@ -24,6 +24,8 @@ import kotlin.random.Random
  * @author Dmitry_Emelyanenko
  */
 class Oktmo8Generator : Generator<String> {
+  override val uniqueDistance: Int = 4
+
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomOktmo8())
 }
 
@@ -44,6 +46,8 @@ class Oktmo8Generator : Generator<String> {
  * @author Dmitry_Emelyanenko
  */
 class Oktmo11Generator : Generator<String> {
+  override val uniqueDistance: Int = 5
+
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomOktmo11())
 }
 
