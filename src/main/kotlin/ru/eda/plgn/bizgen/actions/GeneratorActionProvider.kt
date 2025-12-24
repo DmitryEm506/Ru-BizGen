@@ -5,6 +5,7 @@ import ru.eda.plgn.bizgen.actions.impl.BankAccountActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.BikActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.CountryActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.KppActionGenerator
+import ru.eda.plgn.bizgen.actions.impl.SnilsActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.UuidGeneratorAction
 import ru.eda.plgn.bizgen.actions.impl.account.AccountCnyActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.account.AccountRubActionGenerator
@@ -90,7 +91,8 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
     Oktmo8ActionGenerator(),
     Oktmo11ActionGenerator(),
     IbanRuActionGenerator(),
-    IbanTurkishActionGenerator()
+    IbanTurkishActionGenerator(),
+    SnilsActionGenerator(),
   )
 
   override fun getActions(): List<GeneratorAction<*>> {

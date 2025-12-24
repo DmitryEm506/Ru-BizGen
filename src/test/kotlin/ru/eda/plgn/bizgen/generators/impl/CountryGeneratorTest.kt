@@ -9,7 +9,7 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
  *
  * @author Dmitry_Emelyanenko
  */
-internal class CountryGeneratorTest : StrGeneratorTest(CountryGenerator(), uniqDistance = 5) {
+internal class CountryGeneratorTest : StrGeneratorTest(CountryGenerator()) {
 
   @TestFactory
   internal fun `Should return a result containing editor annotations`() = testsOnDistance(500) { country ->

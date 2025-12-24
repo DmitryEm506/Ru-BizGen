@@ -32,7 +32,7 @@ internal class OrgNameGeneratorTest {
 
   @Nested
   @DisplayName("Testing scope: OrgEngNameGeneratorCases")
-  inner class OrgEngNameGeneratorCases : StrGeneratorTest(OrgEngNameGenerator(), 10) {
+  inner class OrgEngNameGeneratorCases : StrGeneratorTest(OrgEngNameGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid English organization name`() = testsOnDistance { name ->

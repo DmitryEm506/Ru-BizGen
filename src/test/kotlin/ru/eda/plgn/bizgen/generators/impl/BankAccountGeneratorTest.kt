@@ -11,7 +11,7 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
  *
  * @author Dmitry_Emelyanenko
  */
-internal class BankAccountGeneratorTest : StrGeneratorTest(BankAccountGenerator(), uniqDistance = 100) {
+internal class BankAccountGeneratorTest : StrGeneratorTest(BankAccountGenerator()) {
 
   @TestFactory
   internal fun `Should generate a valid correspondent account format of 20 digits`() = testsOnDistance { account ->

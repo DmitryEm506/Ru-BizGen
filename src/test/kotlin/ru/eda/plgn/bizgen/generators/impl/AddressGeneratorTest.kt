@@ -10,7 +10,7 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
  *
  * @author Dmitry_Emelyanenko
  */
-internal class AddressGeneratorTest : StrGeneratorTest(AddressGenerator(), uniqDistance = 100) {
+internal class AddressGeneratorTest : StrGeneratorTest(AddressGenerator()) {
 
   @TestFactory
   internal fun `Should generate an address containing a postal code`() = testsOnDistance { address ->
