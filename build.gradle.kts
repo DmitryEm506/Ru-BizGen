@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.Year
 
-fun environment(key: String) = providers.environmentVariable(key)
+fun environment(key: String): Provider<String?> = providers.environmentVariable(key)
 
 plugins {
   alias(libs.plugins.dokka)
@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "ru.eda.plgn.bizgen"
-version = "1.9.242"
+version = "1.10.242"
 
 apply(from = "gradle/ic-version.gradle.kts")
 

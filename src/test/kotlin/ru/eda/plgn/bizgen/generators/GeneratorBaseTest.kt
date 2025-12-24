@@ -11,10 +11,9 @@ import ru.eda.plgn.bizgen.BaseTest
  * Базовый класс для тестирования генераторов.
  *
  * @property generator генератор
- * @property uniqDistance дистанция, количество попыток, когда считается, что должны быть уникальные значения
  * @author Dmitry_Emelyanenko
  */
-internal abstract class GeneratorBaseTest<T : Any>(protected val generator: Generator<T>, private val uniqDistance: Int = 30) : BaseTest() {
+internal abstract class GeneratorBaseTest<T : Any>(protected val generator: Generator<T>) : BaseTest() {
 
   @Test
   protected fun `Should return a result`() {
@@ -26,12 +25,12 @@ internal abstract class GeneratorBaseTest<T : Any>(protected val generator: Gene
 
   @Test
   protected fun `Should return unique values on distance`() {
-    var (source, duplicates) = findSourceAndDuplicates(generator, uniqDistance)
+    var (source, duplicates) = findSourceAndDuplicates(generator, generator.uniqueDistance)
     // Сделано намеренно, так как вероятность, что данные будут всегда (100%) уникальными не может быть.
     // Если данные не уникальные при двух попытках подряд - явно что-то пошло не по плану, как раз будет "стрелять" тест
     // Для проверки именно дистанции уникальности есть отдельная группа тестов
     if (duplicates.isNotEmpty()) {
-      with(findSourceAndDuplicates(generator, uniqDistance)) { source = this.first; duplicates = this.second }
+      with(findSourceAndDuplicates(generator, generator.uniqueDistance)) { source = this.first; duplicates = this.second }
     }
 
     if (duplicates.isNotEmpty()) {
@@ -60,7 +59,7 @@ internal abstract class GeneratorBaseTest<T : Any>(protected val generator: Gene
    * @param test функция проверки полученного результата
    * @return возвращает список динамических тестов
    */
-  protected fun testsOnDistance(count: Int = uniqDistance, test: (T) -> Unit): Iterable<DynamicTest> {
+  protected fun testsOnDistance(count: Int = generator.uniqueDistance, test: (T) -> Unit): Iterable<DynamicTest> {
     return generator.repeatsTests(count, test)
   }
 

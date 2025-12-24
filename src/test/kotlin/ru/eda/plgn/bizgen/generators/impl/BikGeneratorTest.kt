@@ -12,7 +12,7 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
  *
  * @author Dmitry_Emelyanenko
  */
-internal class BikGeneratorTest : StrGeneratorTest(BikGenerator(), uniqDistance = 100) {
+internal class BikGeneratorTest : StrGeneratorTest(BikGenerator()) {
 
   @TestFactory
   internal fun `Should generate a BIK of length 9`() = testsOnDistance { bik ->

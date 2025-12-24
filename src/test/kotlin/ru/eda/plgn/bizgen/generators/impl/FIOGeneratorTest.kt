@@ -33,7 +33,7 @@ internal class FIOGeneratorTest {
 
   @Nested
   @DisplayName("Testing scope: FIOShortGeneratorCases")
-  inner class FIOShortGeneratorCases : StrGeneratorTest(FIOShortGenerator(), uniqDistance = 10) {
+  inner class FIOShortGeneratorCases : StrGeneratorTest(FIOShortGenerator()) {
 
     @TestFactory
     internal fun `Should generate a short name in format 'Lastname IO'`() =

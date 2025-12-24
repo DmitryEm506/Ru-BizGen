@@ -17,7 +17,7 @@ internal class SwiftRuGeneratorTest {
 
   @Nested
   @DisplayName("Testing scope: Swift8RuGeneratorCases")
-  inner class Swift8RuGeneratorCases : StrGeneratorTest(Swift8RuGenerator(), uniqDistance = 3) {
+  inner class Swift8RuGeneratorCases : StrGeneratorTest(Swift8RuGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid SWIFT code of length 8`() = testsOnDistance(50) { swift ->
@@ -38,7 +38,7 @@ internal class SwiftRuGeneratorTest {
 
   @Nested
   @DisplayName("Testing scope: Swift11RuGeneratorCases")
-  inner class Swift11RuGeneratorCases : StrGeneratorTest(Swift11RuGenerator(), uniqDistance = 40) {
+  inner class Swift11RuGeneratorCases : StrGeneratorTest(Swift11RuGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid SWIFT code of length 11`() = testsOnDistance { swift ->

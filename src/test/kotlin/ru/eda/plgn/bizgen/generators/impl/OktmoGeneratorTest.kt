@@ -17,7 +17,7 @@ internal class OktmoGeneratorTest {
 
   @Nested
   @DisplayName("Testing scope: Oktmo8GeneratorCases")
-  inner class Oktmo8GeneratorCases : StrGeneratorTest(Oktmo8Generator(), uniqDistance = 4) {
+  inner class Oktmo8GeneratorCases : StrGeneratorTest(Oktmo8Generator()) {
 
     @TestFactory
     internal fun `Should generate a valid 8-digit OKTMO`() = testsOnDistance { oktmo ->
@@ -34,7 +34,7 @@ internal class OktmoGeneratorTest {
 
   @Nested
   @DisplayName("Testing scope: Oktmo11GeneratorCases")
-  inner class Oktmo11GeneratorCases : StrGeneratorTest(Oktmo11Generator(), uniqDistance = 4) {
+  inner class Oktmo11GeneratorCases : StrGeneratorTest(Oktmo11Generator()) {
 
     @TestFactory
     internal fun `Should generate a valid 11-digit OKTMO`() = testsOnDistance { oktmo ->

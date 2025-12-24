@@ -10,7 +10,7 @@ import java.util.UUID
  *
  * @author Dmitry_Emelyanenko
  */
-internal class UuidAsStrGeneratorTest : GeneratorBaseTest<UUID>(UuidAsStrGenerator(), 1_000) {
+internal class UuidAsStrGeneratorTest : GeneratorBaseTest<UUID>(UuidAsStrGenerator()) {
 
   @Test
   internal fun `Should return an editor-escaped UUID`() {
