@@ -42,7 +42,11 @@ dependencies {
   testRuntimeOnly(libs.junit.jupiter.engine)
 
   intellijPlatform {
-    create("IC", icVersion)
+    // Unified Platform Distribution https://blog.jetbrains.com/platform/2025/11/intellij-platform-2025-3-what-plugin-developers-should-know/?utm_source=chatgpt.com
+    when(buildNumber.toInt() >= 252) {
+      true -> intellijIdea(icVersion) { useInstaller = false }
+      else -> intellijIdeaCommunity(icVersion)
+    }
 
     pluginVerifier()
     zipSigner()
