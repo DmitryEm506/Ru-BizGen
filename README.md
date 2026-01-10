@@ -9,7 +9,7 @@
     <a href="https://plugins.jetbrains.com/plugin/29294-ru-bizgen/reviews"><img src="https://img.shields.io/jetbrains/plugin/r/rating/29294?style=for-the-badge" alt="Rating" /></a>
     <a href="https://plugins.jetbrains.com/plugin/29294-ru-bizgen"><img src="https://img.shields.io/jetbrains/plugin/d/29294?style=for-the-badge" alt="Rating" /></a>
     <br />
-    <a href="https://github.com/DmitryEm506/Ru-BizGen/actions"><img src="https://img.shields.io/github/actions/workflow/status/DmitryEm506/Ru-BizGen/ci-fast.yml?branch=main&style=for-the-badge" alt="CI status" /></a>
+    <a href="https://github.com/DmitryEm506/Ru-BizGen/actions"><img src="https://img.shields.io/github/actions/workflow/status/DmitryEm506/Ru-BizGen/ci-dev.yml?branch=dev&style=for-the-badge" alt="CI status" /></a>
     <a href="https://dmitryem506.github.io/Ru-BizGen/"><img src="https://img.shields.io/badge/kdoc-ready-blue?style=for-the-badge" alt="Documentation" /></a>
     <a href="https://dmitryem506.github.io/Ru-BizGen/images/kover/index.html"><img src="https://img.shields.io/badge/coverage-Kover-blue?style=for-the-badge" alt="Kover" /></a>
     <a><img src="https://img.shields.io/badge/JetBrains-Verified-blue?style=for-the-badge" alt="Verified" /></a>
