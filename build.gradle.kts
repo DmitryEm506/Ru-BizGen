@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "ru.eda.plgn.bizgen"
-version = "1.10.242"
+version = "1.10.252"
 
 apply(from = "gradle/ic-version.gradle.kts")
 
@@ -38,12 +38,19 @@ repositories {
 }
 
 dependencies {
-  testImplementation(libs.bundles.test)
+  testImplementation(libs.bundles.test) {
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-jvm")
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-test")
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-test-jvm")
+    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-jdk8")
+  }
+
   testRuntimeOnly(libs.junit.jupiter.engine)
 
   intellijPlatform {
     // Unified Platform Distribution https://blog.jetbrains.com/platform/2025/11/intellij-platform-2025-3-what-plugin-developers-should-know/?utm_source=chatgpt.com
-    when(buildNumber.toInt() >= 252) {
+    when (buildNumber.toInt() >= 252) {
       true -> intellijIdea(icVersion) { useInstaller = false }
       else -> intellijIdeaCommunity(icVersion)
     }
@@ -51,6 +58,7 @@ dependencies {
     pluginVerifier()
     zipSigner()
     testFramework(TestFrameworkType.JUnit5)
+    testFramework(TestFrameworkType.Platform)
   }
 
   dokkaHtmlPlugin(libs.dokkaVersioningPlugin)
@@ -69,7 +77,7 @@ testing {
 intellijPlatform {
   pluginConfiguration {
     ideaVersion {
-      sinceBuild = buildNumber
+      sinceBuild = "242"
       untilBuild = provider { null }
     }
 
@@ -99,6 +107,13 @@ changelog {
 kover {
   reports {
     total {
+      filters {
+        excludes {
+          packages(
+            "ru.eda.plgn.bizgen.ui"
+          )
+        }
+      }
       xml { onCheck = true }
       html { onCheck = true }
     }
@@ -196,23 +211,4 @@ tasks {
   withType<DokkaGenerateTask>().configureEach {
     finalizedBy(copyKoverToDokka)
   }
-
-//  afterEvaluate {
-//    tasks.named("buildPlugin") {
-//      doLast {
-//        val jarDir = layout.buildDirectory.dir("libs").get().asFile
-//        val releasesDir = layout.projectDirectory.dir("releases").asFile
-//
-//        releasesDir.mkdirs()
-//
-//        val pluginName = "${rootProject.name}-$version.jar"
-//
-//        jarDir.listFiles { file -> file.name == pluginName }
-//          ?.forEach { jarFile ->
-//            println("Copying plugin ${jarFile.name} to releases folder")
-//            jarFile.copyTo(File(releasesDir, jarFile.name), overwrite = true)
-//          }
-//      }
-//    }
-//  }
 }
