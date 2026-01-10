@@ -36,7 +36,7 @@ jobs:
         run: ./gradlew buildPlugin --no-daemon
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: kover-html-report
           path: build/reports/kover/html
@@ -45,7 +45,7 @@ jobs:
         run: ./gradlew dokkaGenerateHtml --no-daemon
 
       - name: Upload Dokka HTML
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: dokka-html
           path: build/dokka/html
