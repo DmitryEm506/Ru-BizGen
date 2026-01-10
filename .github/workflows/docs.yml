@@ -31,7 +31,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Generate Dokka HTML
         run: ./gradlew dokkaGenerateHtml --no-daemon
