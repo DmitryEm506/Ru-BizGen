@@ -9,7 +9,7 @@ kotest = "6.0.7" # https://plugins.gradle.org/plugin/io.kotest
 dokka = "2.1.0"  # https://plugins.gradle.org/plugin/org.jetbrains.dokka
 kover = "0.9.4"  # https://plugins.gradle.org/plugin/org.jetbrains.kotlinx.kover
 reflections = "0.10.2" # https://mvnrepository.com/artifact/org.reflections/reflections
-mockk = "1.13.13" # https://mvnrepository.com/artifact/io.mockk/mockk
+mockk = "1.14.7" # https://mvnrepository.com/artifact/io.mockk/mockk
 
 [libraries]
 intellij-junit = { group = "junit", name = "junit", version.ref = "intellijJunit" }
