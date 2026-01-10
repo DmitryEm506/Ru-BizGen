@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "ru.eda.plgn.bizgen"
-version = "1.10.252"
+version = "1.11.252"
 
 apply(from = "gradle/ic-version.gradle.kts")
 
