@@ -17,7 +17,7 @@ internal class AccountGeneratorTest {
 
   @Nested
   @DisplayName("Testing scope: AccountRubGeneratorCases")
-  inner class AccountRubGeneratorCases : StrGeneratorTest(AccountRubGenerator(), uniqDistance = 100) {
+  inner class AccountRubGeneratorCases : StrGeneratorTest(AccountRubGenerator()) {
 
     @TestFactory
     internal fun `Should generate an account number of length 20`() = testsOnDistance { account ->
@@ -33,7 +33,7 @@ internal class AccountGeneratorTest {
 
   @Nested
   @DisplayName("Testing scope: AccountCnyGenerator")
-  inner class AccountCnyGeneratorCases : StrGeneratorTest(AccountCnyGenerator(), uniqDistance = 100) {
+  inner class AccountCnyGeneratorCases : StrGeneratorTest(AccountCnyGenerator()) {
 
     @TestFactory
     internal fun `Should generate an account number of length 20`() = testsOnDistance { account ->

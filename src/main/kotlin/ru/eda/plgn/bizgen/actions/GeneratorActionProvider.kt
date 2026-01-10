@@ -3,8 +3,10 @@ package ru.eda.plgn.bizgen.actions
 import ru.eda.plgn.bizgen.actions.impl.AddressActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.BankAccountActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.BikActionGenerator
+import ru.eda.plgn.bizgen.actions.impl.CardNumberActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.CountryActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.KppActionGenerator
+import ru.eda.plgn.bizgen.actions.impl.SnilsActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.UuidGeneratorAction
 import ru.eda.plgn.bizgen.actions.impl.account.AccountCnyActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.account.AccountRubActionGenerator
@@ -68,29 +70,40 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
    *   Generator --> Список с генераторами --> Иконка "Reset"*
    */
   private val actions: List<BaseGeneratorAction<*>> = listOf(
+    // Технические
     UuidGeneratorAction(),
+
+    // Организации
     AccountRubActionGenerator(),
     AccountCnyActionGenerator(),
-    Swift8ActionGenerator(),
-    Swift11ActionGenerator(),
     InnIndividualActionGenerator(),
     InnLegalActionGenerator(),
+    KppActionGenerator(),
+    OgrnLegalActionGenerator(),
+    OgrnIpActionGenerator(),
     OrgRuNameActionGenerator(),
     OrgEngNameActionGenerator(),
+
+    // Банки и платёжные реквизиты
+    BikActionGenerator(),
+    BankAccountActionGenerator(),
+    Swift8ActionGenerator(),
+    Swift11ActionGenerator(),
+    IbanRuActionGenerator(),
+    IbanTurkishActionGenerator(),
+
+    // Адресно-территориальные данные
+    AddressActionGenerator(),
+    CountryActionGenerator(),
+    Oktmo8ActionGenerator(),
+    Oktmo11ActionGenerator(),
+
+    // Персональные данные
+    CardNumberActionGenerator(),
     FIOFullActionGenerator(),
     FIOShortActionGenerator(),
     FIOInitialsActionGenerator(),
-    AddressActionGenerator(),
-    CountryActionGenerator(),
-    BikActionGenerator(),
-    BankAccountActionGenerator(),
-    KppActionGenerator(),
-    OgrnIpActionGenerator(),
-    OgrnLegalActionGenerator(),
-    Oktmo8ActionGenerator(),
-    Oktmo11ActionGenerator(),
-    IbanRuActionGenerator(),
-    IbanTurkishActionGenerator()
+    SnilsActionGenerator(),
   )
 
   override fun getActions(): List<GeneratorAction<*>> {

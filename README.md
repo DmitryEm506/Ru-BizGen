@@ -1,19 +1,19 @@
 <h1 align="center">
-  <img src=".github/img/pluginIcon.png" width="128"  alt="pluginIcon"/>
+  <img src=".github/img/pluginIcon.png" width="128" height="128" alt="Ru BizGen Plugin Icon"/>
     <br />
     Ru BizGen
 </h1>
 
 <p align="center">
-    <a href="https://plugins.jetbrains.com/plugin/29294-ru-bizgen"><img src="https://img.shields.io/jetbrains/plugin/v/29294?style=for-the-badge" alt="Download"/></a>
+    <a href="https://plugins.jetbrains.com/plugin/29294-ru-bizgen"><img src="https://img.shields.io/jetbrains/plugin/v/29294?style=for-the-badge" alt="Version"/></a>
     <a href="https://plugins.jetbrains.com/plugin/29294-ru-bizgen/reviews"><img src="https://img.shields.io/jetbrains/plugin/r/rating/29294?style=for-the-badge" alt="Rating" /></a>
-    <a href="https://plugins.jetbrains.com/plugin/29294-ru-bizgen"><img src="https://img.shields.io/jetbrains/plugin/d/29294?style=for-the-badge" alt="Rating" /></a>
+    <a href="https://plugins.jetbrains.com/plugin/29294-ru-bizgen"><img src="https://img.shields.io/jetbrains/plugin/d/29294?style=for-the-badge" alt="Downloads" /></a>
     <br />
-    <a href="https://github.com/DmitryEm506/Ru-BizGen/actions"><img src="https://img.shields.io/github/actions/workflow/status/DmitryEm506/Ru-BizGen/ci-fast.yml?branch=main&style=for-the-badge" alt="CI status" /></a>
+    <a href="https://github.com/DmitryEm506/Ru-BizGen/actions"><img src="https://img.shields.io/github/actions/workflow/status/DmitryEm506/Ru-BizGen/ci-dev.yml?branch=dev&style=for-the-badge" alt="Build Status" /></a>
     <a href="https://dmitryem506.github.io/Ru-BizGen/"><img src="https://img.shields.io/badge/kdoc-ready-blue?style=for-the-badge" alt="Documentation" /></a>
-    <a href="https://dmitryem506.github.io/Ru-BizGen/images/kover/index.html"><img src="https://img.shields.io/badge/coverage-Kover-blue?style=for-the-badge" alt="Kover" /></a>
-    <a><img src="https://img.shields.io/badge/JetBrains-Verified-blue?style=for-the-badge" alt="Verified" /></a>
-    <a><img src="https://img.shields.io/badge/IntelliJ%20IDEA-2024.2+-blue?style=for-the-badge&logo=intellij-idea" alt="IntelliJ" /></a>
+    <a href="https://dmitryem506.github.io/Ru-BizGen/images/kover/index.html"><img src="https://img.shields.io/badge/coverage-Kover-blue?style=for-the-badge" alt="Code Coverage" /></a>
+    <a><img src="https://img.shields.io/badge/JetBrains-Verified-blue?style=for-the-badge" alt="JetBrains Verified" /></a>
+    <a><img src="https://img.shields.io/badge/IntelliJ%20IDEA-2024.2+-blue?style=for-the-badge&logo=intellij-idea" alt="IntelliJ IDEA Version" /></a>
 </p>
 
 # Генератор российских (по большей части) тестовых данных
@@ -22,8 +22,9 @@
 
 ## ⚠️ Важно:
 
-Любые совпадения сгенерированных ИНН, номеров счетов, названий организаций, ОГРН, ОКТМО и других данных являются случайными. Плагин не
-использует реальные данные для генерации — все значения создаются алгоритмически.
+Любые совпадения с реальными конфиденциальными данными (ИНН, номера счетов, наименования организаций, ОГРН, ОКТМО и другие) являются
+случайными и не предназначены для использования в реальных системах.
+Тестовые данные генерируются внутри плагина, и не происходит обращения к внешним ресурсам.
 
 ## Основные возможности:
 
@@ -36,19 +37,22 @@
 
 ## Доступные генераторы:
 
-<img src=".github/img/generators.png" width="256" alt="generators" />
+<p align="center">
+  <img src=".github/img/generators.png" width="800" alt="Available Generators" />
+</p>
 
 - 💰 **Банковские реквизиты:** расчетный счет (RUB, CNY), корреспонденский счет, БИК, SWIFT (российских банков), IBAN (РФ и Турция)
-- 👤 **ФИО:** полное, сокращённое, инициалы
-- 🏢 **Юр. данные:** ИНН (ФЛ и ЮР), ОГРН (ИП и ЮЛ), ОКТМО, КПП
+- 👤 **Физическое лицо:** ФИО (полное, сокращённое, инициалы), ИНН, номер банковской карты
+- 🏢 **Юр. данные:** ИНН (ФЛ и ЮР), ОГРН (ИП и ЮЛ), ОКТМО, КПП, СНИЛС
 - 🏛️ **Название организации:** на русском и английском
 - 📍 **Страна и Адрес:** реалистичные форматы
 - 🔢 **Прочее:** UUID
 
 ## Как использовать:
 
-<img src=".github/img/main.gif" width="512" alt="wort sample" />
-
+<p align="center">
+  <img src=".github/img/main.gif" width="800" alt="Usage Sample" />
+</p>
 
 Просто вызовите окно генератора с помощью горячей клавиши для доступа к различным типам тестовых данных. Интуитивный интерфейс позволяет
 быстро вставлять реалистичные данные именно туда, где они нужны.
@@ -56,7 +60,8 @@
 ### Способы вызова:
 
 - `Ctrl+Alt+E` (Windows/Linux) или `⌘⌥E` (Mac) — прямое открытие плагина
-- `Alt+Ins` → **Ru BizGen** — через стандартное меню генерации кода IDEA
+- `Alt+Ins` → **BizGenMainAction** — через стандартное меню генерации кода IDEA
+- `Shift+Shift` (Search Everywhere) → **BizGenMainAction**
 
 Горячие клавиши можно изменить в настройках IDE.
 
@@ -64,7 +69,15 @@
 
 Доступны по пути: **Настройки → Tools → Ru BizGen**
 
-<img src=".github/img/work-sample.gif" width="512" alt="settings" />
+<p align="center">
+  <img src=".github/img/settings.png" width="800" alt="Settings Overview" />
+</p>
+
+Настройки позволяют управлять поведением генераторов и настраивать их под ваши потребности.
+
+<p align="center">
+  <img src=".github/img/work-sample.gif" width="800" alt="Settings Overview" />
+</p>
 
 ### Управление генераторами
 

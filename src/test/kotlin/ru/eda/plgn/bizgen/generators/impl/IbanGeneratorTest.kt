@@ -17,7 +17,7 @@ internal class IbanGeneratorTest {
 
   @Nested
   @DisplayName("Testing scope: IbanRuGeneratorCases")
-  inner class IbanRuGeneratorCases : StrGeneratorTest(IbanRuGenerator(), uniqDistance = 10) {
+  inner class IbanRuGeneratorCases : StrGeneratorTest(IbanRuGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid Russian IBAN format (33 chars)`() = testsOnDistance { iban ->
@@ -34,7 +34,7 @@ internal class IbanGeneratorTest {
 
   @Nested
   @DisplayName("Testing scope: IbanTurkishGeneratorCases")
-  inner class IbanTurkishGeneratorCases : StrGeneratorTest(IbanTurkishGenerator(), uniqDistance = 10) {
+  inner class IbanTurkishGeneratorCases : StrGeneratorTest(IbanTurkishGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid Turkish IBAN format (26 chars)`() = testsOnDistance { iban ->

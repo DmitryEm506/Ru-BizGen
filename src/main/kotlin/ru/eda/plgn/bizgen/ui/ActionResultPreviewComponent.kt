@@ -123,9 +123,7 @@ class ActionResultPreviewComponent : Disposable {
   }
 
   /** Освобождение ресурса. */
-  override fun dispose() {
-    Disposer.dispose(this)
-  }
+  override fun dispose() = Unit
 
   private companion object {
 
