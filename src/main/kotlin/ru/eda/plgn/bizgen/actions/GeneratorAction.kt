@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Caret
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.ide.CopyPasteManager
 import ru.eda.plgn.bizgen.clipboard.BizGenClipboardSettingsServiceView
 import ru.eda.plgn.bizgen.di.getBizGenService
 import ru.eda.plgn.bizgen.generators.Generator
@@ -13,7 +14,6 @@ import ru.eda.plgn.bizgen.generators.GeneratorResult
 import ru.eda.plgn.bizgen.invokeLater
 import ru.eda.plgn.bizgen.notification.NotificationCtx
 import ru.eda.plgn.bizgen.notification.NotificationService
-import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 
 /**
@@ -67,20 +67,22 @@ abstract class BaseGeneratorAction<T : Any>(
     val editor = event.getData(CommonDataKeys.EDITOR) ?: return
     val project = event.getData(CommonDataKeys.PROJECT) ?: return
 
-    val primaryCaret: Caret = editor.caretModel.primaryCaret
-    val start = primaryCaret.selectionStart
-
     generator.generate().let { rsp ->
       val generatedText = rsp.toEditor.takeIf { it.isNotBlank() } ?: return
 
       invokeLater {
-        WriteCommandAction.runWriteCommandAction(project) { editor.document.insertString(start, generatedText) }
-        primaryCaret.removeSelection()
-        primaryCaret.moveToOffset(start + generatedText.length)
+        WriteCommandAction.runWriteCommandAction(project) {
+          val primaryCaret: Caret = editor.caretModel.primaryCaret
+          val start = primaryCaret.selectionStart
+
+          editor.document.insertString(start, generatedText)
+          primaryCaret.removeSelection()
+          primaryCaret.moveToOffset(start + generatedText.length)
+        }
       }
 
       if (getBizGenService<BizGenClipboardSettingsServiceView>().needToIns()) {
-        Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(rsp.toClipboard.toString()), null)
+        CopyPasteManager.getInstance().setContents(StringSelection(rsp.toClipboard.toString()))
         getBizGenService<NotificationService>().sendNotification(configureNotifCtx(rsp, editor))
       }
     }

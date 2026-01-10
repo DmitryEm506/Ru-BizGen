@@ -9,7 +9,7 @@ import ru.eda.plgn.bizgen.di.getBizGenService
  *
  * @author Dmitry_Emelyanenko
  */
-class BizGenAppSettings {
+open class BizGenAppSettings {
 
   /** Режим уведомления. */
   var notificationMode: BizGenNotificationMode = BizGenNotificationMode.DISABLE
@@ -21,7 +21,7 @@ class BizGenAppSettings {
   var insToClipboard: Boolean = true
 
   /** Сброс настроек до значений по умолчанию. */
-  fun restoreFromDefault() {
+  open fun restoreFromDefault() {
     actualActions.clear()
     actualActions.addAll(BizGenDefaultAppSettings.getDefault().actualActions)
   }

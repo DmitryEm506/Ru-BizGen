@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  *
  * @author Dmitry_Emelyanenko
  */
-class GeneratorActionProviderImplTest {
+class GeneratorActionProviderTest {
 
   val provider: GeneratorActionProvider = GeneratorActionProviderImpl()
 
@@ -43,8 +43,10 @@ class GeneratorActionProviderImplTest {
 
   companion object {
     fun <T : Any> findImplemented(baseClass: KClass<T>): List<Class<out T>> {
-      return Reflections(baseClass.java.packageName, Scanners.SubTypes).getSubTypesOf(baseClass.java)
+      return Reflections(baseClass.java.packageName, Scanners.SubTypes).getSubTypesOf(baseClass.java).asSequence()
         .filterNot { it.isInterface || java.lang.reflect.Modifier.isAbstract(it.modifiers) }
+        .filterNot { it.name.contains(".Test") }
+        .toList()
     }
   }
 }
