@@ -1,6 +1,5 @@
 package ru.eda.plgn.bizgen.ui
 
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.util.Disposer
 import org.jetbrains.annotations.Nls
@@ -11,7 +10,8 @@ import javax.swing.JComponent
  *
  * @author Dmitry_Emelyanenko
  */
-class AppSettingsConfigurable : Configurable, Disposable {
+class AppSettingsConfigurable : Configurable {
+  private var component: AppSettingsComponent? = null
 
   /**
    * Наименование плагина, которое будет отображаться в секции настроек.
@@ -29,9 +29,9 @@ class AppSettingsConfigurable : Configurable, Disposable {
    * @return UI компонент блока настроек
    */
   override fun createComponent(): JComponent {
-    return AppSettingsComponent()
-      .also { Disposer.register(this, it) }
-      .createComponent()
+    val component = AppSettingsComponent()
+    this.component = component
+    return component.createComponent()
   }
 
   /**
@@ -54,11 +54,9 @@ class AppSettingsConfigurable : Configurable, Disposable {
 
   /** Освобождение UI ресурса. */
   override fun disposeUIResources() {
-    Disposer.dispose(this)
+    component?.let { Disposer.dispose(it) }
+    component = null
   }
-
-  /** Освобождение ресурса. */
-  override fun dispose() = Unit
 
   private companion object {
     const val SETTINGS_DISPLAY_NAME: String = "Ru BizGen"
