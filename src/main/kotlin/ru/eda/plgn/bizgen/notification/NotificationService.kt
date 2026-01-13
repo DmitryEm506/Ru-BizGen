@@ -51,7 +51,7 @@ class NotificationServiceImpl : NotificationService {
 private class HintNotification : NotificationService {
   override fun sendNotification(ctx: NotificationCtx<*>) {
     JBPopupFactory.getInstance()
-      .createHtmlTextBalloonBuilder(bufferInfo(ctx.result), null, JBColor.background(), null)
+      .createHtmlTextBalloonBuilder(bufferInfo(ctx.result, textLimit = 255), null, JBColor.background(), null)
       .setFadeoutTime(3000) // Автоматическое закрытие через 3 секунды
       .createBalloon()
       .show(
@@ -65,7 +65,7 @@ private class HintNotification : NotificationService {
 private class BellNotification : NotificationService {
   override fun sendNotification(ctx: NotificationCtx<*>) {
     ApplicationManager.getApplication().messageBus.syncPublisher(Notifications.TOPIC).notify(
-      Notification(" ", "Generator: ${ctx.actionInfo.name}", bufferInfo(ctx.result), NotificationType.INFORMATION)
+      Notification(" ", "Generator: ${ctx.actionInfo.name}", bufferInfo(ctx.result, textLimit = null), NotificationType.INFORMATION)
     )
   }
 }
@@ -80,8 +80,14 @@ private class SkipNotification() : NotificationService {
  *
  * @param T тип результата
  * @param result результат работы генератора
+ * @param textLimit лимит на длину текста
  * @return полученный текст
  */
-private fun <T : Any> bufferInfo(result: GeneratorResult<T>): String {
-  return "${result.toClipboard} добавлен в буфер"
+private fun <T : Any> bufferInfo(result: GeneratorResult<T>, textLimit: Int?): String {
+  return result.toClipboard.toString().let { source ->
+    when {
+      textLimit != null && source.length > textLimit -> source.substring(0, textLimit) + "..."
+      else -> source
+    }
+  }.let { "$it добавлен в буфер" }
 }
