@@ -3,8 +3,10 @@ package ru.eda.plgn.bizgen.actions
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestFactory
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
+import ru.eda.plgn.bizgen.BaseTest
 import kotlin.reflect.KClass
 
 /**
@@ -12,9 +14,23 @@ import kotlin.reflect.KClass
  *
  * @author Dmitry_Emelyanenko
  */
-class GeneratorActionProviderTest {
+internal class GeneratorActionProviderTest : BaseTest() {
 
   val provider: GeneratorActionProvider = GeneratorActionProviderImpl()
+
+  @TestFactory
+  internal fun `Should be property from generator actions is unique in provider`() = tests(
+    listOf<Pair<(GeneratorAction<*>) -> String, String>>(
+      Pair({ it.id }, "id"),
+      Pair({ it.name }, "name"),
+      Pair({ it.generator.javaClass.name }, "generator")
+    ), { (_, description) -> "Generator property: $description" }) { (selector, _) ->
+
+    val generatorsProperty = provider.getActions().map(selector)
+
+    // then
+    generatorsProperty.shouldBeUnique()
+  }
 
   @Test
   internal fun `Should contains all implemented GeneratorAction`() {

@@ -67,6 +67,34 @@ internal class NotificationServiceTest : BaseIdeaTest() {
     }
 
   @Test
+  fun `Bell notification should not truncate long message`(@TestDisposable disposable: Disposable) {
+    val settings = replaceServiceInApp<NotificationSettingsView>(disposable)
+    every { settings.getNotificationMode() } returns BizGenAppSettings.BizGenNotificationMode.BELL
+
+    val receivedNotifications = mutableListOf<Notification>()
+    ApplicationManager.getApplication().messageBus.connect(disposable).subscribe(
+      Notifications.TOPIC,
+      object : Notifications {
+        override fun notify(notification: Notification) {
+          receivedNotifications.add(notification)
+        }
+      }
+    )
+
+    val longText = "a".repeat(300)
+    val ctx = NotificationCtx(
+      actionInfo = NotificationCtx.ActionInfo("id", "Test Action"),
+      editor = mockk(relaxed = true),
+      result = GeneratorResult(toEditor = "Editor", toClipboard = longText)
+    )
+
+    underTest.sendNotification(ctx)
+
+    receivedNotifications.size shouldBe 1
+    receivedNotifications.first().content shouldBe "$longText добавлен в буфер"
+  }
+
+  @Test
   fun `Should show hint notification`(@TestDisposable disposable: Disposable) {
     val settings = replaceServiceInApp<NotificationSettingsView>(disposable)
     every { settings.getNotificationMode() } returns BizGenAppSettings.BizGenNotificationMode.HINT
@@ -93,6 +121,37 @@ internal class NotificationServiceTest : BaseIdeaTest() {
 
     verify { popupFactory.createHtmlTextBalloonBuilder("Clipboard добавлен в буфер", any(), any(), any()) }
     verify { builder.createBalloon() }
+
+    unmockkStatic(JBPopupFactory::class)
+  }
+
+  @Test
+  fun `Should truncate long notification message`(@TestDisposable disposable: Disposable) {
+    val settings = replaceServiceInApp<NotificationSettingsView>(disposable)
+    every { settings.getNotificationMode() } returns BizGenAppSettings.BizGenNotificationMode.HINT
+
+    val popupFactory = mockk<JBPopupFactory>()
+    val builder = mockk<BalloonBuilder>(relaxed = true)
+    every { builder.setFadeoutTime(any()) } returns builder
+    val balloon = mockk<com.intellij.openapi.ui.popup.Balloon>(relaxed = true)
+
+    mockkStatic(JBPopupFactory::class)
+    every { JBPopupFactory.getInstance() } returns popupFactory
+    every { popupFactory.createHtmlTextBalloonBuilder(any(), any(), any(), any()) } returns builder
+    every { popupFactory.guessBestPopupLocation(any<com.intellij.openapi.editor.Editor>()) } returns mockk(relaxed = true)
+    every { builder.createBalloon() } returns balloon
+
+    val longText = "a".repeat(300)
+    val expectedTruncated = "a".repeat(255) + "..."
+    val ctx = NotificationCtx(
+      actionInfo = NotificationCtx.ActionInfo("id", "Test Action"),
+      editor = mockk(relaxed = true),
+      result = GeneratorResult(toEditor = "Editor", toClipboard = longText)
+    )
+
+    underTest.sendNotification(ctx)
+
+    verify { popupFactory.createHtmlTextBalloonBuilder("$expectedTruncated добавлен в буфер", any(), any(), any()) }
 
     unmockkStatic(JBPopupFactory::class)
   }

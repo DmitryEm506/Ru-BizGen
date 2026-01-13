@@ -10,6 +10,6 @@ import ru.eda.plgn.bizgen.generators.impl.AccountRubGenerator
  */
 class AccountRubActionGenerator : BaseGeneratorAction<String>(
   id = "AccountRub_0ecdce94-c1e4-447a-8dce-94c1e4747aeb",
-  name = "Расчетный RUN счет (20)",
+  name = "Расчетный RUB счет (20)",
   generator = AccountRubGenerator()
 )

@@ -24,4 +24,33 @@ internal abstract class BaseTest {
         test(testCase)
       }
     }
+
+  /**
+   * Проверка на уникальность элементов в коллекции.
+   *
+   * @param T тип элементов в коллекции
+   */
+  protected fun <T> Collection<T>.shouldBeUnique() {
+    val source = this
+
+    val duplicates = source
+      .groupBy { it }
+      .filter { it.value.size > 1 }
+
+    if (duplicates.isNotEmpty()) {
+      error(
+        buildString {
+          appendLine("Found duplicates in source collection!")
+          appendLine()
+          appendLine("Duplicates:")
+          duplicates.forEach { (value, occurrences) ->
+            appendLine("  '$value' occurred ${occurrences.size} times")
+          }
+          appendLine()
+          appendLine("Full sequence:")
+          source.forEach { appendLine("  $it") }
+        }
+      )
+    }
+  }
 }
