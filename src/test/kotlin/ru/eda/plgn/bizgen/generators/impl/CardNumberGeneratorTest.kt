@@ -13,7 +13,7 @@ import ru.eda.plgn.bizgen.utils.LuhnAlgorithm
 internal class CardNumberGeneratorTest : StrGeneratorTest(CardNumberGenerator()) {
 
   @TestFactory
-  internal fun `Should return valid card numbers`() = testsOnDistance { cardNumber ->
+  internal fun `Should return valid card numbers`() = testsOnDistanceToClipboard { cardNumber ->
     // expect
     LuhnAlgorithm.isValid(cardNumber) shouldBe true
   }

@@ -51,7 +51,7 @@ internal abstract class GeneratorBaseTest<T : Any>(protected val generator: Gene
   }
 
   /**
-   * Тестирование генератора на дистанции.
+   * Тестирование генератора на дистанции. Тестируется значение, которое будет вставляться в буфер обмена.
    *
    * *Обязательно* должна присутствовать аннотация [TestFactory]
    *
@@ -59,8 +59,21 @@ internal abstract class GeneratorBaseTest<T : Any>(protected val generator: Gene
    * @param test функция проверки полученного результата
    * @return возвращает список динамических тестов
    */
-  protected fun testsOnDistance(count: Int = generator.uniqueDistance, test: (T) -> Unit): Iterable<DynamicTest> {
-    return generator.repeatsTests(count, test)
+  protected fun testsOnDistanceToClipboard(count: Int = generator.uniqueDistance, test: (T) -> Unit): Iterable<DynamicTest> {
+    return generator.repeatsTestsToClipboard(count, test)
+  }
+
+  /**
+   * Тестирование генератора на дистанции. Тестируется значение, которое будет вставляться в редактор.
+   *
+   * *Обязательно* должна присутствовать аннотация [TestFactory]
+   *
+   * @param count количество запусков генератора
+   * @param test функция проверки полученного результата
+   * @return возвращает список динамических тестов
+   */
+  protected fun testsOnDistanceToEditor(count: Int = generator.uniqueDistance, test: (String) -> Unit): Iterable<DynamicTest> {
+    return generator.repeatsTestsToEditor(count, test)
   }
 
   private fun findSourceAndDuplicates(generator: Generator<T>, uniqDistance: Int): Pair<List<String>, Map<String, List<String>>> {
@@ -85,10 +98,28 @@ internal abstract class GeneratorBaseTest<T : Any>(protected val generator: Gene
      * @param test функция тестирования значения
      * @return возвращает список динамических тестов
      */
-    protected fun <T : Any> Generator<T>.repeatsTests(count: Int, test: (T) -> Unit): Iterable<DynamicTest> =
+    protected fun <T : Any> Generator<T>.repeatsTestsToClipboard(count: Int, test: (T) -> Unit): Iterable<DynamicTest> =
       (0..<count).map {
         val testData = generate().toClipboard
         DynamicTest.dynamicTest(testData.toString()) {
+          test(testData)
+        }
+      }
+
+    /**
+     * Расширение для генератора, которое позволяет запускать его множество раз и тестировать полученный результат.
+     *
+     * *Обязательно* должна присутствовать аннотация [TestFactory]
+     *
+     * @param T тип генерируемого значения
+     * @param count количество запусков генератора
+     * @param test функция тестирования значения
+     * @return возвращает список динамических тестов
+     */
+    protected fun <T : Any> Generator<T>.repeatsTestsToEditor(count: Int, test: (String) -> Unit): Iterable<DynamicTest> =
+      (0..<count).map {
+        val testData = generate().toEditor
+        DynamicTest.dynamicTest(testData) {
           test(testData)
         }
       }

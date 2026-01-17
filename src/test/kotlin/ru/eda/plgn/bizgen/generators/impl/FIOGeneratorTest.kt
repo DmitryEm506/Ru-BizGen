@@ -20,7 +20,7 @@ internal class FIOGeneratorTest {
 
     @TestFactory
     internal fun `Should generate a full name in format 'Lastname Firstname Patronymic'`() =
-      testsOnDistance { fio ->
+      testsOnDistanceToClipboard { fio ->
         fio shouldMatch Regex("""^[А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+ [А-ЯЁ][а-яё]+$""")
       }
 
@@ -37,7 +37,7 @@ internal class FIOGeneratorTest {
 
     @TestFactory
     internal fun `Should generate a short name in format 'Lastname IO'`() =
-      testsOnDistance { fio ->
+      testsOnDistanceToClipboard { fio ->
         fio shouldMatch Regex("""^[А-ЯЁ][а-яё]+ [А-ЯЁ]\.[А-ЯЁ]\.$""")
       }
 
@@ -54,7 +54,7 @@ internal class FIOGeneratorTest {
 
     @TestFactory
     internal fun `Should generate initials name in format IO Lastname`() =
-      testsOnDistance { fio ->
+      testsOnDistanceToClipboard { fio ->
         fio shouldMatch Regex("""^[А-ЯЁ]\.[А-ЯЁ]\. [А-ЯЁ][а-яё]+$""")
       }
 

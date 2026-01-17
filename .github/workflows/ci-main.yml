@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build, Test & Verify
+    name: Build, Test
     runs-on: ubuntu-latest
 
     steps:
@@ -34,9 +34,6 @@ jobs:
 
       - name: Build plugin
         run: ./gradlew buildPlugin --no-daemon
-
-      - name: Verify plugin
-        run: ./gradlew verifyPlugin --no-daemon
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v6

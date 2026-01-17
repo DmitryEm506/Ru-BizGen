@@ -14,13 +14,13 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class BankAccountGeneratorTest : StrGeneratorTest(BankAccountGenerator()) {
 
   @TestFactory
-  internal fun `Should generate a valid correspondent account format of 20 digits`() = testsOnDistance { account ->
+  internal fun `Should generate a valid correspondent account format of 20 digits`() = testsOnDistanceToClipboard { account ->
     account shouldHaveLength 20
     account shouldMatch Regex("^\\d{20}$")
   }
 
   @TestFactory
-  internal fun `Should generate an account starting with 30101810`() = testsOnDistance { account ->
+  internal fun `Should generate an account starting with 30101810`() = testsOnDistanceToClipboard { account ->
     account shouldMatch Regex("^30101810\\d{12}$")
   }
 

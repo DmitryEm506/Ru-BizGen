@@ -20,13 +20,13 @@ internal class AccountGeneratorTest {
   inner class AccountRubGeneratorCases : StrGeneratorTest(AccountRubGenerator()) {
 
     @TestFactory
-    internal fun `Should generate an account number of length 20`() = testsOnDistance { account ->
+    internal fun `Should generate an account number of length 20`() = testsOnDistanceToClipboard { account ->
       account shouldHaveLength 20
       account shouldMatch Regex("^\\d{20}$")
     }
 
     @TestFactory
-    internal fun `Should generate an account number starting with '407'`() = testsOnDistance { account ->
+    internal fun `Should generate an account number starting with '407'`() = testsOnDistanceToClipboard { account ->
       account shouldStartWith "407"
     }
   }
@@ -36,13 +36,13 @@ internal class AccountGeneratorTest {
   inner class AccountCnyGeneratorCases : StrGeneratorTest(AccountCnyGenerator()) {
 
     @TestFactory
-    internal fun `Should generate an account number of length 20`() = testsOnDistance { account ->
+    internal fun `Should generate an account number of length 20`() = testsOnDistanceToClipboard { account ->
       account shouldHaveLength 20
       account shouldMatch Regex("^\\d{20}$")
     }
 
     @TestFactory
-    internal fun `Should generate an account number starting with '407'`() = testsOnDistance { account ->
+    internal fun `Should generate an account number starting with '407'`() = testsOnDistanceToClipboard { account ->
       account shouldStartWith "407"
     }
   }

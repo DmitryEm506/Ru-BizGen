@@ -20,7 +20,7 @@ internal class IbanGeneratorTest {
   inner class IbanRuGeneratorCases : StrGeneratorTest(IbanRuGenerator()) {
 
     @TestFactory
-    internal fun `Should generate a valid Russian IBAN format (33 chars)`() = testsOnDistance { iban ->
+    internal fun `Should generate a valid Russian IBAN format (33 chars)`() = testsOnDistanceToClipboard { iban ->
       iban shouldHaveLength 33
       iban shouldMatch Regex("^RU\\d{31}$")
     }
@@ -37,7 +37,7 @@ internal class IbanGeneratorTest {
   inner class IbanTurkishGeneratorCases : StrGeneratorTest(IbanTurkishGenerator()) {
 
     @TestFactory
-    internal fun `Should generate a valid Turkish IBAN format (26 chars)`() = testsOnDistance { iban ->
+    internal fun `Should generate a valid Turkish IBAN format (26 chars)`() = testsOnDistanceToClipboard { iban ->
       iban shouldHaveLength 26
       iban shouldMatch Regex("^TR\\d{24}$")
     }

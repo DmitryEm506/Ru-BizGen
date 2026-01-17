@@ -13,7 +13,7 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class AddressGeneratorTest : StrGeneratorTest(AddressGenerator()) {
 
   @TestFactory
-  internal fun `Should generate an address containing a postal code`() = testsOnDistance { address ->
+  internal fun `Should generate an address containing a postal code`() = testsOnDistanceToClipboard { address ->
     address shouldContain Regex("\\d{6}")
   }
 

@@ -12,113 +12,103 @@ import kotlin.random.Random
  * @author Dmitry_Emelyanenko
  */
 class OrgEngNameGenerator : Generator<String> {
-  override val uniqueDistance: Int = 25
+  override val uniqueDistance: Int = 130
 
-  override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generateOrganizationName())
+  override fun generate(): GeneratorResult<String> =
+    GeneratorResultWithEscape(data = generateOrganizationName())
 
   private object OrganizationEngNameGeneratorInner {
-    private val companyTypes = listOf("LLC", "SP", "PJSC", "FSE") // LLC (ООО), SP (ИП), PJSC (АО), FSE (ФКП)
+    private val companyTypes = listOf(
+      "LLC",     // Limited Liability Company
+      "Ltd.",    // Limited
+      "Inc.",    // Incorporated
+      "Corp.",   // Corporation
+      "PLC",     // Public Limited Company
+      "LP",      // Limited Partnership
+      "LLP",     // Limited Liability Partnership
+      "SP",      // Sole Proprietorship
+      "Foundation",
+      "Association",
+      "Trust"
+    )
 
     private val firstWords = listOf(
-// Core industrial and technological
-      "Global", "Techno", "Rus", "Metal", "Build", "Trans", "Oil", "Gas",
-      "Agro", "Med", "Pharm", "Telecom", "Invest", "Finance", "Energy", "Progress",
-      "Mega", "Cosmos", "Alpha", "Omega", "Delta", "Sigma", "Vector", "Quantum",
-      "Sib", "Far", "Ural", "North", "South", "East", "West", "Center",
-      "Science", "Tech", "Industry", "Chem", "Eco", "Bio", "Nano", "Cyber",
-
-      // Geographical and regional
-      "Moscow", "Petersburg", "Siberia", "Baikal", "Volga", "Don", "Amur", "Altai",
-      "Kamchatka", "Sakhalin", "Crimea", "Caucasus", "Chernozem", "Neva", "Ob", "Yenisei",
-      "Lena", "Angara", "Baltic", "Arctic", "Taimyr", "Primorye", "Transbaikal", "Kursk",
-      "Tver", "Ryazan", "Vladimir", "Yaroslavl", "Kostroma", "Vologda", "Pskov", "Novgorod",
-
-      // Technology and innovation
-      "Robot", "IT", "Code", "Soft", "Hard", "Chip", "Drive", "Smart",
-      "Digital", "Virtu", "Cloud", "Neuro", "Crypto", "Blockchain", "Token", "IP",
-      "Sensor", "Detector", "Micro", "Opto", "Laser", "Plasma", "Quantum", "Photon",
-
-      // Construction and real estate
-      "Dom", "Quarter", "Zhil", "Comfort", "Facade", "Foundation", "Roof", "Concrete",
-      "Brick", "Glass", "Metro", "Bridge", "Tunnel", "Highrise", "Arch", "Project",
-
-      // Transport and logistics
-      "Avia", "Auto", "Railway", "RiverFleet", "SeaFleet", "Transit", "Express", "Cargo",
-      "Freight", "Container", "Logist", "Transa", "Aero", "Taxi", "Bus", "Trolley",
-
-      // Finance and business
-      "Capital", "Asset", "Trust", "Credit", "Deposit", "Leasing", "Factoring", "Audit",
-      "Consult", "Market", "Business", "Trade", "Impex", "Expo", "Forum", "Club",
-
-      // Science and education
-      "Academy", "Univer", "College", "Lyceum", "Institute", "Laboratory", "Research", "Experiment",
-      "Knowledge", "Progress", "Intellect", "Genius", "Talent", "Olympus", "Erudite", "Course",
-
-      // Medicine and pharmaceuticals
-      "Medica", "Clinic", "Diagnost", "Therapy", "Dental", "Ophthalmo", "Cardio", "Neuro",
-      "Pharma", "Vita", "Genetic", "Immuno", "Bio", "Hygiene", "Sanatorium", "Spa",
-
-      // Retail and services
-      "Trade", "Market", "Super", "Hyper", "Mega", "Supermarket", "Grocery", "Product",
-      "Service", "Center", "Plus", "Extra", "Premium", "Lux", "Grand", "Elite",
-
-      // Natural resources and ecology
-      "Forest", "Water", "Air", "Earth", "Fertility", "Eco", "Resource", "Geo",
-      "Petro", "Gas", "Coal", "Ore", "Metallurgy", "Chem", "Polymer", "Energy",
-
-      // Culture and arts
-      "Art", "Culture", "Theater", "Cinema", "Museum", "Gallery", "Exhibition", "Festival",
-      "Concert", "Philharmonic", "Orchestra", "Choir", "Ballet", "Opera", "Drama", "Circus"
+      "Global", "Tech", "Industrial", "Advanced", "United", "National", "Prime",
+      "Alpha", "Omega", "Delta", "Sigma", "Vector", "Quantum",
+      "North", "South", "East", "West", "Central",
+      "Atlantic", "Pacific", "Arctic", "Continental",
+      "Digital", "Cyber", "Nano", "Bio", "Smart", "Cloud",
+      "Energy", "Power", "Dynamics", "Systems", "Solutions",
+      "Capital", "Finance", "Investment", "Assets", "Equity",
+      "Logistics", "Transport", "Aero", "Marine", "Transit",
+      "Medical", "Pharma", "Health", "Clinical", "Diagnostics",
+      "Agro", "Food", "Grain", "Harvest", "Farming",
+      "Construction", "Build", "Engineering", "Infrastructure",
+      "Research", "Innovation", "Labs", "Institute", "Academy",
+      "Media", "Creative", "Studio", "Art", "Culture",
+      "Spectrum", "Horizon", "Impulse", "Matrix", "Platform",
+      "Ecosystem", "Synergy", "Initiative", "Momentum",
+      "Vertex", "Polaris", "Apex", "Summit", "Pioneer",
+      "Logic", "Algorithm", "Protocol", "Interface", "Architecture",
+      "Prime", "Focus", "Status", "Formula", "Axiom"
     )
 
     private val secondWords = listOf(
-      "Service", "Group", "Holding", "Trade", "Leasing", "Bank", "Capital", "Resource",
-      "Supply", "Retail", "Industry", "Tech", "Industry", "Systems", "Technologies", "Solutions",
-      "Consulting", "Management", "Development", "Partners", "Center", "Alliance", "Trust",
-      "Corporation", "Company", "Concern", "Syndicate", "Trust", "Association", "Fund",
-      "Venture", "Digital", "Innovations", "Logistics", "Market", "Realty", "Oil",
-      "Project", "Build", "Transit", "Universal", "Factory", "HiTech", "Center", "Expert",
-      "Union", "Yard", "Lab", "Media", "Network", "Online", "Premium", "Quality"
+      "Group", "Holdings", "Corporation", "Company", "Enterprises",
+      "Industries", "Systems", "Technologies", "Solutions",
+      "Consulting", "Management", "Development",
+      "Partners", "Alliance", "Union", "Consortium",
+      "Capital", "Investments", "Ventures",
+      "Logistics", "Operations", "Services", "Support",
+      "Engineering", "Manufacturing", "Production",
+      "Research", "Analytics", "Integration",
+      "Automation", "Optimization", "Modernization",
+      "Platform", "Ecosystem", "Network",
+      "Digital", "Online", "Media", "Labs",
+      "Premium", "Quality", "Expertise"
     )
 
     private val longSuffixes = listOf(
-      " named after Academician Petrov-Sokolov",
-      " of the Northwestern Federal District",
-      " for high-tech equipment production",
-      " for oil and gas industry and energy",
-      " in information technology and digital transformation",
-      " of Krasnoznamensk urban district, Moscow Region",
-      " under the Government of the Russian Federation",
-      " for innovative AI solutions development",
-      " and subsidiaries of Vostok-Zapad group of companies",
-      " (former Progress-Electronmash enterprise)"
+      " operating in international markets",
+      " specializing in advanced technological solutions",
+      " providing integrated services and products",
+      " focused on innovation and sustainable development",
+      " serving government and corporate clients",
+      " with a global network of subsidiaries",
+      " established in accordance with applicable law",
+      " delivering end-to-end digital transformation",
+      " engaged in research and development activities",
+      " with headquarters and regional offices worldwide",
+      " operating under international quality standards",
+      " with a diversified portfolio of solutions",
+      " supporting large-scale infrastructure projects",
+      " acting in the interests of strategic partners",
+      " with certified processes and methodologies"
     )
+
+    private val separators = listOf("", "-", " ")
 
     fun generateOrganizationName(): String {
       val random = Random.Default
       val type = companyTypes.random()
-      val useTwoWords = random.nextBoolean()
 
       val baseName = buildString {
         append(firstWords.random())
-        if (useTwoWords) {
-          append(secondWords.random())
-        }
+        append(separators.random())
+        append(secondWords.random())
       }
 
-      // 30% chance to add long suffix
-      val fullName = if (random.nextDouble() < 0.3) {
+      // 50% chance to add long suffix
+      val fullName = if (random.nextDouble() < 0.5) {
         val suffix = longSuffixes.random()
-        // Ensure total length doesn't exceed 255 chars
         if (type.length + 1 + baseName.length + suffix.length <= 255) {
-          "$type $baseName$suffix"
+          "$baseName$suffix $type"
         } else {
-          // If too long, truncate suffix
           val maxSuffixLength = 255 - (type.length + 1 + baseName.length)
-          "$type $baseName${suffix.take(maxSuffixLength)}"
+          "$baseName${suffix.take(maxSuffixLength)} $type"
         }
       } else {
-        "$type $baseName"
+        "$baseName $type"
       }
 
       return fullName
