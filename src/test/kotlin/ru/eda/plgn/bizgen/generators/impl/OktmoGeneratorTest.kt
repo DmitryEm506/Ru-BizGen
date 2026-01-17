@@ -20,7 +20,7 @@ internal class OktmoGeneratorTest {
   inner class Oktmo8GeneratorCases : StrGeneratorTest(Oktmo8Generator()) {
 
     @TestFactory
-    internal fun `Should generate a valid 8-digit OKTMO`() = testsOnDistance { oktmo ->
+    internal fun `Should generate a valid 8-digit OKTMO`() = testsOnDistanceToClipboard { oktmo ->
       oktmo shouldHaveLength 8
       oktmo shouldMatch Regex("""^\d{8}$""")
     }
@@ -37,7 +37,7 @@ internal class OktmoGeneratorTest {
   inner class Oktmo11GeneratorCases : StrGeneratorTest(Oktmo11Generator()) {
 
     @TestFactory
-    internal fun `Should generate a valid 11-digit OKTMO`() = testsOnDistance { oktmo ->
+    internal fun `Should generate a valid 11-digit OKTMO`() = testsOnDistanceToClipboard { oktmo ->
       oktmo shouldHaveLength 11
       oktmo shouldMatch Regex("""^\d{11}$""")
     }

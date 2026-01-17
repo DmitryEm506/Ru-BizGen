@@ -15,10 +15,10 @@ internal class OrgNameGeneratorDUTest {
   @Nested
   @DisplayName("Testing scope: OrgRuNameGeneratorCases")
   inner class OrgRuNameGeneratorCases :
-    Percentile95DistanceUniqStrTest(generator = OrgRuNameGenerator(), distanceLimit = 20..30, minimalUniqueDistance = 25)
+    Percentile95DistanceUniqStrTest(generator = OrgRuNameGenerator(), distanceLimit = 129..131, minimalUniqueDistance = 130)
 
   @Nested
   @DisplayName("Testing scope: OrgEngNameGeneratorCases")
   inner class OrgEngNameGeneratorCases :
-    Percentile95DistanceUniqStrTest(generator = OrgEngNameGenerator(), distanceLimit = 20..30, minimalUniqueDistance = 25)
+    Percentile95DistanceUniqStrTest(generator = OrgEngNameGenerator(), distanceLimit = 129..130, minimalUniqueDistance = 130)
 }

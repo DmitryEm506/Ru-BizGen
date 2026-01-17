@@ -21,13 +21,13 @@ internal class OgrnGeneratorTest {
   inner class OgrnLegalGeneratorCases : StrGeneratorTest(OgrnLegalGenerator()) {
 
     @TestFactory
-    internal fun `Should generate a valid OGRN of length 13`() = testsOnDistance { ogrn ->
+    internal fun `Should generate a valid OGRN of length 13`() = testsOnDistanceToClipboard { ogrn ->
       ogrn shouldHaveLength 13
       ogrn shouldMatch Regex("""^\d{13}$""")
     }
 
     @TestFactory
-    internal fun `Should generate an OGRN starting with 1 or 5`() = testsOnDistance { ogrn ->
+    internal fun `Should generate an OGRN starting with 1 or 5`() = testsOnDistanceToClipboard { ogrn ->
       ogrn.first() shouldBeIn listOf('1', '5')
     }
   }
@@ -37,13 +37,13 @@ internal class OgrnGeneratorTest {
   inner class OgrnIpGeneratorCases : StrGeneratorTest(OgrnIpGenerator()) {
 
     @TestFactory
-    internal fun `Should generate a valid OGRNIP of length 15`() = testsOnDistance { ogrnip ->
+    internal fun `Should generate a valid OGRNIP of length 15`() = testsOnDistanceToClipboard { ogrnip ->
       ogrnip shouldHaveLength 15
       ogrnip shouldMatch Regex("""^\d{15}$""")
     }
 
     @TestFactory
-    internal fun `Should generate an OGRNIP starting with 3`() = testsOnDistance { ogrnip ->
+    internal fun `Should generate an OGRNIP starting with 3`() = testsOnDistanceToClipboard { ogrnip ->
       ogrnip.first() shouldBe '3'
     }
   }

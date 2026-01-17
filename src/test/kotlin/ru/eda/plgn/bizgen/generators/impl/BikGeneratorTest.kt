@@ -15,13 +15,13 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class BikGeneratorTest : StrGeneratorTest(BikGenerator()) {
 
   @TestFactory
-  internal fun `Should generate a BIK of length 9`() = testsOnDistance { bik ->
+  internal fun `Should generate a BIK of length 9`() = testsOnDistanceToClipboard { bik ->
     bik shouldHaveLength 9
     bik shouldMatch Regex("^\\d{9}$")
   }
 
   @TestFactory
-  internal fun `Should generate a BIK starting with 04`() = testsOnDistance { bik ->
+  internal fun `Should generate a BIK starting with 04`() = testsOnDistanceToClipboard { bik ->
     bik shouldStartWith "04"
   }
 

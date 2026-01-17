@@ -13,12 +13,12 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class SnilsGeneratorTest : StrGeneratorTest(SnilsGenerator()) {
 
   @TestFactory
-  internal fun `Should return in correct format`() = testsOnDistance { snils ->
+  internal fun `Should return in correct format`() = testsOnDistanceToClipboard { snils ->
     snils shouldMatch Regex("^[1-9]{3}-[1-9]{3}-[1-9]{3} [0-9]{2}$")
   }
 
   @TestFactory
-  internal fun `Should contains correct checkDigits`() = testsOnDistance { snils ->
+  internal fun `Should contains correct checkDigits`() = testsOnDistanceToClipboard { snils ->
     val parts = snils.split("-"," ")
     val payload = parts.dropLast(1)
       .joinToString("")

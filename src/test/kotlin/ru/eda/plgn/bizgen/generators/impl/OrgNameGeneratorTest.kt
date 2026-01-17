@@ -17,32 +17,33 @@ internal class OrgNameGeneratorTest {
   @Nested
   @DisplayName("Testing scope: OrgRuNameGeneratorCases")
   inner class OrgRuNameGeneratorCases : StrGeneratorTest(OrgRuNameGenerator()) {
+    private val orgTypePattern = "(ООО|АО|ПАО|НАО|ИП|ФКП|ФГУП|ГУП|МУП|ГБУ|МБУ|МАУ|ГАУ|АНО|НКО|Фонд|Ассоциация)"
 
     @TestFactory
-    internal fun `Should generate a valid Russian organization name`() = testsOnDistance { name ->
-      name shouldMatch Regex("^(ООО|ИП|АО|ФКП) .+")
+    internal fun `Should generate a valid Russian organization name`() = testsOnDistanceToClipboard { name ->
+      name shouldMatch Regex("^$orgTypePattern.+")
     }
 
-    @Test
-    internal fun `Should return an editor-escaped organization name`() {
-      val result = generator.generate()
-      result.toEditor shouldMatch Regex("^\"(ООО|ИП|АО|ФКП) .+\"$")
+    @TestFactory
+    internal fun `Should return an editor-escaped organization name`() = testsOnDistanceToEditor { toEditor ->
+      toEditor shouldMatch Regex("^\"$orgTypePattern .+\"$")
     }
   }
 
   @Nested
   @DisplayName("Testing scope: OrgEngNameGeneratorCases")
   inner class OrgEngNameGeneratorCases : StrGeneratorTest(OrgEngNameGenerator()) {
+    private val orgTypePattern = "(LLC|SP|Ltd\\.|Inc\\.|Corp\\.|PLC|LP|LLP|Foundation|Association|Trust)"
 
     @TestFactory
-    internal fun `Should generate a valid English organization name`() = testsOnDistance { name ->
-      name shouldMatch Regex("^(LLC|SP|PJSC|FSE) .+")
+    internal fun `Should generate a valid English organization name`() = testsOnDistanceToClipboard { name ->
+      name shouldMatch Regex(".*$orgTypePattern$")
     }
 
     @Test
     internal fun `Should return an editor-escaped organization name`() {
       val result = generator.generate()
-      result.toEditor shouldMatch Regex("^\"(LLC|SP|PJSC|FSE) .+\"$")
+      result.toEditor shouldMatch Regex(".*$orgTypePattern\"$")
     }
   }
 }

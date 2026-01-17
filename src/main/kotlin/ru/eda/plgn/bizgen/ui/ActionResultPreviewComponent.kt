@@ -70,7 +70,7 @@ class ActionResultPreviewComponent : Disposable {
 
     row {
       label("Дистанция уникальности").gap(RightGap.SMALL)
-      contextHelp("Количество вызовов генератора, при котором с вероятностью 95% получается разный результат").gap(RightGap.SMALL)
+      contextHelp(DISTANCE_HELP_MESSAGE).gap(RightGap.SMALL)
       label(":")
       cell(uniqueDistanceLabel)
     }
@@ -126,6 +126,8 @@ class ActionResultPreviewComponent : Disposable {
   override fun dispose() = Unit
 
   private companion object {
+    const val DISTANCE_HELP_MESSAGE =
+      "Количество вызовов генератора, при котором с вероятностью 95% получается разный результат. Значения выше 130 не проверялись, поэтому реальные значения могут быть значительно больше"
 
     /**
      * Чтобы документ был в режиме только просмотра, специально перед вставкой текста снимаем этот режим, потом вставляем текст, а потом

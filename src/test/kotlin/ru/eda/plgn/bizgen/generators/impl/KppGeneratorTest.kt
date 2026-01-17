@@ -14,13 +14,13 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class KppGeneratorTest : StrGeneratorTest(KppGenerator()) {
 
   @TestFactory
-  internal fun `Should generate a valid KPP format (9 digits)`() = testsOnDistance { kpp ->
+  internal fun `Should generate a valid KPP format (9 digits)`() = testsOnDistanceToClipboard { kpp ->
     kpp shouldHaveLength 9
     kpp shouldMatch Regex("""^\d{9}$""")
   }
 
   @TestFactory
-  internal fun `Should generate a KPP with valid reason code (01-50)`() = testsOnDistance { kpp ->
+  internal fun `Should generate a KPP with valid reason code (01-50)`() = testsOnDistanceToClipboard { kpp ->
     val reasonCode = kpp.substring(4, 6).toInt()
     reasonCode shouldBeInRange 1..50
   }

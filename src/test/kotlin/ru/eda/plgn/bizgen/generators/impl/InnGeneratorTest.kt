@@ -21,13 +21,13 @@ internal class InnGeneratorTest {
   inner class InnIndividualGeneratorCases : StrGeneratorTest(InnIndividualGenerator()) {
 
     @TestFactory
-    internal fun `Should generate a valid individual INN format (12 digits)`() = testsOnDistance { inn ->
+    internal fun `Should generate a valid individual INN format (12 digits)`() = testsOnDistanceToClipboard { inn ->
       inn shouldHaveLength 12
       inn shouldMatch Regex("""^\d{12}$""")
     }
 
     @TestFactory
-    internal fun `Should generate an individual INN with a valid region (first 2 digits)`() = testsOnDistance { inn ->
+    internal fun `Should generate an individual INN with a valid region (first 2 digits)`() = testsOnDistanceToClipboard { inn ->
       val region = inn.take(2).toInt()
       region shouldBeInRange 1..99
     }
@@ -44,13 +44,13 @@ internal class InnGeneratorTest {
   inner class InnLegalGeneratorCases : StrGeneratorTest(InnLegalGenerator()) {
 
     @TestFactory
-    internal fun `Should generate a valid legal entity INN format (10 digits)`() = testsOnDistance { inn ->
+    internal fun `Should generate a valid legal entity INN format (10 digits)`() = testsOnDistanceToClipboard { inn ->
       inn shouldHaveLength 10
       inn shouldMatch Regex("""^\d{10}$""")
     }
 
     @TestFactory
-    internal fun `Should generate a legal entity INN with a valid region (first 2 digits)`() = testsOnDistance { inn ->
+    internal fun `Should generate a legal entity INN with a valid region (first 2 digits)`() = testsOnDistanceToClipboard { inn ->
       val region = inn.take(2).toInt()
       region shouldBeInRange 1..99
     }

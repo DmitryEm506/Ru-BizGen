@@ -20,12 +20,12 @@ internal class SwiftRuGeneratorTest {
   inner class Swift8RuGeneratorCases : StrGeneratorTest(Swift8RuGenerator()) {
 
     @TestFactory
-    internal fun `Should generate a valid SWIFT code of length 8`() = testsOnDistance(50) { swift ->
+    internal fun `Should generate a valid SWIFT code of length 8`() = testsOnDistanceToClipboard(50) { swift ->
       swift shouldMatch Regex("^[A-Z0-9]{8}$")
     }
 
     @TestFactory
-    internal fun `Should generate a Russian SWIFT code (positions 4-6 = RU)`() = testsOnDistance(50) { swift ->
+    internal fun `Should generate a Russian SWIFT code (positions 4-6 = RU)`() = testsOnDistanceToClipboard(50) { swift ->
       swift.substring(4, 6) shouldBe "RU"
     }
 
@@ -41,17 +41,17 @@ internal class SwiftRuGeneratorTest {
   inner class Swift11RuGeneratorCases : StrGeneratorTest(Swift11RuGenerator()) {
 
     @TestFactory
-    internal fun `Should generate a valid SWIFT code of length 11`() = testsOnDistance { swift ->
+    internal fun `Should generate a valid SWIFT code of length 11`() = testsOnDistanceToClipboard { swift ->
       swift shouldMatch Regex("^[A-Z0-9]{8}\\d{3}$")
     }
 
     @TestFactory
-    internal fun `Should generate a Russian SWIFT code (positions 4-6 = RU)`() = testsOnDistance { swift ->
+    internal fun `Should generate a Russian SWIFT code (positions 4-6 = RU)`() = testsOnDistanceToClipboard { swift ->
       swift.substring(4, 6) shouldBe "RU"
     }
 
     @TestFactory
-    internal fun `Should generate a SWIFT branch code (last 3 digits)`() = testsOnDistance(50) { swift ->
+    internal fun `Should generate a SWIFT branch code (last 3 digits)`() = testsOnDistanceToClipboard(50) { swift ->
       swift.substring(8, 11) shouldMatch Regex("^\\d{3}$")
     }
 

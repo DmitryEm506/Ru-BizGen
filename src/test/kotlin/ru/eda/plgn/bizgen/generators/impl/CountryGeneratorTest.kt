@@ -12,7 +12,7 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class CountryGeneratorTest : StrGeneratorTest(CountryGenerator()) {
 
   @TestFactory
-  internal fun `Should return a result containing editor annotations`() = testsOnDistance(500) { country ->
+  internal fun `Should return a result containing editor annotations`() = testsOnDistanceToClipboard(500) { country ->
     country shouldMatch Regex(
       """^Country\(code=\d{3}, alpha2Code=[A-Z]{2}, alpha3Code=[A-Z]{3}, name=[А-ЯЁ \-().,']+, engName=[A-Z \-.,()']+\)$"""
     )
