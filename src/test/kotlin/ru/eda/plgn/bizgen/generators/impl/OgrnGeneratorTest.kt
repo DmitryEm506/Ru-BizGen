@@ -7,7 +7,7 @@ import io.kotest.matchers.string.shouldMatch
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генераторов ОГРН — [OgrnLegalGenerator], [OgrnIpGenerator].
@@ -17,8 +17,8 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class OgrnGeneratorTest {
 
   @Nested
-  @DisplayName("Testing scope: OgrnLegalGeneratorCases")
-  inner class OgrnLegalGeneratorCases : StrGeneratorTest(OgrnLegalGenerator()) {
+  @DisplayName("Testing scope: OgrnLegalGenerator")
+  inner class OgrnLegalGeneratorCases : GeneratorStrTest(OgrnLegalGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid OGRN of length 13`() = testsOnDistanceToClipboard { ogrn ->
@@ -33,8 +33,8 @@ internal class OgrnGeneratorTest {
   }
 
   @Nested
-  @DisplayName("Testing scope: OgrnIpGeneratorCases")
-  inner class OgrnIpGeneratorCases : StrGeneratorTest(OgrnIpGenerator()) {
+  @DisplayName("Testing scope: OgrnIpGenerator")
+  inner class OgrnIpGeneratorCases : GeneratorStrTest(OgrnIpGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid OGRNIP of length 15`() = testsOnDistanceToClipboard { ogrnip ->

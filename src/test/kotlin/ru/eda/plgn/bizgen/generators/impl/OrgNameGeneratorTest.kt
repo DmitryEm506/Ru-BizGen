@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генераторов названий организаций — [OrgRuNameGenerator], [OrgEngNameGenerator].
@@ -15,8 +15,8 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class OrgNameGeneratorTest {
 
   @Nested
-  @DisplayName("Testing scope: OrgRuNameGeneratorCases")
-  inner class OrgRuNameGeneratorCases : StrGeneratorTest(OrgRuNameGenerator()) {
+  @DisplayName("Testing scope: OrgRuNameGenerator")
+  inner class OrgRuNameGeneratorCases : GeneratorStrTest(OrgRuNameGenerator()) {
     private val orgTypePattern = "(ООО|АО|ПАО|НАО|ИП|ФКП|ФГУП|ГУП|МУП|ГБУ|МБУ|МАУ|ГАУ|АНО|НКО|Фонд|Ассоциация)"
 
     @TestFactory
@@ -31,8 +31,8 @@ internal class OrgNameGeneratorTest {
   }
 
   @Nested
-  @DisplayName("Testing scope: OrgEngNameGeneratorCases")
-  inner class OrgEngNameGeneratorCases : StrGeneratorTest(OrgEngNameGenerator()) {
+  @DisplayName("Testing scope: OrgEngNameGenerator")
+  inner class OrgEngNameGeneratorCases : GeneratorStrTest(OrgEngNameGenerator()) {
     private val orgTypePattern = "(LLC|SP|Ltd\\.|Inc\\.|Corp\\.|PLC|LP|LLP|Foundation|Association|Trust)"
 
     @TestFactory

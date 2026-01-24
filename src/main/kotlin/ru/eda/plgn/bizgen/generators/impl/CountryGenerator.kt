@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.generators.impl
 
-import ru.eda.plgn.bizgen.generators.Generator
+import ru.eda.plgn.bizgen.generators.GeneratorStr
 import ru.eda.plgn.bizgen.generators.GeneratorResult
 
 /**
@@ -8,7 +8,7 @@ import ru.eda.plgn.bizgen.generators.GeneratorResult
  *
  * @author Dmitry_Emelyanenko
  */
-class CountryGenerator : Generator<String> {
+class CountryGenerator : GeneratorStr {
   override val uniqueDistance: Int = 5
 
   override fun generate(): GeneratorResult<String> =

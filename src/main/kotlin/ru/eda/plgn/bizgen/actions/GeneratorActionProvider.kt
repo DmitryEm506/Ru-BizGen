@@ -23,6 +23,8 @@ import ru.eda.plgn.bizgen.actions.impl.oktmo.Oktmo11ActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.oktmo.Oktmo8ActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.org.OrgEngNameActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.org.OrgRuNameActionGenerator
+import ru.eda.plgn.bizgen.actions.impl.phone_number.PhoneNumberRuDigitActionGenerator
+import ru.eda.plgn.bizgen.actions.impl.phone_number.PhoneNumberRuFormatActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.swift.Swift11ActionGenerator
 import ru.eda.plgn.bizgen.actions.impl.swift.Swift8ActionGenerator
 import ru.eda.plgn.bizgen.di.BizGenService
@@ -66,8 +68,8 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
    *
    * ***ВАЖНО***
    * - от порядка добавления действий зависит порядок отображаемых действий, когда вызывается плагин и при отображении настроек
-   * - после добавления действия необходимо скинуть настройки через пункт меню всех настроек *Settings --> Tools --> Ru Business Data
-   *   Generator --> Список с генераторами --> Иконка "Reset"*
+   * - после добавления действия происходит синхронизация с сохраненными настройками при первом вызове плагина
+   * - есть возможность скинуть принудительно, через *Settings --> Tools --> Ru BizGen --> Список с генераторами --> Иконка "Reset"*
    */
   private val actions: List<BaseGeneratorAction<*>> = listOf(
     // Технические
@@ -103,6 +105,8 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
     FIOFullActionGenerator(),
     FIOShortActionGenerator(),
     FIOInitialsActionGenerator(),
+    PhoneNumberRuFormatActionGenerator(),
+    PhoneNumberRuDigitActionGenerator(),
     SnilsActionGenerator(),
   )
 

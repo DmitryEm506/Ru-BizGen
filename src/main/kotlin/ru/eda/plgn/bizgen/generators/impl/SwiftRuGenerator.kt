@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.generators.impl
 
-import ru.eda.plgn.bizgen.generators.Generator
+import ru.eda.plgn.bizgen.generators.GeneratorStr
 import ru.eda.plgn.bizgen.generators.GeneratorResult
 import ru.eda.plgn.bizgen.generators.GeneratorResultWithEscape
 import ru.eda.plgn.bizgen.generators.impl.SwiftRuGeneratorInner.generate11
@@ -23,7 +23,7 @@ import kotlin.random.Random
  *
  * @author Dmitry_Emelyanenko
  */
-class Swift8RuGenerator : Generator<String> {
+class Swift8RuGenerator : GeneratorStr {
   override val uniqueDistance: Int = 3
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generate8())
@@ -46,7 +46,7 @@ class Swift8RuGenerator : Generator<String> {
  *
  * @author Dmitry_Emelyanenko
  */
-class Swift11RuGenerator : Generator<String> {
+class Swift11RuGenerator : GeneratorStr {
   override val uniqueDistance: Int = 50
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generate11())

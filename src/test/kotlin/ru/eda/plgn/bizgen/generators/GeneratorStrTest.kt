@@ -6,4 +6,4 @@ package ru.eda.plgn.bizgen.generators
  * @param generator генератор
  * @author Dmitry_Emelyanenko
  */
-internal abstract class StrGeneratorTest(generator: Generator<String>) : GeneratorBaseTest<String>(generator)
+internal abstract class GeneratorStrTest(generator: Generator<String>) : GeneratorBaseTest<String>(generator)

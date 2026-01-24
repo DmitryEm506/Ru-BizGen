@@ -4,14 +4,14 @@ import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.string.shouldMatch
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генератора корреспондентских счетов - [BankAccountGenerator].
  *
  * @author Dmitry_Emelyanenko
  */
-internal class BankAccountGeneratorTest : StrGeneratorTest(BankAccountGenerator()) {
+internal class BankAccountGeneratorTest : GeneratorStrTest(BankAccountGenerator()) {
 
   @TestFactory
   internal fun `Should generate a valid correspondent account format of 20 digits`() = testsOnDistanceToClipboard { account ->

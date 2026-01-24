@@ -3,14 +3,14 @@ package ru.eda.plgn.bizgen.generators.impl
 import io.kotest.matchers.string.shouldContain
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генератора адресов - [AddressGenerator].
  *
  * @author Dmitry_Emelyanenko
  */
-internal class AddressGeneratorTest : StrGeneratorTest(AddressGenerator()) {
+internal class AddressGeneratorTest : GeneratorStrTest(AddressGenerator()) {
 
   @TestFactory
   internal fun `Should generate an address containing a postal code`() = testsOnDistanceToClipboard { address ->

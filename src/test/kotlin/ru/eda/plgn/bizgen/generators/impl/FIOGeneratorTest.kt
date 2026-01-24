@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генератора полного ФИО - [FIOFullGenerator].
@@ -15,8 +15,8 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class FIOGeneratorTest {
 
   @Nested
-  @DisplayName("Testing scope: FIOFullGeneratorCases")
-  inner class FIOFullGeneratorCases : StrGeneratorTest(FIOFullGenerator()) {
+  @DisplayName("Testing scope: FIOFullGenerator")
+  inner class FIOFullGeneratorCases : GeneratorStrTest(FIOFullGenerator()) {
 
     @TestFactory
     internal fun `Should generate a full name in format 'Lastname Firstname Patronymic'`() =
@@ -32,8 +32,8 @@ internal class FIOGeneratorTest {
   }
 
   @Nested
-  @DisplayName("Testing scope: FIOShortGeneratorCases")
-  inner class FIOShortGeneratorCases : StrGeneratorTest(FIOShortGenerator()) {
+  @DisplayName("Testing scope: FIOShortGenerator")
+  inner class FIOShortGeneratorCases : GeneratorStrTest(FIOShortGenerator()) {
 
     @TestFactory
     internal fun `Should generate a short name in format 'Lastname IO'`() =
@@ -49,8 +49,8 @@ internal class FIOGeneratorTest {
   }
 
   @Nested
-  @DisplayName("Testing scope: FIOInitialsGeneratorCases")
-  inner class FIOInitialsGeneratorCases : StrGeneratorTest(FIOInitialsGenerator()) {
+  @DisplayName("Testing scope: FIOInitialsGenerator")
+  inner class FIOInitialsGeneratorCases : GeneratorStrTest(FIOInitialsGenerator()) {
 
     @TestFactory
     internal fun `Should generate initials name in format IO Lastname`() =

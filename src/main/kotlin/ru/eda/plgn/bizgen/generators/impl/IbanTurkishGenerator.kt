@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.generators.impl
 
-import ru.eda.plgn.bizgen.generators.Generator
+import ru.eda.plgn.bizgen.generators.GeneratorStr
 import ru.eda.plgn.bizgen.generators.GeneratorResult
 import ru.eda.plgn.bizgen.generators.GeneratorResultWithEscape
 import ru.eda.plgn.bizgen.generators.impl.IbanTurkishGenerator.IbanGenerator.randomTurkishIBAN
@@ -18,7 +18,7 @@ import java.math.BigInteger
  *
  * @author Dmitry_Emelyanenko
  */
-class IbanTurkishGenerator : Generator<String> {
+class IbanTurkishGenerator : GeneratorStr {
   override val uniqueDistance: Int = 130
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomTurkishIBAN())

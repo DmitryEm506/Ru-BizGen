@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.generators.impl
 
-import ru.eda.plgn.bizgen.generators.Generator
+import ru.eda.plgn.bizgen.generators.GeneratorStr
 import ru.eda.plgn.bizgen.generators.GeneratorResult
 import ru.eda.plgn.bizgen.generators.GeneratorResultWithEscape
 import ru.eda.plgn.bizgen.generators.impl.OktmoGenerator.randomOktmo11
@@ -23,7 +23,7 @@ import kotlin.random.Random
  *
  * @author Dmitry_Emelyanenko
  */
-class Oktmo8Generator : Generator<String> {
+class Oktmo8Generator : GeneratorStr {
   override val uniqueDistance: Int = 4
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomOktmo8())
@@ -45,7 +45,7 @@ class Oktmo8Generator : Generator<String> {
  *
  * @author Dmitry_Emelyanenko
  */
-class Oktmo11Generator : Generator<String> {
+class Oktmo11Generator : GeneratorStr {
   override val uniqueDistance: Int = 5
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomOktmo11())

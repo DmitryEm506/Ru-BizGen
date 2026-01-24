@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.generators.impl
 
-import ru.eda.plgn.bizgen.generators.Generator
+import ru.eda.plgn.bizgen.generators.GeneratorStr
 import ru.eda.plgn.bizgen.generators.GeneratorResult
 import ru.eda.plgn.bizgen.generators.GeneratorResultWithEscape
 import ru.eda.plgn.bizgen.generators.impl.OrgRuNameGenerator.OrganizationRuNameGeneratorInner.generateOrganizationName
@@ -11,7 +11,7 @@ import kotlin.random.Random
  *
  * @author Dmitry_Emelyanenko
  */
-class OrgRuNameGenerator : Generator<String> {
+class OrgRuNameGenerator : GeneratorStr {
   override val uniqueDistance: Int = 130
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generateOrganizationName())

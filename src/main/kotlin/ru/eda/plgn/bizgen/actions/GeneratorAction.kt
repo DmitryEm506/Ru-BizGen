@@ -99,3 +99,16 @@ abstract class BaseGeneratorAction<T : Any>(
     )
   }
 }
+
+/**
+ * Обертка над [BaseGeneratorAction], которая используется, когда генератор выдаёт строковые данные.
+ *
+ * @param id идентификатор действия
+ * @param name название действия
+ * @param generator генератор
+ */
+abstract class StrActionGenerator(
+  id: String,
+  name: String,
+  generator: Generator<String>,
+) : BaseGeneratorAction<String>(id = id, name = name, generator = generator)
