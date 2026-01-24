@@ -3,14 +3,14 @@ package ru.eda.plgn.bizgen.generators.impl
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldMatch
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генератора СНИЛС — [SnilsGenerator].
  *
  * @author Dmitry_Emelyanenko
  */
-internal class SnilsGeneratorTest : StrGeneratorTest(SnilsGenerator()) {
+internal class SnilsGeneratorTest : GeneratorStrTest(SnilsGenerator()) {
 
   @TestFactory
   internal fun `Should return in correct format`() = testsOnDistanceToClipboard { snils ->

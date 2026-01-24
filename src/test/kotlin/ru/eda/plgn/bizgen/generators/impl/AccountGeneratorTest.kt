@@ -6,7 +6,7 @@ import io.kotest.matchers.string.shouldStartWith
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генераторов расчетных счетов - [AccountRubGenerator], [AccountCnyGenerator].
@@ -16,8 +16,8 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class AccountGeneratorTest {
 
   @Nested
-  @DisplayName("Testing scope: AccountRubGeneratorCases")
-  inner class AccountRubGeneratorCases : StrGeneratorTest(AccountRubGenerator()) {
+  @DisplayName("Testing scope: AccountRubGenerator")
+  inner class AccountRubGeneratorCases : GeneratorStrTest(AccountRubGenerator()) {
 
     @TestFactory
     internal fun `Should generate an account number of length 20`() = testsOnDistanceToClipboard { account ->
@@ -33,7 +33,7 @@ internal class AccountGeneratorTest {
 
   @Nested
   @DisplayName("Testing scope: AccountCnyGenerator")
-  inner class AccountCnyGeneratorCases : StrGeneratorTest(AccountCnyGenerator()) {
+  inner class AccountCnyGeneratorCases : GeneratorStrTest(AccountCnyGenerator()) {
 
     @TestFactory
     internal fun `Should generate an account number of length 20`() = testsOnDistanceToClipboard { account ->

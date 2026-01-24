@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.generators.impl
 
-import ru.eda.plgn.bizgen.generators.Generator
+import ru.eda.plgn.bizgen.generators.GeneratorStr
 import ru.eda.plgn.bizgen.generators.GeneratorResult
 import ru.eda.plgn.bizgen.generators.GeneratorResultWithEscape
 import ru.eda.plgn.bizgen.generators.impl.FIOGeneratorInner.generateFioFull
@@ -12,7 +12,7 @@ import ru.eda.plgn.bizgen.generators.impl.FIOGeneratorInner.generateFioShort
  *
  * @author Dmitry_Emelyanenko
  */
-class FIOFullGenerator : Generator<String> {
+class FIOFullGenerator : GeneratorStr {
   override val uniqueDistance: Int = 120
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generateFioFull())
@@ -23,7 +23,7 @@ class FIOFullGenerator : Generator<String> {
  *
  * @author Dmitry_Emelyanenko
  */
-class FIOShortGenerator : Generator<String> {
+class FIOShortGenerator : GeneratorStr {
   override val uniqueDistance: Int = 30
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generateFioShort())
@@ -34,7 +34,7 @@ class FIOShortGenerator : Generator<String> {
  *
  * @author Dmitry_Emelyanenko
  */
-class FIOInitialsGenerator : Generator<String> {
+class FIOInitialsGenerator : GeneratorStr {
   override val uniqueDistance: Int = 30
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generateFioInitials())

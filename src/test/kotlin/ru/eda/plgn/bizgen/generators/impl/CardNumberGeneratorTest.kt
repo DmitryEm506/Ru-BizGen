@@ -2,7 +2,7 @@ package ru.eda.plgn.bizgen.generators.impl
 
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 import ru.eda.plgn.bizgen.utils.LuhnAlgorithm
 
 /**
@@ -10,7 +10,7 @@ import ru.eda.plgn.bizgen.utils.LuhnAlgorithm
  *
  * @author Dmitry_Emelyanenko
  */
-internal class CardNumberGeneratorTest : StrGeneratorTest(CardNumberGenerator()) {
+internal class CardNumberGeneratorTest : GeneratorStrTest(CardNumberGenerator()) {
 
   @TestFactory
   internal fun `Should return valid card numbers`() = testsOnDistanceToClipboard { cardNumber ->

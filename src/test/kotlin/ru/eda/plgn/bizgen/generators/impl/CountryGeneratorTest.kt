@@ -2,14 +2,14 @@ package ru.eda.plgn.bizgen.generators.impl
 
 import io.kotest.matchers.string.shouldMatch
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генератора стран - [CountryGenerator].
  *
  * @author Dmitry_Emelyanenko
  */
-internal class CountryGeneratorTest : StrGeneratorTest(CountryGenerator()) {
+internal class CountryGeneratorTest : GeneratorStrTest(CountryGenerator()) {
 
   @TestFactory
   internal fun `Should return a result containing editor annotations`() = testsOnDistanceToClipboard(500) { country ->

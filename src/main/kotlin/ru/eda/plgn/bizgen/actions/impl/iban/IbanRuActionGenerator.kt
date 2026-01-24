@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.actions.impl.iban
 
-import ru.eda.plgn.bizgen.actions.BaseGeneratorAction
+import ru.eda.plgn.bizgen.actions.StrActionGenerator
 import ru.eda.plgn.bizgen.generators.impl.IbanRuGenerator
 
 /**
@@ -8,7 +8,7 @@ import ru.eda.plgn.bizgen.generators.impl.IbanRuGenerator
  *
  * @author Dmitry_Emelyanenko
  */
-class IbanRuActionGenerator : BaseGeneratorAction<String>(
+class IbanRuActionGenerator : StrActionGenerator(
   id = "IbanRu_13cbe98c-fc00-4a93-8be9-8cfc00ca93d2",
   name = "IBAN RU (33)",
   generator = IbanRuGenerator()

@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.generators.impl
 
-import ru.eda.plgn.bizgen.generators.Generator
+import ru.eda.plgn.bizgen.generators.GeneratorStr
 import ru.eda.plgn.bizgen.generators.GeneratorResult
 import ru.eda.plgn.bizgen.generators.GeneratorResultWithEscape
 
@@ -30,7 +30,7 @@ import ru.eda.plgn.bizgen.generators.GeneratorResultWithEscape
  *
  * @author Dmitry_Emelyanenko
  */
-class SnilsGenerator : Generator<String> {
+class SnilsGenerator : GeneratorStr {
   override val uniqueDistance: Int = 130
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(randomSNILS())

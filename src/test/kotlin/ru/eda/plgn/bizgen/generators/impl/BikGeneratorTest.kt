@@ -5,14 +5,14 @@ import io.kotest.matchers.string.shouldMatch
 import io.kotest.matchers.string.shouldStartWith
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генератора БИК - [BikGenerator].
  *
  * @author Dmitry_Emelyanenko
  */
-internal class BikGeneratorTest : StrGeneratorTest(BikGenerator()) {
+internal class BikGeneratorTest : GeneratorStrTest(BikGenerator()) {
 
   @TestFactory
   internal fun `Should generate a BIK of length 9`() = testsOnDistanceToClipboard { bik ->

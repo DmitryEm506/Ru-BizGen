@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генераторов ИНН.
@@ -17,8 +17,8 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class InnGeneratorTest {
 
   @Nested
-  @DisplayName("Testing scope: InnIndividualGeneratorCases")
-  inner class InnIndividualGeneratorCases : StrGeneratorTest(InnIndividualGenerator()) {
+  @DisplayName("Testing scope: InnIndividualGenerator")
+  inner class InnIndividualGeneratorCases : GeneratorStrTest(InnIndividualGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid individual INN format (12 digits)`() = testsOnDistanceToClipboard { inn ->
@@ -40,8 +40,8 @@ internal class InnGeneratorTest {
   }
 
   @Nested
-  @DisplayName("Testing scope: InnLegalGeneratorCases")
-  inner class InnLegalGeneratorCases : StrGeneratorTest(InnLegalGenerator()) {
+  @DisplayName("Testing scope: InnLegalGenerator")
+  inner class InnLegalGeneratorCases : GeneratorStrTest(InnLegalGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid legal entity INN format (10 digits)`() = testsOnDistanceToClipboard { inn ->

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Tests for Russian SWIFT code generators — [Swift8RuGenerator], [Swift11RuGenerator].
@@ -16,8 +16,8 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class SwiftRuGeneratorTest {
 
   @Nested
-  @DisplayName("Testing scope: Swift8RuGeneratorCases")
-  inner class Swift8RuGeneratorCases : StrGeneratorTest(Swift8RuGenerator()) {
+  @DisplayName("Testing scope: Swift8RuGenerator")
+  inner class Swift8RuGeneratorCases : GeneratorStrTest(Swift8RuGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid SWIFT code of length 8`() = testsOnDistanceToClipboard(50) { swift ->
@@ -37,8 +37,8 @@ internal class SwiftRuGeneratorTest {
   }
 
   @Nested
-  @DisplayName("Testing scope: Swift11RuGeneratorCases")
-  inner class Swift11RuGeneratorCases : StrGeneratorTest(Swift11RuGenerator()) {
+  @DisplayName("Testing scope: Swift11RuGenerator")
+  inner class Swift11RuGeneratorCases : GeneratorStrTest(Swift11RuGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid SWIFT code of length 11`() = testsOnDistanceToClipboard { swift ->

@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.generators.impl
 
-import ru.eda.plgn.bizgen.generators.Generator
+import ru.eda.plgn.bizgen.generators.GeneratorStr
 import ru.eda.plgn.bizgen.generators.GeneratorResult
 import ru.eda.plgn.bizgen.generators.GeneratorResultWithEscape
 import ru.eda.plgn.bizgen.generators.impl.BikGenerator.Companion.randomBik
@@ -23,7 +23,7 @@ import kotlin.random.Random
  *
  * @author Dmitry_Emelyanenko
  */
-class BankAccountGenerator : Generator<String> {
+class BankAccountGenerator : GeneratorStr {
   override val uniqueDistance: Int = 130
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomCorrespondentAccount(randomBik()))

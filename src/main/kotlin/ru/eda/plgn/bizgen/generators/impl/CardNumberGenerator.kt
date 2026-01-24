@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.generators.impl
 
-import ru.eda.plgn.bizgen.generators.Generator
+import ru.eda.plgn.bizgen.generators.GeneratorStr
 import ru.eda.plgn.bizgen.generators.GeneratorResult
 import ru.eda.plgn.bizgen.generators.GeneratorResultWithEscape
 import ru.eda.plgn.bizgen.utils.LuhnAlgorithm.calculateCheckDigit
@@ -20,7 +20,7 @@ import kotlin.random.Random.Default.nextInt
  *
  * @author Dmitry_Emelyanenko
  */
-class CardNumberGenerator : Generator<String> {
+class CardNumberGenerator : GeneratorStr {
   override val uniqueDistance: Int = 130
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = generateNumber(CardBrand.entries.random()))

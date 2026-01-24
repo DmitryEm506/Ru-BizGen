@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.actions.impl.org
 
-import ru.eda.plgn.bizgen.actions.BaseGeneratorAction
+import ru.eda.plgn.bizgen.actions.StrActionGenerator
 import ru.eda.plgn.bizgen.generators.impl.OrgEngNameGenerator
 
 /**
@@ -8,7 +8,7 @@ import ru.eda.plgn.bizgen.generators.impl.OrgEngNameGenerator
  *
  * @author Dmitry_Emelyanenko
  */
-class OrgEngNameActionGenerator : BaseGeneratorAction<String>(
+class OrgEngNameActionGenerator : StrActionGenerator(
   id = "OrgEngName_e60c059d-0c7f-49f5-95b9-bcd194b4a327",
   name = "Организация. Английское наименование",
   generator = OrgEngNameGenerator()

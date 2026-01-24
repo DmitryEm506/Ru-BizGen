@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генераторов ОКТМО — [Oktmo8Generator], [Oktmo11Generator].
@@ -16,8 +16,8 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class OktmoGeneratorTest {
 
   @Nested
-  @DisplayName("Testing scope: Oktmo8GeneratorCases")
-  inner class Oktmo8GeneratorCases : StrGeneratorTest(Oktmo8Generator()) {
+  @DisplayName("Testing scope: Oktmo8Generator")
+  inner class Oktmo8GeneratorCases : GeneratorStrTest(Oktmo8Generator()) {
 
     @TestFactory
     internal fun `Should generate a valid 8-digit OKTMO`() = testsOnDistanceToClipboard { oktmo ->
@@ -33,8 +33,8 @@ internal class OktmoGeneratorTest {
   }
 
   @Nested
-  @DisplayName("Testing scope: Oktmo11GeneratorCases")
-  inner class Oktmo11GeneratorCases : StrGeneratorTest(Oktmo11Generator()) {
+  @DisplayName("Testing scope: Oktmo11Generator")
+  inner class Oktmo11GeneratorCases : GeneratorStrTest(Oktmo11Generator()) {
 
     @TestFactory
     internal fun `Should generate a valid 11-digit OKTMO`() = testsOnDistanceToClipboard { oktmo ->

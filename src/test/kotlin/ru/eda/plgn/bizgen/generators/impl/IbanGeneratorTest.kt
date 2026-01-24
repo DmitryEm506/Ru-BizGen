@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestFactory
-import ru.eda.plgn.bizgen.generators.StrGeneratorTest
+import ru.eda.plgn.bizgen.generators.GeneratorStrTest
 
 /**
  * Тесты для генераторов IBAN.
@@ -16,8 +16,8 @@ import ru.eda.plgn.bizgen.generators.StrGeneratorTest
 internal class IbanGeneratorTest {
 
   @Nested
-  @DisplayName("Testing scope: IbanRuGeneratorCases")
-  inner class IbanRuGeneratorCases : StrGeneratorTest(IbanRuGenerator()) {
+  @DisplayName("Testing scope: IbanRuGenerator")
+  inner class IbanRuGeneratorCases : GeneratorStrTest(IbanRuGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid Russian IBAN format (33 chars)`() = testsOnDistanceToClipboard { iban ->
@@ -33,8 +33,8 @@ internal class IbanGeneratorTest {
   }
 
   @Nested
-  @DisplayName("Testing scope: IbanTurkishGeneratorCases")
-  inner class IbanTurkishGeneratorCases : StrGeneratorTest(IbanTurkishGenerator()) {
+  @DisplayName("Testing scope: IbanTurkishGenerator")
+  inner class IbanTurkishGeneratorCases : GeneratorStrTest(IbanTurkishGenerator()) {
 
     @TestFactory
     internal fun `Should generate a valid Turkish IBAN format (26 chars)`() = testsOnDistanceToClipboard { iban ->

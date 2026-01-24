@@ -1,6 +1,6 @@
 package ru.eda.plgn.bizgen.generators.impl
 
-import ru.eda.plgn.bizgen.generators.Generator
+import ru.eda.plgn.bizgen.generators.GeneratorStr
 import ru.eda.plgn.bizgen.generators.GeneratorResult
 import ru.eda.plgn.bizgen.generators.GeneratorResultWithEscape
 import ru.eda.plgn.bizgen.generators.impl.OgrnGenerator.randomOgrnIp
@@ -15,7 +15,7 @@ import kotlin.random.Random
  *
  * @author Dmitry_Emelyanenko
  */
-class OgrnIpGenerator : Generator<String> {
+class OgrnIpGenerator : GeneratorStr {
   override val uniqueDistance: Int = 130
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomOgrnIp())
@@ -29,7 +29,7 @@ class OgrnIpGenerator : Generator<String> {
  *
  * @author Dmitry_Emelyanenko
  */
-class OgrnLegalGenerator : Generator<String> {
+class OgrnLegalGenerator : GeneratorStr {
   override val uniqueDistance: Int = 130
 
   override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(data = randomOgrnLegal())
