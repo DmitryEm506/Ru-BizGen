@@ -61,7 +61,7 @@ dokka {
 
     sourceLink {
       localDirectory.set(file("src/jmh/kotlin"))
-      remoteUrl("https://github.com/DmitryEm506/Plugin_EDA_Bizgen/blob/${project.name}/main/src/jmh/kotlin")
+      remoteUrl("https://github.com/DmitryEm506/Ru-BizGen/blob/dev/${project.name}/src/main/kotlin")
       remoteLineSuffix.set("#L")
     }
   }
