@@ -5,9 +5,27 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-patch"
+    groups:
+      minor-and-major:
+        update-types:
+          - "minor"
+          - "major"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-patch"
+    groups:
+      minor-and-major:
+        update-types:
+          - "minor"
+          - "major"
