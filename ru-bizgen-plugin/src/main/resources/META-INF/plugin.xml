@@ -1,0 +1,71 @@
+<idea-plugin>
+  <id>ru.eda.plgn.bizgen</id>
+  <name>Ru BizGen</name>
+
+  <vendor url="https://github.com/DmitryEm506/Ru-BizGen">Emelyanenko Dmitry</vendor>
+
+  <depends>com.intellij.modules.platform</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationService serviceImplementation="ru.eda.plgn.bizgen.plugin.settings.persistent.BizGenAppSettingsPersistent"/>
+
+    <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.settings.BizGenAppSettingsRepository"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.settings.persistent.BizGenAppSettingsPersistent"/>
+
+    <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.settings.AppActionSettingsService"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.settings.AppActionSettingsServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.notification.NotificationSettingsService"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.notification.NotificationSettingsServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.notification.NotificationSettingsView"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.notification.NotificationSettingsServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.actions.GeneratorActionProvider"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.actions.GeneratorActionProviderImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.actions.GeneratorActionService"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.actions.GeneratorActionServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.notification.NotificationService"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.notification.NotificationServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.clipboard.BizGenClipboardSettingsService"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.clipboard.BizGenClipboardSettingsServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.clipboard.BizGenClipboardSettingsServiceView"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.clipboard.BizGenClipboardSettingsServiceImpl"
+    />
+
+    <applicationConfigurable
+      parentId="tools"
+      instance="ru.eda.plgn.bizgen.plugin.ui.AppSettingsConfigurable"
+      id="ru.eda.plgn.bizgen.ui.AppSettingsConfigurable"
+      displayName="Ru BizGen"
+    />
+  </extensions>
+
+  <actions>
+    <action id="ru.eda.plgn.bizgen.BizGenMainAction" class="ru.eda.plgn.bizgen.plugin.BizGenMainAction" text="BizGenMainAction"
+      description="Show action group for generate Russian business data">
+      <add-to-group group-id="GenerateGroup" anchor="last"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="alt ctrl E"/>
+    </action>
+  </actions>
+</idea-plugin>
