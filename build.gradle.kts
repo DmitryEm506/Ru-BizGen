@@ -1,123 +1,34 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.changelog.Changelog
-import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
+
 import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
-import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.Year
 
-fun environment(key: String): Provider<String?> = providers.environmentVariable(key)
+group = "ru.eda.plgn.bizgen"
+version = "1.11.253"
 
 plugins {
+  alias(libs.plugins.jmh) apply false
   alias(libs.plugins.dokka)
   alias(libs.plugins.kover)
-  alias(libs.plugins.kotlin)
-  alias(libs.plugins.changelog)
-  alias(libs.plugins.gradleIntelliJPlugin)
+  alias(libs.plugins.kotlin) apply false
+  alias(libs.plugins.changelog) apply false
+  alias(libs.plugins.kotlin.allopen) apply false
+  alias(libs.plugins.gradleIntelliJPlugin) apply false
+  alias(libs.plugins.kotlin.serialization) apply false
 }
 
-group = "ru.eda.plgn.bizgen"
-version = "1.11.252"
-
-apply(from = "gradle/ic-version.gradle.kts")
-
-val buildNumber: String by extra
-val icVersion: String by extra
-
-kotlin {
-  jvmToolchain(libs.versions.java.get().toInt())
-}
-
-repositories {
-  mavenCentral()
-  intellijPlatform {
-    defaultRepositories()
+allprojects {
+  repositories {
+    mavenCentral()
   }
 }
 
 dependencies {
-  testImplementation(libs.bundles.test) {
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core-jvm")
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-test")
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-test-jvm")
-    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-jdk8")
-  }
+  kover(project(":ru-bizgen-core"))
+  kover(project(":ru-bizgen-plugin"))
 
-  testRuntimeOnly(libs.junit.jupiter.engine)
-
-  intellijPlatform {
-    // Unified Platform Distribution https://blog.jetbrains.com/platform/2025/11/intellij-platform-2025-3-what-plugin-developers-should-know/?utm_source=chatgpt.com
-    when (buildNumber.toInt() >= 252) {
-      true -> intellijIdea(icVersion) { useInstaller = false }
-      else -> intellijIdeaCommunity(icVersion)
-    }
-
-    pluginVerifier()
-    zipSigner()
-    testFramework(TestFrameworkType.JUnit5)
-    testFramework(TestFrameworkType.Platform)
-  }
-
-  dokkaHtmlPlugin(libs.dokkaVersioningPlugin)
-}
-
-// Критично. Принудительный переход на JUnit 6. В рамках платформы intellij осталась основа ещё на 4 версии, но Jetbrains рекомендует
-// переходить как минимум на версию 5, решил сразу "прыгнуть" на версию 6, так как сейчас только unit тесты
-testing {
-  suites {
-    @Suppress("unused") val test by getting(JvmTestSuite::class) {
-      useJUnitJupiter()
-    }
-  }
-}
-
-intellijPlatform {
-  pluginConfiguration {
-    ideaVersion {
-      sinceBuild = "242"
-      untilBuild = provider { null }
-    }
-
-    description = file("src/main/resources/META-INF/description.html").readText()
-  }
-
-  signing {
-    certificateChain.set(environment("CERTIFICATE_CHAIN"))
-    privateKey.set(environment("PRIVATE_KEY"))
-    password.set(environment("PRIVATE_KEY_PASSWORD"))
-  }
-
-  pluginVerification {
-    ides { recommended() }
-  }
-
-  publishing {
-    token.set(environment("PUBLISH_TOKEN"))
-  }
-}
-
-changelog {
-  version.set(project.version.toString())
-  headerParserRegex = """(\d+\.\d+)""".toRegex()
-}
-
-kover {
-  reports {
-    total {
-      filters {
-        excludes {
-          packages(
-            "ru.eda.plgn.bizgen.ui"
-          )
-        }
-      }
-      xml { onCheck = true }
-      html { onCheck = true }
-    }
-  }
+  dokka(project(":ru-bizgen-core"))
+  dokka(project(":ru-bizgen-plugin"))
+  dokka(project(":ru-bizgen-perf"))
 }
 
 /**
@@ -133,58 +44,7 @@ val copyKoverToDokka by tasks.registering(Copy::class) {
 }
 
 tasks {
-  withType<KotlinCompile> {
-    compilerOptions.jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.java.get()}"))
-  }
-
-  patchPluginXml {
-    val changes = changelog.getAll().values.joinToString("<hr>\n") {
-      changelog.renderItem(it, Changelog.OutputType.HTML)
-    }
-    changeNotes.set(provider { changes })
-  }
-
-  test {
-    useJUnitPlatform {
-      val distanceFinderEnabled = project.hasProperty("runDistanceFinderTests") || System.getProperty("runDistanceFinderTests") == "true"
-
-      if (distanceFinderEnabled) {
-        includeTags("distanceFinderTests")
-      } else {
-        excludeTags("distanceFinderTests")
-      }
-    }
-
-    testLogging {
-      events = setOf(TestLogEvent.FAILED)
-      exceptionFormat = TestExceptionFormat.FULL
-    }
-  }
-
-  // Documentation
   dokka {
-    moduleName.set(rootProject.name)
-    moduleVersion.set(version.toString())
-
-    dokkaSourceSets.main {
-      jdkVersion.set(libs.versions.java.get().toInt())
-      languageVersion.set(libs.versions.kotlin.get())
-      reportUndocumented.set(true)
-
-      documentedVisibilities(VisibilityModifier.Public, VisibilityModifier.Protected)
-
-      sourceLink {
-        localDirectory.set(file("src/main/kotlin"))
-        remoteUrl("https://github.com/DmitryEm506/Plugin_EDA_Bizgen/blob/main/src/main/kotlin")
-        remoteLineSuffix.set("#L")
-      }
-    }
-
-    dokkaPublications.html {
-      suppressInheritedMembers.set(true)
-      offlineMode.set(true)
-    }
-
     pluginsConfiguration.html {
       // TODO: Нет возможности стандартным образом прокинуть логотип и указать путь до него. Поэтому приходится называть именно так файл https://github.com/Kotlin/dokka/issues/4369
       customAssets.from(
@@ -197,14 +57,6 @@ tasks {
             <a href="images/kover/index.html">Code Coverage</a>
         """.trimIndent()
       )
-    }
-
-    pluginsConfiguration.versioning {
-      if (project.hasProperty("dokka.pagesDir")) {
-        val pagesDir = project.property("dokka.pagesDir")
-        olderVersions.setFrom(file("$pagesDir"))
-        olderVersionsDir.set(file("$pagesDir/older/"))
-      }
     }
   }
 
