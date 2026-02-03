@@ -18,7 +18,10 @@ plugins {
   alias(libs.plugins.gradleIntelliJPlugin)
 }
 
-val buildNumber = rootProject.version.toString().substringAfterLast(".").take(3)
+group = rootProject.group
+version = rootProject.version
+
+val buildNumber = version.toString().substringAfterLast(".").take(3)
 val ideaVersion = "20" + buildNumber.take(2) + "." + buildNumber.last().toString()
 
 kotlin {

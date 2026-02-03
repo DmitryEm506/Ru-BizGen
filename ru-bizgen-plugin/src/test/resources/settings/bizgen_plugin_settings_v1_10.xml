@@ -1,0 +1,134 @@
+<application>
+  <component name="Ru BizGen">
+    <option name="actualActions">
+      <list>
+        <PersistenceActionSetting>
+          <option name="description" value="UUID как строка" />
+          <option name="id" value="UUID_ee2bca00-0586-4a7c-869c-bee1285d0732" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="Расчетный RUN счет (20)" />
+          <option name="id" value="AccountRub_0ecdce94-c1e4-447a-8dce-94c1e4747aeb" />
+          <option name="position" value="1" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="Расчетный CNY счет (20)" />
+          <option name="id" value="AccountCny_4cedac13-b6fa-4b0a-be68-3503702f1564" />
+          <option name="position" value="2" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="ИНН ФЛ (12)" />
+          <option name="id" value="InnIndividual_3aeaffc7-285e-49c2-aaff-c7285e79c299" />
+          <option name="position" value="3" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="ИНН ЮЛ (10)" />
+          <option name="id" value="InnLegal_f5e5e2b3-2d14-4e83-a5e2-b32d140e831a" />
+          <option name="position" value="4" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="КПП (9)" />
+          <option name="id" value="Kpp_d04771b5-6e0c-42dc-8771-b56e0ca2dcb9" />
+          <option name="position" value="5" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="ОГРН ЮЛ (13)" />
+          <option name="id" value="OgrnLegal_980cb31d-0e3f-4764-bd8e-b7fb9fba6859" />
+          <option name="position" value="6" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="ОГРН ИП (15)" />
+          <option name="id" value="OgrnIp_c532c151-6187-4e7d-b2c1-5161877e7d9d" />
+          <option name="position" value="7" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="Организация. Русское наименование" />
+          <option name="id" value="OrgRuName_be05a746-5353-434b-a506-b2541be02550" />
+          <option name="position" value="8" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="Организация. Английское наименование" />
+          <option name="id" value="OrgEngName_e60c059d-0c7f-49f5-95b9-bcd194b4a327" />
+          <option name="position" value="9" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="БИК (9)" />
+          <option name="id" value="Bik_0060ce01-2ee3-4598-a0ce-012ee38598da" />
+          <option name="position" value="10" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="Корреспондентский счёт (20)" />
+          <option name="id" value="BankAccount_9009b9eb-f622-4599-89b9-ebf622559957" />
+          <option name="position" value="11" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="SWIFT RU (8)" />
+          <option name="id" value="SwiftRu8_59ed6b1a-57cf-4e61-ad6b-1a57cf6e616d" />
+          <option name="position" value="12" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="SWIFT RU (11)" />
+          <option name="id" value="SwiftRu11_31ae8329-4566-49d6-ae83-294566e9d6f4" />
+          <option name="position" value="13" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="IBAN RU (33)" />
+          <option name="id" value="IbanRu_13cbe98c-fc00-4a93-8be9-8cfc00ca93d2" />
+          <option name="position" value="14" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="IBAN TR (26)" />
+          <option name="id" value="IbanTurkish_cdb0d09c-2263-407b-b0d0-9c2263007b43" />
+          <option name="position" value="15" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="Адрес (индекс, регион, город и тд)" />
+          <option name="id" value="Address_b35bf562-5761-4a5d-ab00-36afca192d7c" />
+          <option name="position" value="16" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="Страна (код, название рус+англ, alpha2, alpha3)" />
+          <option name="id" value="Country_d993c531-359d-476e-a1cb-098cc945ea99" />
+          <option name="position" value="17" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="ОКТМО (8)" />
+          <option name="id" value="Oktmo8_d683fd6c-23bb-4ccb-83fd-6c23bbaccb89" />
+          <option name="position" value="18" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="ОКТМО (11)" />
+          <option name="id" value="Oktmo11_3ea1bc6b-011c-4bdc-a1bc-6b011c1bdc7c" />
+          <option name="position" value="19" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="Номер карты (16)" />
+          <option name="id" value="CardNumber_92bad607-d900-437c-9605-7ededb10022d" />
+          <option name="position" value="20" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="ФИО (Фамилия Имя Отчество)" />
+          <option name="id" value="FioFull_497328f4-0f2b-4829-b328-f40f2b2829d0" />
+          <option name="position" value="21" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="ФИО (Фамилия И.О.)" />
+          <option name="id" value="FioShort_3d49bf3a-007d-41e5-89bf-3a007d01e5d6" />
+          <option name="position" value="22" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="ФИО (И.О. Фамилия)" />
+          <option name="id" value="FioInitials_a7e234d4-f204-4a16-a234-d4f204fa16b9" />
+          <option name="position" value="24" />
+        </PersistenceActionSetting>
+        <PersistenceActionSetting>
+          <option name="description" value="СНИЛС (11)" />
+          <option name="id" value="Snils_f113955e-a439-4231-9f0f-fd13a6d23459" />
+          <option name="position" value="23" />
+        </PersistenceActionSetting>
+      </list>
+    </option>
+    <option name="insToClipboard" value="false" />
+    <option name="notificationMode" value="HINT" />
+  </component>
+</application>

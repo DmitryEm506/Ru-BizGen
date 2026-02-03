@@ -20,10 +20,17 @@ import kotlinx.serialization.json.JsonPrimitive
  */
 object JmhScoreSerializer : KSerializer<Double?> {
 
+  /** Описание кастомного сериализатора. */
   @OptIn(InternalSerializationApi::class)
   override val descriptor: SerialDescriptor =
     buildSerialDescriptor("JmhScore", SerialKind.CONTEXTUAL)
 
+  /**
+   * Извлечение [Double].
+   *
+   * @param decoder декодер
+   * @return полученное значение [Double]
+   */
   override fun deserialize(decoder: Decoder): Double? {
     val jsonDecoder = decoder as? JsonDecoder
       ?: error("JmhScoreSerializer can be used only with Json")
@@ -40,6 +47,12 @@ object JmhScoreSerializer : KSerializer<Double?> {
     }
   }
 
+  /**
+   * Сериализация.
+   *
+   * @param encoder примитив
+   * @param value исходное значение, которое необходимо преобразовать
+   */
   override fun serialize(encoder: Encoder, value: Double?) {
     val jsonEncoder = encoder as? JsonEncoder
       ?: error("JmhScoreSerializer can be used only with Json")
