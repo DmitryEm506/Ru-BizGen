@@ -59,11 +59,17 @@ import java.util.concurrent.TimeUnit
 abstract class BaseGeneratorBenchmark<T : Any>(private val generatorSupplier: () -> Generator<T>) {
   private lateinit var generator: Generator<T>
 
+  /** Подготовка генератора к тестированию. */
   @Setup
   fun setup() {
     generator = generatorSupplier()
   }
 
+  /**
+   * Тестирование работы генератора.
+   *
+   * @return сгенерированное значение
+   */
   @Benchmark
   fun generate(): String {
     return generator.generate().toEditor

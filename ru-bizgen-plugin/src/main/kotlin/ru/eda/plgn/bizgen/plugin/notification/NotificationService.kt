@@ -17,7 +17,10 @@ import ru.eda.plgn.bizgen.plugin.settings.model.BizGenAppSettings
  *
  * @author Dmitry_Emelyanenko
  */
-interface NotificationService : BizGenService {
+interface NotificationService : Notificator, BizGenService
+
+/** Отправка уведомлений. */
+interface Notificator {
 
   /**
    * Отправить уведомление.
@@ -37,7 +40,7 @@ class NotificationServiceImpl : NotificationService {
   }
 
   private companion object {
-    fun getNotificator(mode: BizGenAppSettings.BizGenNotificationMode): NotificationService {
+    fun getNotificator(mode: BizGenAppSettings.BizGenNotificationMode): Notificator {
       return when (mode) {
         BizGenAppSettings.BizGenNotificationMode.BELL -> BellNotification()
         BizGenAppSettings.BizGenNotificationMode.HINT -> HintNotification()
@@ -48,7 +51,7 @@ class NotificationServiceImpl : NotificationService {
 }
 
 /** Уведомление через всплывающую подсказку. */
-private class HintNotification : NotificationService {
+private class HintNotification : Notificator {
   override fun sendNotification(ctx: NotificationCtx<*>) {
     JBPopupFactory.getInstance()
       .createHtmlTextBalloonBuilder(bufferInfo(ctx.result, textLimit = 255), null, JBColor.background(), null)
@@ -62,7 +65,7 @@ private class HintNotification : NotificationService {
 }
 
 /** Уведомление через стандартный механизм уведомлений (колокольчик). */
-private class BellNotification : NotificationService {
+private class BellNotification : Notificator {
   override fun sendNotification(ctx: NotificationCtx<*>) {
     ApplicationManager.getApplication().messageBus.syncPublisher(Notifications.TOPIC).notify(
       Notification(" ", "Generator: ${ctx.actionInfo.name}", bufferInfo(ctx.result, textLimit = null), NotificationType.INFORMATION)
@@ -71,7 +74,7 @@ private class BellNotification : NotificationService {
 }
 
 /** Не отправлять уведомление. */
-private class SkipNotification : NotificationService {
+private class SkipNotification : Notificator {
   override fun sendNotification(ctx: NotificationCtx<*>) = Unit
 }
 

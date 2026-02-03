@@ -9,10 +9,13 @@ import ru.eda.plgn.bizgen.perf.jmh.report.data.ResultReportData
  * @author Dmitry_Emelyanenko
  */
 object ReportMdConfigurer {
+
+  /** Провайдер генераторов. Ключ - название класса генератора. Значение - название генератора. */
   val provider = GeneratorInfoProvider.generatorInfos.associate { info ->
     info.generator.javaClass.simpleName to info.name
   }
 
+  /** Приоритет. Ключ - название класса генератора. Значение - исходный индекс генератора. */
   val priority = GeneratorInfoProvider.generatorInfos.mapIndexed { index, info ->
     info.generator.javaClass.simpleName to index
   }.toMap()

@@ -53,6 +53,11 @@
       serviceImplementation="ru.eda.plgn.bizgen.plugin.clipboard.BizGenClipboardSettingsServiceImpl"
     />
 
+    <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.settings.persistent.BizGenAppSettingsSoftUpdater"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.settings.persistent.BizGenAppSettingsSoftUpdaterImpl"
+    />
+
     <applicationConfigurable
       parentId="tools"
       instance="ru.eda.plgn.bizgen.plugin.ui.AppSettingsConfigurable"

@@ -34,6 +34,8 @@ import ru.eda.plgn.bizgen.core.generator_info.impl.swift.Swift8GeneratorInfo
  * @author Dmitry_Emelyanenko
  */
 object GeneratorInfoProvider {
+
+  /** Список информаций о доступных генераторах. */
   val generatorInfos: List<GeneratorInfo<*>> = listOf(
     // Технические
     UuidGeneratorInfo(),

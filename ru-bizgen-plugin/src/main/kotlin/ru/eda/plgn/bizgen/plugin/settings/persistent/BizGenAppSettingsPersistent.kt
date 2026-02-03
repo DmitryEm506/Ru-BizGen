@@ -4,7 +4,7 @@ import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.SettingsCategory
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import ru.eda.plgn.bizgen.plugin.actions.GeneratorActionProvider
+import com.intellij.openapi.diagnostic.Logger
 import ru.eda.plgn.bizgen.plugin.di.getBizGenService
 import ru.eda.plgn.bizgen.plugin.settings.BizGenAppSettingsRepository
 import ru.eda.plgn.bizgen.plugin.settings.model.BizGenAppSettings
@@ -26,17 +26,22 @@ internal class BizGenAppSettingsPersistent(
   var settings: BizGenAppSettings = BizGenAppSettings(),
 ) : PersistentStateComponent<BizGenAppSettings>, BizGenAppSettingsRepository {
 
-  override fun getState(): BizGenAppSettings {
-    return settings
-  }
+  private val log = Logger.getInstance(this::class.java)
+
+  override fun getState(): BizGenAppSettings = settings
 
   override fun loadState(bizGenAppSettings: BizGenAppSettings) {
-    // если сохраненное количество действий не равно общему количеству актуальных действий,
-    // то происходит автоматическое восстановление настроек по умолчанию
-    val persistentActionIds = bizGenAppSettings.actualActions.map { it.id }
-    val availableActionsIds = getBizGenService<GeneratorActionProvider>().getInfos().map { it.id }
+    try {
+      // Мягкая миграция
+      val updatedActions = getBizGenService<BizGenAppSettingsSoftUpdater>().softUpdateActions(bizGenAppSettings.actualActions)
 
-    if (persistentActionIds != availableActionsIds) {
+      bizGenAppSettings.actualActions = updatedActions
+    } catch (ex: Exception) {
+      log.warn("Failed to soft update actions", ex)
+      bizGenAppSettings.restoreFromDefault()
+    }
+
+    if (bizGenAppSettings.actualActions.isEmpty()) {
       bizGenAppSettings.restoreFromDefault()
     }
 

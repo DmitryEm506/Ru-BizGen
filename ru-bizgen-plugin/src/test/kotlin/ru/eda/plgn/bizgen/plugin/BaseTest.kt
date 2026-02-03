@@ -1,6 +1,10 @@
 package ru.eda.plgn.bizgen.plugin
 
 import org.junit.jupiter.api.DynamicTest
+import org.reflections.Reflections
+import org.reflections.scanners.Scanners
+import java.lang.reflect.Modifier
+import kotlin.reflect.KClass
 
 /**
  * Базовый тестовый класс.
@@ -52,5 +56,12 @@ internal abstract class BaseTest {
         }
       )
     }
+  }
+
+  protected fun <T : Any> findImplemented(baseClass: KClass<T>, scanPackage: String? = null): List<Class<out T>> {
+    return Reflections(scanPackage ?: baseClass.java.packageName, Scanners.SubTypes).getSubTypesOf(baseClass.java).asSequence()
+      .filterNot { it.isInterface || Modifier.isAbstract(it.modifiers) }
+      .filterNot { it.name.contains(".Test") || it.name.contains("Fake") }
+      .toList()
   }
 }
