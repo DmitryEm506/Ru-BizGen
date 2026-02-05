@@ -54,8 +54,8 @@ class NotificationServiceImpl : NotificationService {
 private class HintNotification : Notificator {
   override fun sendNotification(ctx: NotificationCtx<*>) {
     JBPopupFactory.getInstance()
-      .createHtmlTextBalloonBuilder(bufferInfo(ctx.result, textLimit = 255), null, JBColor.background(), null)
-      .setFadeoutTime(3000) // Автоматическое закрытие через 3 секунды
+      .createHtmlTextBalloonBuilder(bufferInfo(ctx.result, textLimit = 100), null, JBColor.background(), null)
+      .setFadeoutTime(3_000) // Автоматическое закрытие через 3 секунды
       .createBalloon()
       .show(
         JBPopupFactory.getInstance().guessBestPopupLocation(ctx.editor),

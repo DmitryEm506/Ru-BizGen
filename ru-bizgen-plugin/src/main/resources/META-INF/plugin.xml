@@ -67,7 +67,7 @@
   </extensions>
 
   <actions>
-    <action id="ru.eda.plgn.bizgen.BizGenMainAction" class="ru.eda.plgn.bizgen.plugin.BizGenMainAction" text="BizGenMainAction"
+    <action id="ru.eda.plgn.bizgen.BizGenMainAction" class="ru.eda.plgn.bizgen.plugin.BizGenMainAction" text="Ru BizGen"
       description="Show action group for generate Russian business data">
       <add-to-group group-id="GenerateGroup" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="alt ctrl E"/>
