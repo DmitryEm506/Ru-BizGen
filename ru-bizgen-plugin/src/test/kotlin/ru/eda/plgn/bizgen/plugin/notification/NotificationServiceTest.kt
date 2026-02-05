@@ -142,7 +142,7 @@ internal class NotificationServiceTest : BaseIdeaTest() {
     every { builder.createBalloon() } returns balloon
 
     val longText = "a".repeat(300)
-    val expectedTruncated = "a".repeat(255) + "..."
+    val expectedTruncated = longText.take(100) + "..."
     val ctx = NotificationCtx(
       actionInfo = NotificationCtx.ActionInfo("id", "Test Action"),
       editor = mockk(relaxed = true),
