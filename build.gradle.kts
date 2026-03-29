@@ -3,7 +3,7 @@ import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
 import java.time.Year
 
 group = "ru.eda.plgn.bizgen"
-version = "1.11.253"
+version = "1.11.261"
 
 plugins {
   alias(libs.plugins.jmh) apply false
