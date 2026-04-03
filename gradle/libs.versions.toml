@@ -1,15 +1,19 @@
 [versions]
-kotlin = "2.2.21" # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
+kotlin = "2.3.0" # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
 java = "21"
 changelog = "2.5.0" # https://plugins.gradle.org/plugin/org.jetbrains.changelog
-gradleIntelliJPlugin = "2.10.5" # https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
+gradleIntelliJPlugin = "2.13.0" # https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
 intellijJunit = "4.13.2" # !!! ВАЖНО !!! Пока intellij platform использует старый Junit внутри, поэтому надо добавлять, чтобы был корректный запуск
-junit = "6.0.1" # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-kotest = "6.0.7" # https://plugins.gradle.org/plugin/io.kotest
-dokka = "2.1.0"  # https://plugins.gradle.org/plugin/org.jetbrains.dokka
+junit = "6.0.2" # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+kotest = "6.1.2" # https://plugins.gradle.org/plugin/io.kotest
+dokka = "2.2.0"  # https://plugins.gradle.org/plugin/org.jetbrains.dokka
 kover = "0.9.4"  # https://plugins.gradle.org/plugin/org.jetbrains.kotlinx.kover
 reflections = "0.10.2" # https://mvnrepository.com/artifact/org.reflections/reflections
-mockk = "1.13.13" # https://mvnrepository.com/artifact/io.mockk/mockk
+mockk = "1.14.9" # https://mvnrepository.com/artifact/io.mockk/mockk
+jmh-plgn = "0.7.3" # https://plugins.gradle.org/plugin/me.champeau.jmh
+jmh-core = "1.37" # https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
+jmh-proc = "1.37" # https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-generator-annprocess
+kotlinx-serialization = "1.10.0" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
 
 [libraries]
 intellij-junit = { group = "junit", name = "junit", version.ref = "intellijJunit" }
@@ -19,14 +23,20 @@ junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engi
 dokkaVersioningPlugin = { module = "org.jetbrains.dokka:versioning-plugin", version.ref = "dokka" }
 reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
-
+jmh-core = { group = "org.openjdk.jmh", name = "jmh-core", version.ref = "jmh-core" }
+jmh-proc = { group = "org.openjdk.jmh", name = "jmh-generator-annprocess", version.ref = "jmh-proc" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-allopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 gradleIntelliJPlugin = { id = "org.jetbrains.intellij.platform", version.ref = "gradleIntelliJPlugin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+jmh = { id = "me.champeau.jmh", version.ref = "jmh-plgn" }
 
 [bundles]
-test = ["intellij-junit", "kotest-assertions-core", "junit-jupiter-api", "reflections", "mockk"]
+tests-integration = ["intellij-junit", "kotest-assertions-core", "junit-jupiter-api", "reflections", "mockk"]
+tests-unit = ["kotest-assertions-core", "junit-jupiter-api", "mockk"]

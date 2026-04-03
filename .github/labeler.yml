@@ -1,0 +1,21 @@
+breaking-change:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/libs.versions.toml"
+          - "**/*.gradle"
+          - "**/*.gradle.kts"
+
+kotlin:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*kotlin*"
+          - "**/*.kt"
+          - "**/libs.versions.toml"
+
+intellij:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*intellij*"
+          - "**/*idea*"
+          - "**/*jetbrains*"
+          - "**/libs.versions.toml"
