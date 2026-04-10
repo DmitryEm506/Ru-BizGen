@@ -2,7 +2,7 @@
 kotlin = "2.3.0" # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
 java = "21"
 changelog = "2.5.0" # https://plugins.gradle.org/plugin/org.jetbrains.changelog
-gradleIntelliJPlugin = "2.13.0" # https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
+gradleIntelliJPlugin = "2.14.0" # https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
 intellijJunit = "4.13.2" # !!! ВАЖНО !!! Пока intellij platform использует старый Junit внутри, поэтому надо добавлять, чтобы был корректный запуск
 junit = "6.0.2" # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
 kotest = "6.1.2" # https://plugins.gradle.org/plugin/io.kotest
@@ -13,7 +13,7 @@ mockk = "1.14.9" # https://mvnrepository.com/artifact/io.mockk/mockk
 jmh-plgn = "0.7.3" # https://plugins.gradle.org/plugin/me.champeau.jmh
 jmh-core = "1.37" # https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 jmh-proc = "1.37" # https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-generator-annprocess
-kotlinx-serialization = "1.10.0" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
+kotlinx-serialization = "1.11.0" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
 
 [libraries]
 intellij-junit = { group = "junit", name = "junit", version.ref = "intellijJunit" }
