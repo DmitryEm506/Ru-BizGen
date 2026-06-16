@@ -1,11 +1,11 @@
 [versions]
-kotlin = "2.3.0" # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
+kotlin = "2.4.0" # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
 java = "21"
 changelog = "2.5.0" # https://plugins.gradle.org/plugin/org.jetbrains.changelog
 gradleIntelliJPlugin = "2.16.0" # https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
 intellijJunit = "4.13.2" # !!! ВАЖНО !!! Пока intellij platform использует старый Junit внутри, поэтому надо добавлять, чтобы был корректный запуск
 junit = "6.1.0" # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-kotest = "6.1.2" # https://plugins.gradle.org/plugin/io.kotest
+kotest = "6.2.0" # https://plugins.gradle.org/plugin/io.kotest
 dokka = "2.2.0"  # https://plugins.gradle.org/plugin/org.jetbrains.dokka
 kover = "0.9.4"  # https://plugins.gradle.org/plugin/org.jetbrains.kotlinx.kover
 reflections = "0.10.2" # https://mvnrepository.com/artifact/org.reflections/reflections
