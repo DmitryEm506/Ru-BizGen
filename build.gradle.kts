@@ -3,7 +3,7 @@ import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
 import java.time.Year
 
 group = "ru.eda.plgn.bizgen"
-version = "1.11.261"
+version = "1.12.261"
 
 plugins {
   alias(libs.plugins.jmh) apply false
@@ -37,7 +37,7 @@ dependencies {
  * Причем приходится копировать именно в папку "dokka/html/images", так как она используется как рутовая папка для относительных ссылок,
  * вставляемых в Докка отчёт.
  */
-val copyKoverToDokka by tasks.registering(Copy::class) {
+val copyKoverToDokka = tasks.register<Copy>("copyKoverToDokka") {
   dependsOn("koverHtmlReport")
   from(layout.buildDirectory.dir("reports/kover/html"))
   into(layout.buildDirectory.dir("dokka/html/images/kover"))

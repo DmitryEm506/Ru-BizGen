@@ -1,19 +1,21 @@
 [versions]
-kotlin = "2.3.0" # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
+kotlin = "2.4.0" # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
 java = "21"
 changelog = "2.5.0" # https://plugins.gradle.org/plugin/org.jetbrains.changelog
-gradleIntelliJPlugin = "2.16.0" # https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
+gradleIntelliJPlugin = "2.17.0" # https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
 intellijJunit = "4.13.2" # !!! ВАЖНО !!! Пока intellij platform использует старый Junit внутри, поэтому надо добавлять, чтобы был корректный запуск
 junit = "6.1.0" # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
-kotest = "6.1.2" # https://plugins.gradle.org/plugin/io.kotest
+kotest = "6.2.1" # https://plugins.gradle.org/plugin/io.kotest
 dokka = "2.2.0"  # https://plugins.gradle.org/plugin/org.jetbrains.dokka
-kover = "0.9.4"  # https://plugins.gradle.org/plugin/org.jetbrains.kotlinx.kover
+kover = "0.9.8"  # https://plugins.gradle.org/plugin/org.jetbrains.kotlinx.kover
 reflections = "0.10.2" # https://mvnrepository.com/artifact/org.reflections/reflections
 mockk = "1.14.9" # https://mvnrepository.com/artifact/io.mockk/mockk
 jmh-plgn = "0.7.3" # https://plugins.gradle.org/plugin/me.champeau.jmh
 jmh-core = "1.37" # https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 jmh-proc = "1.37" # https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-generator-annprocess
 kotlinx-serialization = "1.11.0" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
+mcp-kotlin-sdk = "0.13.0" # https://central.sonatype.com/artifact/io.modelcontextprotocol/kotlin-sdk-server
+ktor = "3.4.3" # https://mvnrepository.com/artifact/io.ktor/ktor-server-netty
 
 [libraries]
 intellij-junit = { group = "junit", name = "junit", version.ref = "intellijJunit" }
@@ -26,6 +28,8 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 jmh-core = { group = "org.openjdk.jmh", name = "jmh-core", version.ref = "jmh-core" }
 jmh-proc = { group = "org.openjdk.jmh", name = "jmh-generator-annprocess", version.ref = "jmh-proc" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+mcp-kotlin-sdk-server = { group = "io.modelcontextprotocol", name = "kotlin-sdk-server", version.ref = "mcp-kotlin-sdk" }
+ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

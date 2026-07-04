@@ -14,7 +14,7 @@ internal class SnilsGeneratorTest : GeneratorStrTest(SnilsGenerator()) {
 
   @TestFactory
   internal fun `Should return in correct format`() = testsOnDistanceToClipboard { snils ->
-    snils shouldMatch Regex("^[1-9]{3}-[1-9]{3}-[1-9]{3} [0-9]{2}$")
+    snils shouldMatch Regex("^[0-9]{3}-[0-9]{3}-[0-9]{3} [0-9]{2}$")
   }
 
   @TestFactory

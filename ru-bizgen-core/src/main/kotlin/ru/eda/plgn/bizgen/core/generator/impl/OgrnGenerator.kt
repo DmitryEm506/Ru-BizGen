@@ -46,10 +46,10 @@ class OgrnLegalGenerator : GeneratorStr {
 private object OgrnGenerator {
 
   /** Random ogrn ip. */
-  fun randomOgrnIp() = randomOgrnIp(61)
+  fun randomOgrnIp() = randomOgrnIp(null)
 
   /** Random ogrn legal. */
-  fun randomOgrnLegal() = randomOgrnLegal(61)
+  fun randomOgrnLegal() = randomOgrnLegal(null)
 
   /**
    * Генерирует ОГРН для юридического лица (13 цифр)
@@ -72,7 +72,7 @@ private object OgrnGenerator {
     val number = "%05d".format(Random.nextInt(0, 100000))
 
     val base = "$sign$year$region$inspectCode$number"
-    val checksum = (base.toBigInteger() % 13.toBigInteger()).toString().last()
+    val checksum = (base.toBigInteger() % 11.toBigInteger()).toString().last()
 
     return base + checksum
   }
@@ -102,9 +102,7 @@ private object OgrnGenerator {
 
     // 5. Контрольная цифра (mod 13)
     val base = "$type$year$region$number" // 1 + 2 + 2 + 9 = 14 цифр
-    val checksum = (base.toBigInteger() % 11.toBigInteger()).let {
-      if (it == 10.toBigInteger()) 0 else it
-    }.toString()
+    val checksum = (base.toBigInteger() % 13.toBigInteger()).toString().last()
 
     // Собираем итоговый ОГРНИП (15 цифр)
     return "$type$year$region$number$checksum".also {

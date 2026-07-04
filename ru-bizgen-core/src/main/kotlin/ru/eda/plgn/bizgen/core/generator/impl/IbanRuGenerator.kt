@@ -15,11 +15,9 @@ import java.math.BigInteger
  * - *2 цифры — контрольное число (рассчитывается)*
  * - *29 цифр — BBAN (базовый номер счёта)*
  *
- * **Структура BBAN (29 цифр):** *KK BBBBB SSSS C NNNNNNNNNNNNNNNNNNNN*
- * - *KK — контрольные цифры (2 цифры)*
- * - *BBBBB — БИК банка (5 цифр)*
+ * **Структура BBAN (29 цифр):** *BBBBB SSSS NNNNNNNNNNNNNNNNNNNN*
+ * - *BBBBB — код банка из БИК (5 цифр)*
  * - *SSSS — код филиала (4 цифры, часто 0000)*
- * - *C — признак счёта (1 цифра, обычно 0)*
  * - *NN...N — номер счёта (20 цифр)*
  *
  * **See Also:** [IBAN](https://ru.wikipedia.org/wiki/IBAN)
@@ -29,9 +27,11 @@ import java.math.BigInteger
 class IbanRuGenerator : GeneratorStr {
   override val uniqueDistance: Int = 130
 
-  override fun generate(): GeneratorResult<String> = GeneratorResultWithEscape(
-    data = generateRussianIBAN(accountNumber = BankAccountGenerator.randomCorrespondentAccount(bik = BikGenerator.randomBik()))
-  )
+  override fun generate(): GeneratorResult<String> {
+    val bik = BikGenerator.randomBik()
+    val accountNumber = BankAccountGenerator.randomCorrespondentAccount(bik)
+    return GeneratorResultWithEscape(data = generateRussianIBAN(accountNumber, bik))
+  }
 
   /**
    * IBAN (International Bank Account Number) - международный номер банковского счёта, используемый для международных переводов. Формат
@@ -41,43 +41,30 @@ class IbanRuGenerator : GeneratorStr {
    *
    * @author Dmitry_Emelyanenko
    */
-  private object IbanGenerator {
-    // База данных российских банков (БИК или аналогичные коды)
-    private val bankCodes = mapOf(
-      "Газпромбанк" to "044525823",
-      "Сбербанк" to "044525225",
-      "ВТБ" to "044525187",
-      "Альфа-Банк" to "044525593",
-      "Тинькофф" to "044525444",
-      "Райффайзенбанк" to "044525202",
-      "Открытие" to "044525111",
-      "Промсвязьбанк" to "044525060",
-      "Россельхозбанк" to "044525402",
-      "Совкомбанк" to "044525417"
-    )
+  internal object IbanGenerator {
 
     /**
      * Генерирует российский IBAN.
      *
-     * @param accountNumber Номер счёта (если не указан, генерируется случайный).
-     * @param bankCode Код банка (если не указан, выбирается случайный из базы).
+     * @param accountNumber Номер счёта (20 цифр).
+     * @param bik БИК банка (9 цифр). Если не указан, генерируется случайный.
      * @return Строка IBAN (формат RUXXXXXXXXXXXXXXXXXXXXXXXXX).
      */
     fun generateRussianIBAN(
       accountNumber: String,
-      bankCode: String? = null,
+      bik: String? = null,
     ): String {
-      // 1. Выбираем код банка (5 цифр)
-      val selectedBankCode = (bankCode ?: bankCodes.values.random()).take(5)
+      // 1. Код банка — последние 5 цифр БИК
+      val selectedBik = bik ?: BikGenerator.randomBik()
+      require(selectedBik.length == 9 && selectedBik.all { it.isDigit() }) {
+        "БИК должен содержать 9 цифр"
+      }
+      val bankCode = selectedBik.substring(4, 9)
 
-      // 2. Формируем BBAN (29 цифр)
-      val bban = buildString {
-        append("00")                    // Временные контрольные цифры
-        append(selectedBankCode)        // Код банка (5 цифр)
-        append("0000")                  // Код филиала
-        append("0")                     // Признак счета
-        append(accountNumber)           // Номер счета (20 цифр)
-      }.take(29)
+      // 2. Формируем BBAN (5 + 4 + 20 = 29 цифр)
+      val bban = bankCode + "0000" + accountNumber
+
+      require(bban.length == 29) { "BBAN must be 29 but was ${bban.length}" }
 
       // 3. Вычисляем контрольное число для IBAN
       val controlNumber = calculateIBANControlNumber("RU", bban)

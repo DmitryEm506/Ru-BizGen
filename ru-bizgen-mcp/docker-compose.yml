@@ -1,0 +1,10 @@
+services:
+  ru-bizgen-mcp:
+    build:
+      context: ..
+      dockerfile: ru-bizgen-mcp/Dockerfile
+    container_name: ru-bizgen-mcp
+    ports:
+      - "8081:8081"
+    command: ["--host=0.0.0.0", "--port=8081"]
+    restart: unless-stopped

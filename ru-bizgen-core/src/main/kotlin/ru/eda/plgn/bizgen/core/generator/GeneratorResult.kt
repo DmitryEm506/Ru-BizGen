@@ -11,8 +11,12 @@ import ru.eda.plgn.bizgen.core.utils.withEscape
  */
 open class GeneratorResult<T : Any>(
   val toClipboard: T,
-  val toEditor: String
-)
+  val toEditor: String,
+) {
+
+  /** Сгенерированное значение. */
+  val value: T get() = toClipboard
+}
 
 /**
  * Ответ генератора, в котором данные для вставки представляют обрамленные сгенерированные данные символом "

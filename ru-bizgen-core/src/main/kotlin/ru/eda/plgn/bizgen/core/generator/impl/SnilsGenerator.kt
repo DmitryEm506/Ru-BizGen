@@ -39,7 +39,7 @@ class SnilsGenerator : GeneratorStr {
     val COEFFICIENTS = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
 
     fun randomSNILS(): String {
-      val data = List(COEFFICIENTS.size) { (1..9).random() }
+      val data = List(COEFFICIENTS.size) { (0..9).random() }
 
       val checkDigit = data.zip(COEFFICIENTS)
         .sumOf { (d, c) -> d * c }

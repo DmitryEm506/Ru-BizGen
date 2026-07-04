@@ -5,6 +5,7 @@ import ru.eda.plgn.bizgen.core.generator.GeneratorResultWithEscape
 import ru.eda.plgn.bizgen.core.generator.GeneratorStr
 import ru.eda.plgn.bizgen.core.generator.impl.AccountGenerator.randomAccount
 import ru.eda.plgn.bizgen.core.generator.impl.BikGenerator.Companion.randomBik
+import ru.eda.plgn.bizgen.core.utils.AccountKeyAlgorithm
 
 /**
  * Расчетный счет (Р/с) в рублях.
@@ -48,7 +49,7 @@ class AccountCnyGenerator : GeneratorStr {
  *
  * @author Dmitry_Emelyanenko
  */
-private object AccountGenerator {
+internal object AccountGenerator {
 
   // Справочник валютных кодов (ISO 4217 -> код ЦБ РФ)
   val currencyCodes = linkedMapOf(
@@ -91,20 +92,25 @@ private object AccountGenerator {
       "БИК должен содержать 9 цифр"
     }
 
-    // Формируем базовую часть
+    // Формируем базовую часть (с контрольным разрядом = 0)
     val basePart = buildString {
       append("407")       // Балансовый счет (юрлицо)
       append("01")        // Признак счета
       append(currencyCode) // Код валюты
-      append("0")         // Контрольный разряд
+      append("0")         // Контрольный разряд (временно 0)
     }
 
     // Генерируем случайный номер счета (11 цифр)
     val accountNumber = (1..11).joinToString("") { (0..9).random().toString() }
 
-    // Собираем полный номер (20 цифр)
-    return (basePart + accountNumber).also {
-      require(it.length == 20) { "AccountNumber length must be 20. Current value: ${it.length}" }
-    }
+    // Собираем полный номер (20 цифр) с K=0
+    val accountWithK0 = basePart + accountNumber
+
+    // Рассчитываем контрольный разряд по Положению 515
+    val controlKey = AccountKeyAlgorithm.calculateControlKey(bankBIC, accountWithK0, isRkc = false)
+
+    // Заменяем контрольный разряд
+    return (accountWithK0.substring(0, 8) + controlKey + accountWithK0.substring(9))
+      .also { require(it.length == 20) { "AccountNumber length must be 20. Current value: ${it.length}" } }
   }
 }
