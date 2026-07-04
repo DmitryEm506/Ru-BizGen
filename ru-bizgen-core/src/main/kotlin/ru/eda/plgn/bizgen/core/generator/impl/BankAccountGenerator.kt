@@ -4,6 +4,7 @@ import ru.eda.plgn.bizgen.core.generator.GeneratorResult
 import ru.eda.plgn.bizgen.core.generator.GeneratorResultWithEscape
 import ru.eda.plgn.bizgen.core.generator.GeneratorStr
 import ru.eda.plgn.bizgen.core.generator.impl.BikGenerator.Companion.randomBik
+import ru.eda.plgn.bizgen.core.utils.AccountKeyAlgorithm
 import kotlin.random.Random
 
 /**
@@ -58,26 +59,17 @@ class BankAccountGenerator : GeneratorStr {
       // 4. 3 случайные цифры
       val randomSuffix = "%03d".format(Random.nextInt(1000))
 
-      // 5. Расчет контрольной цифры (на основе "0" + bikPart + fixedZeros + randomSuffix)
-      val baseForControl = "0$bikPart$fixedZeros$randomSuffix"
-      val controlDigit = calculateControlDigit(baseForControl)
+      // 5. Собираем счёт с K=0 (20 цифр)
+      val accountWithK0 = "$prefix${0}$bikPart$fixedZeros$randomSuffix"
 
-      // 6. Сборка счета (8 + 1 + 5 + 3 + 3 = 20 цифр)
+      // 6. Рассчитываем контрольный ключ по Положению 515 (23-значная база: РКЦ + счёт)
+      val controlDigit = AccountKeyAlgorithm.calculateControlKey(bik, accountWithK0, isRkc = true)
+
+      // 7. Сборка счета (8 + 1 + 5 + 3 + 3 = 20 цифр)
       return "$prefix$controlDigit$bikPart$fixedZeros$randomSuffix".also {
         require(it.length == 20) { "Должно быть 20 цифр, получено: ${it.length}" }
       }
     }
 
-    /** Алгоритм расчета контрольной цифры для коррсчета. */
-    private fun calculateControlDigit(accountNumber: String): Int {
-      val weights = intArrayOf(7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1)
-      var sum = 0
-
-      accountNumber.forEachIndexed { index, char ->
-        sum += char.digitToInt() * weights[index]
-      }
-
-      return (sum % 10) * 3 % 10
-    }
   }
 }

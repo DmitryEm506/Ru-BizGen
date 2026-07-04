@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.TestFactory
 import ru.eda.plgn.bizgen.core.generator.GeneratorStrTest
+import java.math.BigInteger
 
 /**
  * Тесты для генераторов ОГРН — [OgrnLegalGenerator], [OgrnIpGenerator].
@@ -30,6 +31,18 @@ internal class OgrnGeneratorTest {
     internal fun `Should generate an OGRN starting with 1 or 5`() = testsOnDistanceToClipboard { ogrn ->
       ogrn.first() shouldBeIn listOf('1', '5')
     }
+
+    @TestFactory
+    internal fun `Should contain correct checksum digit (mod 11)`() = testsOnDistanceToClipboard { ogrn ->
+      val base = ogrn.take(12)
+      val actualChecksum = ogrn.last()
+      val expectedChecksum = BigInteger(base)
+        .mod(BigInteger.valueOf(11))
+        .toString()
+        .last()
+
+      actualChecksum shouldBe expectedChecksum
+    }
   }
 
   @Nested
@@ -45,6 +58,18 @@ internal class OgrnGeneratorTest {
     @TestFactory
     internal fun `Should generate an OGRNIP starting with 3`() = testsOnDistanceToClipboard { ogrnip ->
       ogrnip.first() shouldBe '3'
+    }
+
+    @TestFactory
+    internal fun `Should contain correct checksum digit (mod 13)`() = testsOnDistanceToClipboard { ogrnip ->
+      val base = ogrnip.take(14)
+      val actualChecksum = ogrnip.last()
+      val expectedChecksum = BigInteger(base)
+        .mod(BigInteger.valueOf(13))
+        .toString()
+        .last()
+
+      actualChecksum shouldBe expectedChecksum
     }
   }
 }

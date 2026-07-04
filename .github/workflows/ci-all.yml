@@ -8,6 +8,13 @@ on:
         required: false
         default: "manual run"
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build & Full Tests
@@ -33,13 +40,13 @@ jobs:
         run: ./gradlew check --no-daemon -PrunDistanceFinderTests
 
       - name: Build plugin
-        run: ./gradlew buildPlugin --no-daemon
+        run: ./gradlew :ru-bizgen-plugin:buildPlugin -x test --no-daemon
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v7
         with:
           name: kover-html-report
-          path: build/reports/kover/html
+          path: ${{ github.workspace }}/build/reports/kover/html
 
       - name: Build documentation (Dokka)
         run: ./gradlew dokkaGenerateHtml --no-daemon

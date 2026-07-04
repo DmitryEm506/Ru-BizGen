@@ -67,7 +67,7 @@ dependencies {
 // переходить как минимум на версию 5, решил сразу "прыгнуть" на версию 6, так как сейчас только unit тесты
 testing {
   suites {
-    @Suppress("unused") val test by getting(JvmTestSuite::class) {
+    @Suppress("unused") val test = getByName<JvmTestSuite>("test") {
       useJUnitJupiter()
     }
   }

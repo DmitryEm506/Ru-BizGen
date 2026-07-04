@@ -1,0 +1,13 @@
+.git
+.github
+.idea
+.gradle
+.kotlin
+.intellijPlatform
+_polygon
+**/build
+*.iml
+*.ipr
+*.iws
+*.log
+token.bin

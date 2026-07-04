@@ -39,7 +39,7 @@ class CardNumberGenerator : GeneratorStr {
     MASTER(startBin = { "5" + nextInt(1, 5) }),
 
     /** МИР. */
-    MIR(startBin = { "220" }),
+    MIR(startBin = { "220" + nextInt(0, 5) }),
   }
 
   private companion object {

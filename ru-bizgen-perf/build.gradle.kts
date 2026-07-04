@@ -21,7 +21,7 @@ dependencies {
 }
 
 // 1. Создаем конфигурацию для экспорта
-val jmhApiByConf by configurations.creating {
+val jmhApiByConf = configurations.create("jmhApiByConf") {
   isCanBeResolved = false
   isCanBeConsumed = true
   // Подтягиваем зависимости, чтобы в модуле валидации не было ClassNotFound для JMH аннотаций
