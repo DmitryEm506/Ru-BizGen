@@ -14,8 +14,8 @@ jmh-plgn = "0.7.3" # https://plugins.gradle.org/plugin/me.champeau.jmh
 jmh-core = "1.37" # https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
 jmh-proc = "1.37" # https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-generator-annprocess
 kotlinx-serialization = "1.11.0" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
-mcp-kotlin-sdk = "0.13.0" # https://central.sonatype.com/artifact/io.modelcontextprotocol/kotlin-sdk-server
-ktor = "3.4.3" # https://mvnrepository.com/artifact/io.ktor/ktor-server-netty
+mcp-kotlin-sdk = "0.14.0" # https://central.sonatype.com/artifact/io.modelcontextprotocol/kotlin-sdk-server
+ktor = "3.5.1" # https://mvnrepository.com/artifact/io.ktor/ktor-server-netty
 
 [libraries]
 intellij-junit = { group = "junit", name = "junit", version.ref = "intellijJunit" }
