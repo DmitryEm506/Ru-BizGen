@@ -12,6 +12,7 @@ import ru.eda.plgn.bizgen.core.generator.GeneratorResult
 import ru.eda.plgn.bizgen.core.generator_info.GeneratorInfo
 import ru.eda.plgn.bizgen.plugin.clipboard.BizGenClipboardSettingsServiceView
 import ru.eda.plgn.bizgen.plugin.di.getBizGenService
+import ru.eda.plgn.bizgen.plugin.escapechar.EscapeCharSettingsServiceView
 import ru.eda.plgn.bizgen.plugin.invokeLater
 import ru.eda.plgn.bizgen.plugin.notification.NotificationCtx
 import ru.eda.plgn.bizgen.plugin.notification.NotificationService
@@ -49,7 +50,12 @@ abstract class BaseGeneratorAction<T : Any>(
     val project = event.getData(CommonDataKeys.PROJECT) ?: return
 
     generator.generate().let { rsp ->
-      val generatedText = rsp.toEditor.takeIf { it.isNotBlank() } ?: return
+      val escapeChar = getBizGenService<EscapeCharSettingsServiceView>().getEscapeChar()
+      val generatedText = if (escapeChar != "\"") {
+        "$escapeChar${rsp.toClipboard}$escapeChar"
+      } else {
+        rsp.toEditor
+      }.takeIf { it.isNotBlank() } ?: return
 
       invokeLater {
         WriteCommandAction.runWriteCommandAction(project) {

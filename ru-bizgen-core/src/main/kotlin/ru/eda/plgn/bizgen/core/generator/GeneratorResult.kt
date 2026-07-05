@@ -22,15 +22,16 @@ open class GeneratorResult<T : Any>(
  * Ответ генератора, в котором данные для вставки представляют обрамленные сгенерированные данные символом "
  *
  * @param T тип генерируемых данных
- * @property data сгенерированные данные
+ * @param data сгенерированные данные
+ * @param escapeChar символ обрамления (по умолчанию - двойная кавычка)
  */
-class GeneratorResultWithEscape<T : Any>(data: T) : GeneratorResult<T>(data, data.toString().withEscape())
+class GeneratorResultWithEscape<T : Any>(data: T, escapeChar: String = "\"") : GeneratorResult<T>(data, data.toString().withEscape(escapeChar))
 
 /**
  * Ответ генератора в котором данные для вставки - сгенерированные данные.
  *
  * @param T тип генерируемых данных
- * @property data сгенерированные данные
+ * @param data сгенерированные данные
  */
 @Suppress("unused")
 class GeneratorResultAsIs<T : Any>(data: T) : GeneratorResult<T>(data, data.toString())

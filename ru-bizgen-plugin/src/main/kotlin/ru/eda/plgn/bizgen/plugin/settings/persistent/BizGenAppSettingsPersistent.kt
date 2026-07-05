@@ -5,6 +5,7 @@ import com.intellij.openapi.components.SettingsCategory
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.diagnostic.Logger
+import ru.eda.plgn.bizgen.plugin.actions.GeneratorActionProvider
 import ru.eda.plgn.bizgen.plugin.di.getBizGenService
 import ru.eda.plgn.bizgen.plugin.settings.BizGenAppSettingsRepository
 import ru.eda.plgn.bizgen.plugin.settings.model.BizGenAppSettings
@@ -46,6 +47,17 @@ internal class BizGenAppSettingsPersistent(
     }
 
     settings = bizGenAppSettings
+
+    applyCustomNames()
+  }
+
+  private fun applyCustomNames() {
+    val actions = getBizGenService<GeneratorActionProvider>().getAnActions().associateBy { it.id }
+    settings.actualActions.forEach { setting ->
+      if (setting.customName.isNotBlank()) {
+        actions[setting.id]?.templatePresentation?.text = setting.customName
+      }
+    }
   }
 
   override fun settings(): BizGenAppSettings {

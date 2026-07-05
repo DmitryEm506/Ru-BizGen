@@ -9,6 +9,7 @@ import org.openjdk.jmh.annotations.OutputTimeUnit
 import org.openjdk.jmh.annotations.Scope
 import org.openjdk.jmh.annotations.Setup
 import org.openjdk.jmh.annotations.State
+import org.openjdk.jmh.annotations.Threads
 import org.openjdk.jmh.annotations.Warmup
 import ru.eda.plgn.bizgen.core.generator.Generator
 import java.util.concurrent.TimeUnit
@@ -20,40 +21,26 @@ import java.util.concurrent.TimeUnit
  * @property generatorSupplier функция создания генератора
  * @author Dmitry_Emelyanenko
  */
-// Общее состояние для всех потоков
 @State(Scope.Benchmark)
-// Измеряем среднее время
 @BenchmarkMode(Mode.AverageTime)
-// Результаты в микросекундах
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
-// секция разогрева
+@Threads(1)
 @Warmup(
-  // 5 итерации разогрева
-  iterations = 5,
-
-  // каждая по 1 секунде
+  iterations = 3,
   time = 1,
   timeUnit = TimeUnit.SECONDS
-  // Всего 5 секунды разогрева
 )
-// секция измерения
 @Measurement(
-  // 10 итераций измерения
   iterations = 10,
-  // каждая по 2 секунде
   time = 2,
   timeUnit = TimeUnit.SECONDS
-  // Всего 20 секунд измерений
 )
-// секция JVM
 @Fork(
-  // 2 отдельных запуска JVM
   value = 2,
   jvmArgsAppend = [
-    // Фиксированный heap 2G
-    "-Xms2g", "-Xmx2g",
-    // Использовать G1 сборщик мусора
-    "-XX:+UseG1GC"
+    "-Xms1g", "-Xmx1g",
+    "-XX:+UseG1GC",
+    "-XX:+AlwaysPreTouch"
   ]
 )
 abstract class BaseGeneratorBenchmark<T : Any>(private val generatorSupplier: () -> Generator<T>) {
@@ -61,6 +48,7 @@ abstract class BaseGeneratorBenchmark<T : Any>(private val generatorSupplier: ()
 
   /** Подготовка генератора к тестированию. */
   @Setup
+  @Suppress("unused")
   fun setup() {
     generator = generatorSupplier()
   }
@@ -71,6 +59,7 @@ abstract class BaseGeneratorBenchmark<T : Any>(private val generatorSupplier: ()
    * @return сгенерированное значение
    */
   @Benchmark
+  @Suppress("unused")
   fun generate(): String {
     return generator.generate().toEditor
   }

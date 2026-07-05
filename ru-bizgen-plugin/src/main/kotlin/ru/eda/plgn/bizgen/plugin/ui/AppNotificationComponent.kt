@@ -8,6 +8,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.selected
 import ru.eda.plgn.bizgen.plugin.clipboard.BizGenClipboardSettingsService
 import ru.eda.plgn.bizgen.plugin.di.getBizGenService
+import ru.eda.plgn.bizgen.plugin.escapechar.EscapeCharSettingsService
 import ru.eda.plgn.bizgen.plugin.notification.NotificationSettingsService
 import ru.eda.plgn.bizgen.plugin.settings.model.BizGenAppSettings.BizGenNotificationMode
 import javax.swing.JComponent
@@ -48,6 +49,29 @@ class NotificationAndClipboardSettingsComponent {
           .actionListener { _, box -> clipboardSettingsService.setClipboardSetting(box.isSelected) }
           .bindSelected(clipboardSettingsService::needToIns, clipboardSettingsService::setClipboardSetting)
       }
+
+      row { label("") }.topGap(TopGap.SMALL)
+
+      val escapeCharService = getBizGenService<EscapeCharSettingsService>()
+      var currentChar = escapeCharService.getEscapeChar()
+
+      buttonsGroup("Символ обрамления при вставке в редактор") {
+        row {
+          radioButton("Двойные кавычки (\")", "\"")
+            .selected(currentChar == "\"")
+            .actionListener { _, _ -> escapeCharService.setEscapeChar("\"") }
+        }
+        row {
+          radioButton("Одинарные кавычки (')", "'")
+            .selected(currentChar == "'")
+            .actionListener { _, _ -> escapeCharService.setEscapeChar("'") }
+        }
+        row {
+          radioButton("Без обрамления", "")
+            .selected(currentChar == "")
+            .actionListener { _, _ -> escapeCharService.setEscapeChar("") }
+        }
+      }.bind({ currentChar }, { currentChar = it })
     }
   }
 }
