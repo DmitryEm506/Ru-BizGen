@@ -138,6 +138,34 @@ internal class BizGenAppSettingsPersistentTest : BaseIdeaTest() {
   }
 
   @Test
+  fun `Should reset action name to default when custom name was set but is now blank`(@TestDisposable disposable: Disposable) {
+    val action = TestGeneratorAction
+    action.templatePresentation.text = "Old Custom Name"
+
+    val provider = replaceServiceInApp<GeneratorActionProvider>(disposable)
+    every { provider.getAnActions() } returns listOf<GeneratorAnAction>(action)
+    every { provider.getInfos() } returns listOf(action)
+
+    val updater = replaceServiceInApp<BizGenAppSettingsSoftUpdater>(disposable)
+    val settings = BizGenAppSettings().apply {
+      actualActions = mutableListOf(
+        PersistenceActionSetting(
+          id = action.id,
+          position = 0,
+          description = action.name,
+          active = true,
+          customName = "",
+        )
+      )
+    }
+    every { updater.softUpdateActions(any()) } returns settings.actualActions
+
+    underTest.loadState(settings)
+
+    action.templatePresentation.text shouldBe action.name
+  }
+
+  @Test
   fun `Should not fail when custom name references unknown action`(@TestDisposable disposable: Disposable) {
     val action = TestGeneratorAction
     action.templatePresentation.text = action.name

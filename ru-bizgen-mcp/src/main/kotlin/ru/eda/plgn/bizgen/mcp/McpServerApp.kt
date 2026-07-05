@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
   val version = mcpVersion()
   val infos = GeneratorInfoProvider.generatorInfos
 
-  logger.info("Запуск ru-bizgen MCP-сервера version{} на {}:{}", version, host, port)
+  logger.info("Запуск ru-bizgen MCP-сервера на основе версии плагина {} на {}:{}", version, host, port)
   logger.info("Зарегистрировано инструментов: {}", infos.size)
 
   val toolNames = ToolNameResolver.resolveAll(infos)

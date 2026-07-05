@@ -91,9 +91,32 @@ Ru BizGen is a generator of Russian-like test data for fast development.<br/>
   </ul>
 </div>
 
+<div class="mcp-section">
+  <h3>🤖 MCP-сервер</h3>
+  <p>
+    Помимо плагина, доступен отдельный <strong>MCP-сервер</strong> (Model Context Protocol), который предоставляет аналогичный
+    функционал генераторов и может быть развёрнут локально или в Docker. MCP-сервер позволяет использовать генераторы
+    Ru BizGen в любых MCP-совместимых клиентах (IDE, AI-ассистенты, CI-инструменты).
+  </p>
+
+  <h4>Возможности MCP-сервера:</h4>
+  <ul>
+    <li>🔧 <strong>31 инструмент</strong> — по одному на каждый генератор (те же, что и в плагине)</li>
+    <li>🌐 <strong>Streamable HTTP</strong> транспорт на базе Ktor/Netty</li>
+    <li>🐳 <strong>Docker-ready</strong> — multi-stage сборка, порт 8081</li>
+    <li>🩺 <strong>Health endpoint</strong> <code>/health</code> для мониторинга</li>
+    <li>🔒 <strong>Локальная генерация</strong> — без обращений к внешним сервисам</li>
+    <li>🔁 <strong>Единый реестр генераторов</strong> с ядром <code>ru-bizgen-core</code></li>
+  </ul>
+
+  <p>
+    Подробнее о настройке и запуске — в репозитории проекта: раздел <strong>ru-bizgen-mcp</strong>.
+  </p>
+</div>
+
 <div class="tags">
   <p>
     <strong>Keywords:</strong> Russian test data generator, faker, INN, OGRN, KPP, SNILS, phone generator, BIK, IBAN, SWIFT, random data,
-    mock data, development utility, productivity tool, IntelliJ IDEA plugin.
+    mock data, development utility, productivity tool, IntelliJ IDEA plugin, MCP server, Model Context Protocol.
   </p>
 </div>

@@ -108,6 +108,11 @@ private class ActionListComponent : CheckBoxList<String>(listener) {
       ).takeIf { it == Messages.YES }?.let {
         clear()
         fillByActions(getBizGenService<AppActionSettingsService>().restoreByDefault())
+
+        val infos = getBizGenService<GeneratorActionProvider>().getInfos().associateBy { it.id }
+        getBizGenService<GeneratorActionProvider>().getAnActions().forEach { action ->
+          infos[action.id]?.let { info -> action.templatePresentation.text = info.name }
+        }
       }
     }
   }
