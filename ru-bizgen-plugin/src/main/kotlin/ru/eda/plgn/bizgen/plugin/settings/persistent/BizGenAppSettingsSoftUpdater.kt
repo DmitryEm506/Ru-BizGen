@@ -78,7 +78,10 @@ class BizGenAppSettingsSoftUpdaterImpl : BizGenAppSettingsSoftUpdater {
 
       saved.forEach { savedAction ->
         actualsById[savedAction.id]?.let { actual ->
-          savedAction.apply { description = actual.description }
+          when (savedAction.customName.isBlank()) {
+            true -> savedAction.description = actual.description
+            false -> savedAction.description = savedAction.customName
+          }
         }
       }
     }

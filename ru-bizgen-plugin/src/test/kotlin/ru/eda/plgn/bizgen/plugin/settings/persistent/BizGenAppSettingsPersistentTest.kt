@@ -9,6 +9,8 @@ import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import org.junit.jupiter.api.Test
 import ru.eda.plgn.bizgen.plugin.BaseIdeaTest
+import ru.eda.plgn.bizgen.plugin.actions.GeneratorActionProvider
+import ru.eda.plgn.bizgen.plugin.actions.GeneratorAnAction
 import ru.eda.plgn.bizgen.plugin.settings.model.BizGenAppSettings
 import ru.eda.plgn.bizgen.plugin.settings.model.BizGenAppSettings.PersistenceActionSetting
 import java.nio.file.Files
@@ -77,5 +79,89 @@ internal class BizGenAppSettingsPersistentTest : BaseIdeaTest() {
     return Files.readString(Path.of("src/test/resources/settings/$fileName"))
       .let(JDOMUtil::load)
       .let { element -> XmlSerializer.deserialize(element, BizGenAppSettings::class.java) }
+  }
+
+  @Test
+  fun `Should apply custom names to actions on loadState`(@TestDisposable disposable: Disposable) {
+    val action = TestGeneratorAction
+    action.templatePresentation.text = action.name
+
+    val provider = replaceServiceInApp<GeneratorActionProvider>(disposable)
+    every { provider.getAnActions() } returns listOf<GeneratorAnAction>(action)
+    every { provider.getInfos() } returns listOf(action)
+
+    val updater = replaceServiceInApp<BizGenAppSettingsSoftUpdater>(disposable)
+    val settings = BizGenAppSettings().apply {
+      actualActions = mutableListOf(
+        PersistenceActionSetting(
+          id = action.id,
+          position = 0,
+          description = action.name,
+          active = true,
+          customName = "My Custom Generator",
+        )
+      )
+    }
+    every { updater.softUpdateActions(any()) } returns settings.actualActions
+
+    underTest.loadState(settings)
+
+    action.templatePresentation.text shouldBe "My Custom Generator"
+  }
+
+  @Test
+  fun `Should not change action name when custom name is blank`(@TestDisposable disposable: Disposable) {
+    val action = TestGeneratorAction
+    action.templatePresentation.text = action.name
+
+    val provider = replaceServiceInApp<GeneratorActionProvider>(disposable)
+    every { provider.getAnActions() } returns listOf<GeneratorAnAction>(action)
+    every { provider.getInfos() } returns listOf(action)
+
+    val updater = replaceServiceInApp<BizGenAppSettingsSoftUpdater>(disposable)
+    val settings = BizGenAppSettings().apply {
+      actualActions = mutableListOf(
+        PersistenceActionSetting(
+          id = action.id,
+          position = 0,
+          description = action.name,
+          active = true,
+          customName = "",
+        )
+      )
+    }
+    every { updater.softUpdateActions(any()) } returns settings.actualActions
+
+    underTest.loadState(settings)
+
+    action.templatePresentation.text shouldBe action.name
+  }
+
+  @Test
+  fun `Should not fail when custom name references unknown action`(@TestDisposable disposable: Disposable) {
+    val action = TestGeneratorAction
+    action.templatePresentation.text = action.name
+
+    val provider = replaceServiceInApp<GeneratorActionProvider>(disposable)
+    every { provider.getAnActions() } returns listOf<GeneratorAnAction>(action)
+    every { provider.getInfos() } returns listOf(action)
+
+    val updater = replaceServiceInApp<BizGenAppSettingsSoftUpdater>(disposable)
+    val settings = BizGenAppSettings().apply {
+      actualActions = mutableListOf(
+        PersistenceActionSetting(
+          id = "non-existent-id",
+          position = 0,
+          description = "Unknown",
+          active = true,
+          customName = "Ghost Name",
+        )
+      )
+    }
+    every { updater.softUpdateActions(any()) } returns settings.actualActions
+
+    underTest.loadState(settings)
+
+    action.templatePresentation.text shouldBe action.name
   }
 }

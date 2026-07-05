@@ -20,6 +20,9 @@ open class BizGenAppSettings {
   /** Признак, что необходимо вставить результат работы генератора в буфер обмена. */
   var insToClipboard: Boolean = true
 
+  /** Символ обрамления для вставки значения в редактор. */
+  var escapeChar: String = "\""
+
   /** Сброс настроек до значений по умолчанию. */
   open fun restoreFromDefault() {
     actualActions.clear()
@@ -46,6 +49,7 @@ open class BizGenAppSettings {
    * @property position позиция в общем списке действий
    * @property description описание
    * @property active признак, что действие активное
+   * @property customName пользовательское имя действия
    * @author Dmitry_Emelyanenko
    */
   data class PersistenceActionSetting(
@@ -53,6 +57,7 @@ open class BizGenAppSettings {
     override var position: Int = 0,
     override var description: String = "",
     override var active: Boolean = true,
+    override var customName: String = "",
   ) : ActionSettingsView
 
   /** Отражение настроек для конкретного действия. */
@@ -69,6 +74,9 @@ open class BizGenAppSettings {
 
     /** Признак, что действие активное. */
     val active: Boolean
+
+    /** Пользовательское имя действия. */
+    val customName: String get() = ""
   }
 
   /**

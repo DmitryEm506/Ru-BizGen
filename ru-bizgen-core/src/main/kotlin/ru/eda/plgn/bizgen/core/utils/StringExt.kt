@@ -6,5 +6,7 @@ package ru.eda.plgn.bizgen.core.utils
  * Например:
  *
  * 207729165200 --> "207729165200"
+ *
+ * @param escapeChar символ обрамления (по умолчанию - двойная кавычка)
  */
-fun String.withEscape() = "\"$this\""
+fun String.withEscape(escapeChar: String = "\"") = "$escapeChar$this$escapeChar"

@@ -23,6 +23,10 @@ import ru.eda.plgn.bizgen.core.generator_info.impl.oktmo.Oktmo11GeneratorInfo
 import ru.eda.plgn.bizgen.core.generator_info.impl.oktmo.Oktmo8GeneratorInfo
 import ru.eda.plgn.bizgen.core.generator_info.impl.org.OrgEngNameGeneratorInfo
 import ru.eda.plgn.bizgen.core.generator_info.impl.org.OrgRuNameGeneratorInfo
+import ru.eda.plgn.bizgen.core.generator_info.impl.passport.ForeignPassportRuMrzGeneratorInfo
+import ru.eda.plgn.bizgen.core.generator_info.impl.passport.ForeignPassportRuNumberGeneratorInfo
+import ru.eda.plgn.bizgen.core.generator_info.impl.passport.PassportRuCompactGeneratorInfo
+import ru.eda.plgn.bizgen.core.generator_info.impl.passport.PassportRuSpacedGeneratorInfo
 import ru.eda.plgn.bizgen.core.generator_info.impl.phone_number.PhoneNumberRuDigitGeneratorInfo
 import ru.eda.plgn.bizgen.core.generator_info.impl.phone_number.PhoneNumberRuFormatGeneratorInfo
 import ru.eda.plgn.bizgen.core.generator_info.impl.swift.Swift11GeneratorInfo
@@ -73,5 +77,9 @@ object GeneratorInfoProvider {
     PhoneNumberRuFormatGeneratorInfo(),
     PhoneNumberRuDigitGeneratorInfo(),
     SnilsGeneratorInfo(),
+    PassportRuSpacedGeneratorInfo(),
+    PassportRuCompactGeneratorInfo(),
+    ForeignPassportRuNumberGeneratorInfo(),
+    ForeignPassportRuMrzGeneratorInfo(),
   )
 }

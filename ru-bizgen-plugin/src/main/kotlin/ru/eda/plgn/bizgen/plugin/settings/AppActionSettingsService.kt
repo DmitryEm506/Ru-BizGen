@@ -60,6 +60,15 @@ interface AppActionSettingsService : BizGenService {
    */
   fun restoreByDefault(): List<ActionSettingsView>
 
+  /**
+   * Переименование действия.
+   *
+   * @param position позиция действия в общем списке
+   * @param newName новое имя действия
+   * @return измененное действие, если нашли по позиции
+   */
+  fun renameAction(position: Int, newName: String): ActionSettingsView?
+
   /** Направление перемещения действия. */
   enum class Direction {
 
@@ -110,6 +119,13 @@ class AppActionSettingsServiceImpl : AppActionSettingsService {
     store().settings().restoreFromDefault()
 
     return getActionSettings()
+  }
+
+  override fun renameAction(position: Int, newName: String): ActionSettingsView? {
+    return findByPositionInner(position)?.apply {
+      customName = newName
+      description = newName
+    }
   }
 
   private companion object {

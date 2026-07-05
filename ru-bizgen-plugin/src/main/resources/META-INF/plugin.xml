@@ -54,6 +54,16 @@
     />
 
     <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.escapechar.EscapeCharSettingsService"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.escapechar.EscapeCharSettingsServiceImpl"
+    />
+
+    <applicationService
+      serviceInterface="ru.eda.plgn.bizgen.plugin.escapechar.EscapeCharSettingsServiceView"
+      serviceImplementation="ru.eda.plgn.bizgen.plugin.escapechar.EscapeCharSettingsServiceImpl"
+    />
+
+    <applicationService
       serviceInterface="ru.eda.plgn.bizgen.plugin.settings.persistent.BizGenAppSettingsSoftUpdater"
       serviceImplementation="ru.eda.plgn.bizgen.plugin.settings.persistent.BizGenAppSettingsSoftUpdaterImpl"
     />
