@@ -1,10 +1,10 @@
-## [1.12] - 04-07-2026
+## [1.12] - 11-07-2026
 
 ### 🚀 Новое
 
 - Реализован MCP-сервер (`ru-bizgen-mcp`) — генераторы Ru BizGen теперь доступны вне IntelliJ IDEA через
   [Model Context Protocol](https://modelcontextprotocol.io) (Streamable HTTP, Ktor/Netty). Поддерживается подключение
-  к MCP-клиентам (Cursor, Claude Desktop, Cline и др.). Все 31 генератор exposed как MCP-инструменты с именами
+  к MCP-клиентам (Cursor, Claude Desktop, Cline и др.). Все 31 генератор как MCP-инструменты с именами
   `generate_*`. Сервер запускается локально, данные генерируются без обращений к внешним сервисам
 - Добавлен `Dockerfile` и `docker-compose.yml` для контейнерного запуска MCP-сервера
 - Добавлен healthcheck-эндпоинт `GET /health` для мониторинга MCP-сервера
@@ -33,16 +33,8 @@
 - Обновлены зависимости:
     - Kotlin `2.3.0` → `2.4.0`
     - IntelliJ Platform Gradle Plugin `2.16.0` → `2.17.0`
-    - Kotest `6.1.2` → `6.2.1`
-    - Kover `0.9.4` → `0.9.8`
 - Добавлены MCP Kotlin SDK `0.13.0` и Ktor `3.4.3` (для модуля `ru-bizgen-mcp`)
-- В CI-воркфлоуи (`ci-main`, `ci-dev`, `ci-all`, `docs`) добавлены `permissions: contents: read` и
-  `concurrency` с `cancel-in-progress: true` для оптимизации сборок
-- В `GeneratorResult` добавлен property `value` как alias для `toClipboard` — упрощает доступ к сгенерированному
-  значению из MCP-слоя и тестов
 - Расширены тесты генераторов: добавлены проверки контрольных сумм для счёта, IBAN, ИНН и ОГРН
-- Добавлен `AccountKeyAlgorithmTest` — покрытие алгоритма расчёта ключа счёта по Положению 515-П
-- Увеличена уникальная дистанция для генераторов: SWIFT 8 (3), ОКТМО 8 (4), ОКТМО 11 (5)
 
 ## [1.11] - 31-03-2026
 

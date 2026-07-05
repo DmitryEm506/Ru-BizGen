@@ -53,9 +53,13 @@ internal class BizGenAppSettingsPersistent(
 
   private fun applyCustomNames() {
     val actions = getBizGenService<GeneratorActionProvider>().getAnActions().associateBy { it.id }
+    val infos = getBizGenService<GeneratorActionProvider>().getInfos().associateBy { it.id }
     settings.actualActions.forEach { setting ->
-      if (setting.customName.isNotBlank()) {
-        actions[setting.id]?.templatePresentation?.text = setting.customName
+      val action = actions[setting.id] ?: return@forEach
+      action.templatePresentation.text = if (setting.customName.isNotBlank()) {
+        setting.customName
+      } else {
+        infos[setting.id]?.name ?: return@forEach
       }
     }
   }
