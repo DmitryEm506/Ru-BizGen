@@ -16,12 +16,15 @@ jmh-proc = "1.37" # https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-gener
 kotlinx-serialization = "1.11.0" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
 mcp-kotlin-sdk = "0.14.0" # https://central.sonatype.com/artifact/io.modelcontextprotocol/kotlin-sdk-server
 ktor = "3.5.1" # https://mvnrepository.com/artifact/io.ktor/ktor-server-netty
+kodein-di = "7.20.2" # https://mvnrepository.com/artifact/org.kodein.di/kodein-di-jvm — DI для Starter framework (integration tests)
+kotlinx-coroutines = "1.10.1" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm — требуется Starter framework
 
 [libraries]
 intellij-junit = { group = "junit", name = "junit", version.ref = "intellijJunit" }
 kotest-assertions-core = { group = "io.kotest", name = "kotest-assertions-core", version.ref = "kotest" }
 junit-jupiter-api = { group = "org.junit.jupiter", name = "junit-jupiter-api", version.ref = "junit" }
 junit-jupiter-engine = { group = "org.junit.jupiter", name = "junit-jupiter-engine", version.ref = "junit" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version.ref = "junit" }
 dokkaVersioningPlugin = { module = "org.jetbrains.dokka:versioning-plugin", version.ref = "dokka" }
 reflections = { module = "org.reflections:reflections", version.ref = "reflections" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
@@ -30,6 +33,8 @@ jmh-proc = { group = "org.openjdk.jmh", name = "jmh-generator-annprocess", versi
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 mcp-kotlin-sdk-server = { group = "io.modelcontextprotocol", name = "kotlin-sdk-server", version.ref = "mcp-kotlin-sdk" }
 ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
+kodein-di-jvm = { group = "org.kodein.di", name = "kodein-di-jvm", version.ref = "kodein-di" }
+kotlinx-coroutines-core-jvm = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core-jvm", version.ref = "kotlinx-coroutines" }
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
