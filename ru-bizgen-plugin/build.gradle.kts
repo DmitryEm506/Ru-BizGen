@@ -34,6 +34,21 @@ repositories {
   }
 }
 
+sourceSets {
+  create("integrationTest") {
+    compileClasspath += sourceSets.main.get().output
+    runtimeClasspath += sourceSets.main.get().output
+  }
+}
+
+val integrationTestImplementation by configurations.getting {
+  extendsFrom(configurations.testImplementation.get())
+}
+
+val integrationTestRuntimeOnly by configurations.getting {
+  extendsFrom(configurations.testRuntimeOnly.get())
+}
+
 dependencies {
   implementation(project(":ru-bizgen-core"))
 
@@ -58,7 +73,13 @@ dependencies {
     zipSigner()
     testFramework(TestFrameworkType.JUnit5)
     testFramework(TestFrameworkType.Platform)
+    testFramework(TestFrameworkType.Starter, configurationName = "integrationTestImplementation")
   }
+
+  integrationTestImplementation(libs.kodein.di.jvm)
+  integrationTestImplementation(libs.kotlinx.coroutines.core.jvm)
+  integrationTestImplementation(libs.junit.jupiter.api)
+  integrationTestRuntimeOnly(libs.junit.platform.launcher)
 
   dokkaHtmlPlugin(libs.dokkaVersioningPlugin)
 }
@@ -70,6 +91,22 @@ testing {
     @Suppress("unused") val test = getByName<JvmTestSuite>("test") {
       useJUnitJupiter()
     }
+  }
+}
+
+val integrationTest by intellijPlatformTesting.testIdeUi.registering {
+  task {
+    val integrationTestSourceSet = sourceSets.getByName("integrationTest")
+    testClassesDirs = integrationTestSourceSet.output.classesDirs
+    classpath = integrationTestSourceSet.runtimeClasspath
+    useJUnitPlatform()
+
+    dependsOn("buildPlugin")
+    systemProperty(
+      "path.to.build.plugin",
+      tasks.buildPlugin.get().archiveFile.get().asFile.absolutePath,
+    )
+    systemProperty("java.net.preferIPv4Stack", "true")
   }
 }
 
