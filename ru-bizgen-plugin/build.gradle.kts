@@ -94,6 +94,8 @@ testing {
   }
 }
 
+val runIntegrationTests = providers.gradleProperty("runIntegrationTests").isPresent
+
 val integrationTest by intellijPlatformTesting.testIdeUi.registering {
   task {
     val integrationTestSourceSet = sourceSets.getByName("integrationTest")
@@ -107,6 +109,10 @@ val integrationTest by intellijPlatformTesting.testIdeUi.registering {
       tasks.buildPlugin.get().archiveFile.get().asFile.absolutePath,
     )
     systemProperty("java.net.preferIPv4Stack", "true")
+
+    // Интеграционные тесты (старт IDE + Driver) тяжёлые и запускаются ночью
+    // через ci-integration.yml. По умолчанию отключены, чтобы не попадать в `check`.
+    enabled = runIntegrationTests
   }
 }
 

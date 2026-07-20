@@ -55,7 +55,7 @@ jobs:
           sudo apt-get install -y xvfb
 
       - name: Run integration tests
-        run: xvfb-run -a ./gradlew :ru-bizgen-plugin:integrationTest --no-daemon
+        run: xvfb-run -a ./gradlew :ru-bizgen-plugin:integrationTest -PrunIntegrationTests --no-daemon
 
       - name: Upload test results on failure
         if: failure()
