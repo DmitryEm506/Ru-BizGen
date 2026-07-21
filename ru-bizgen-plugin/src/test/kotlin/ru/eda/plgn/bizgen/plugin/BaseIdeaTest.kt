@@ -11,6 +11,7 @@ import com.intellij.testFramework.replaceService
 import io.mockk.mockk
 import ru.eda.plgn.bizgen.core.generator.Generator
 import ru.eda.plgn.bizgen.core.generator.GeneratorResult
+import ru.eda.plgn.bizgen.core.generator_info.GeneratorCategory
 import ru.eda.plgn.bizgen.plugin.actions.BaseGeneratorAction
 import ru.eda.plgn.bizgen.plugin.di.BizGenService
 
@@ -56,13 +57,19 @@ internal abstract class BaseIdeaTest : BaseTest() {
   internal object TestGeneratorAction : BaseGeneratorAction<String>(
     id = "test.generator",
     name = "Test Generator",
-    generator = TestGenerator()
+    generator = TestGenerator(),
+    category = GeneratorCategory.TECHNICAL,
+    detailedDescription = "Test generator",
+    example = "TEST",
   )
 
   internal object TestGeneratorEmptyAction : BaseGeneratorAction<String>(
     id = "test.generator.empty",
     name = "Test Generator.empty",
-    generator = TestEmptyGenerator()
+    generator = TestEmptyGenerator(),
+    category = GeneratorCategory.TECHNICAL,
+    detailedDescription = "Test empty generator",
+    example = "",
   )
 
   private class TestGenerator : Generator<String> {

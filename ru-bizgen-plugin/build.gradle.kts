@@ -1,19 +1,15 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.changelog.Changelog
-import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.extensions.intellijPlatform
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease.Channel
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun environment(key: String): Provider<String> = providers.environmentVariable(key)
 
 plugins {
-  alias(libs.plugins.dokka)
-  alias(libs.plugins.kover)
-  alias(libs.plugins.kotlin)
+  id("ru-bizgen.kotlin-convention")
+  id("ru-bizgen.testing-convention")
+  id("ru-bizgen.dokka-convention")
+  id("ru-bizgen.kover-convention")
   alias(libs.plugins.changelog)
   alias(libs.plugins.gradleIntelliJPlugin)
 }
@@ -23,10 +19,6 @@ version = rootProject.version
 
 val buildNumber = version.toString().substringAfterLast(".").take(3)
 val ideaVersion = "20" + buildNumber.take(2) + "." + buildNumber.last().toString()
-
-kotlin {
-  jvmToolchain(libs.versions.java.get().toInt())
-}
 
 repositories {
   intellijPlatform {
@@ -41,11 +33,11 @@ sourceSets {
   }
 }
 
-val integrationTestImplementation by configurations.getting {
+val integrationTestImplementation = configurations.getByName("integrationTestImplementation") {
   extendsFrom(configurations.testImplementation.get())
 }
 
-val integrationTestRuntimeOnly by configurations.getting {
+val integrationTestRuntimeOnly = configurations.getByName("integrationTestRuntimeOnly") {
   extendsFrom(configurations.testRuntimeOnly.get())
 }
 
@@ -63,7 +55,6 @@ dependencies {
   testRuntimeOnly(libs.junit.jupiter.engine)
 
   intellijPlatform {
-    // Unified Platform Distribution https://blog.jetbrains.com/platform/2025/11/intellij-platform-2025-3-what-plugin-developers-should-know
     when (buildNumber.toInt() >= 252) {
       true -> intellijIdea(ideaVersion) { useInstaller = false }
       else -> intellijIdeaCommunity(buildNumber)
@@ -84,8 +75,6 @@ dependencies {
   dokkaHtmlPlugin(libs.dokkaVersioningPlugin)
 }
 
-// Критично. Принудительный переход на JUnit 6. В рамках платформы intellij осталась основа ещё на 4 версии, но Jetbrains рекомендует
-// переходить как минимум на версию 5, решил сразу "прыгнуть" на версию 6, так как сейчас только unit тесты
 testing {
   suites {
     @Suppress("unused") val test = getByName<JvmTestSuite>("test") {
@@ -94,9 +83,14 @@ testing {
   }
 }
 
-val runIntegrationTests = providers.gradleProperty("runIntegrationTests").isPresent
+// Симметрично runDistanceFinderTests (testing-convention.gradle.kts:8-9):
+// проверяем и gradle property (-PrunIntegrationTests), и system property
+// (-DrunIntegrationTests=true, выставляется в IDE VM options или на gradle daemon),
+// чтобы задачу можно было включить обоими способами из IDE.
+val runIntegrationTests = project.hasProperty("runIntegrationTests") ||
+  System.getProperty("runIntegrationTests") == "true"
 
-val integrationTest by intellijPlatformTesting.testIdeUi.registering {
+val integrationTest = intellijPlatformTesting.testIdeUi.register("integrationTest") {
   task {
     val integrationTestSourceSet = sourceSets.getByName("integrationTest")
     testClassesDirs = integrationTestSourceSet.output.classesDirs
@@ -108,7 +102,12 @@ val integrationTest by intellijPlatformTesting.testIdeUi.registering {
       "path.to.build.plugin",
       tasks.buildPlugin.get().archiveFile.get().asFile.absolutePath,
     )
-    systemProperty("java.net.preferIPv4Stack", "true")
+
+    // Пробрасываем флаг включения в test JVM, чтобы @EnabledIfSystemProperty
+    // на BaseIntegrationTest пропустил тесты (gradle property сама туда не попадает).
+    if (runIntegrationTests) {
+      systemProperty("runIntegrationTests", "true")
+    }
 
     // Интеграционные тесты (старт IDE + Driver) тяжёлые и запускаются ночью
     // через ci-integration.yml. По умолчанию отключены, чтобы не попадать в `check`.
@@ -135,7 +134,6 @@ intellijPlatform {
   pluginVerification {
     ides {
       create(ProductReleasesValueSource {
-        // явное указание, так как в recommended() включены версии Channel.EAP, а это ломает локальную проверку, так как они могут быть не доступны
         channels.convention(listOf(Channel.RELEASE, Channel.RC, Channel.PATCH))
       })
     }
@@ -161,55 +159,15 @@ kover {
           )
         }
       }
-      xml { onCheck = true }
-      html { onCheck = true }
     }
   }
 }
 
 tasks {
-  withType<KotlinCompile> {
-    compilerOptions.jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.java.get()}"))
-  }
-
   patchPluginXml {
     val changes = changelog.getAll().values.joinToString("<hr>\n") {
       changelog.renderItem(it, Changelog.OutputType.HTML)
     }
     changeNotes.set(provider { changes })
-  }
-
-  test {
-    useJUnitPlatform {}
-
-    testLogging {
-      events = setOf(TestLogEvent.FAILED)
-      exceptionFormat = TestExceptionFormat.FULL
-    }
-  }
-
-  // Documentation
-  dokka {
-    moduleName.set(project.name)
-    moduleVersion.set(version.toString())
-
-    dokkaSourceSets.main {
-      jdkVersion.set(libs.versions.java.get().toInt())
-      languageVersion.set(libs.versions.kotlin.get())
-      reportUndocumented.set(true)
-
-      documentedVisibilities(VisibilityModifier.Public, VisibilityModifier.Protected)
-
-      sourceLink {
-        localDirectory.set(file("src/main/kotlin"))
-        remoteUrl("https://github.com/DmitryEm506/Ru-BizGen/blob/dev/${project.name}/src/main/kotlin")
-        remoteLineSuffix.set("#L")
-      }
-    }
-
-    dokkaPublications.html {
-      suppressInheritedMembers.set(true)
-      offlineMode.set(true)
-    }
   }
 }

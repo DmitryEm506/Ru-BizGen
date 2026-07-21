@@ -1,4 +1,7 @@
 rootProject.name = "ru-bizgen"
+
+includeBuild("build-logic")
+
 include(
   "ru-bizgen-core",
   "ru-bizgen-mcp",

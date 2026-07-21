@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test
 import ru.eda.plgn.bizgen.core.generator.GeneratorResult
 import ru.eda.plgn.bizgen.core.generator.GeneratorResultAsIs
 import ru.eda.plgn.bizgen.core.generator.GeneratorStr
+import ru.eda.plgn.bizgen.core.generator_info.GeneratorCategory
 import ru.eda.plgn.bizgen.core.generator_info.GeneratorStrInfo
 import ru.eda.plgn.bizgen.core.generator_info.impl.BikGeneratorInfo
 import ru.eda.plgn.bizgen.core.generator_info.impl.CountryGeneratorInfo
@@ -67,8 +68,22 @@ internal class BizGenAppSettingsSoftUpdaterTest : BaseIdeaTest() {
   private val countryPAS = PersistenceActionSetting(id = CountryGeneratorInfo().id, position = 4, description = "COUNTRY", active = false)
   private val ogrnPAS = PersistenceActionSetting(id = OgrnIpGeneratorInfo().id, position = 5, description = "ОГРН ИП (15)", active = false)
 
-  private class Test1GeneratorInfo : GeneratorStrInfo(id = "TEST_1", name = "TEST1_GENERATOR", generator = TestGenerator())
-  private class Test2GeneratorInfo : GeneratorStrInfo(id = "TEST_2", name = "TEST2_GENERATOR", generator = TestGenerator())
+  private class Test1GeneratorInfo : GeneratorStrInfo(
+    id = "TEST_1",
+    name = "TEST1_GENERATOR",
+    generator = TestGenerator(),
+    category = GeneratorCategory.TECHNICAL,
+    detailedDescription = "Test generator 1",
+    example = "_TEST_"
+  )
+  private class Test2GeneratorInfo : GeneratorStrInfo(
+    id = "TEST_2",
+    name = "TEST2_GENERATOR",
+    generator = TestGenerator(),
+    category = GeneratorCategory.TECHNICAL,
+    detailedDescription = "Test generator 2",
+    example = "_TEST_"
+  )
   private class TestGenerator : GeneratorStr {
     override val uniqueDistance: Int = 10
 

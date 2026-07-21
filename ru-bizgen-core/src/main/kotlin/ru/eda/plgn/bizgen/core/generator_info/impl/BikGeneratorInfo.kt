@@ -1,5 +1,6 @@
 package ru.eda.plgn.bizgen.core.generator_info.impl
 
+import ru.eda.plgn.bizgen.core.generator_info.GeneratorCategory
 import ru.eda.plgn.bizgen.core.generator_info.GeneratorStrInfo
 import ru.eda.plgn.bizgen.core.generator.impl.BikGenerator
 
@@ -11,5 +12,8 @@ import ru.eda.plgn.bizgen.core.generator.impl.BikGenerator
 class BikGeneratorInfo: GeneratorStrInfo(
   id = "Bik_0060ce01-2ee3-4598-a0ce-012ee38598da",
   name = "БИК (9)",
-  generator = BikGenerator()
+  generator = BikGenerator(),
+  category = GeneratorCategory.BANKING,
+  detailedDescription = "Банковский идентификационный код (9 цифр). Первые 2 цифры — код страны РФ (04), последние 3 — номер филиала.",
+  example = "049945268",
 )
