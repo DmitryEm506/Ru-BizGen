@@ -9,6 +9,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.ide.CopyPasteManager
 import ru.eda.plgn.bizgen.core.generator.Generator
 import ru.eda.plgn.bizgen.core.generator.GeneratorResult
+import ru.eda.plgn.bizgen.core.generator_info.GeneratorCategory
 import ru.eda.plgn.bizgen.core.generator_info.GeneratorInfo
 import ru.eda.plgn.bizgen.plugin.clipboard.BizGenClipboardSettingsServiceView
 import ru.eda.plgn.bizgen.plugin.di.getBizGenService
@@ -33,11 +34,17 @@ abstract class GeneratorAnAction(open val id: String, name: String) : AnAction(n
  * @property id идентификатор действия
  * @property name название действия
  * @property generator генератор
+ * @property category категория генератора
+ * @property detailedDescription расширенное описание
+ * @property example стабильный пример
  */
 abstract class BaseGeneratorAction<T : Any>(
   override val id: String,
   override val name: String,
   override val generator: Generator<T>,
+  override val category: GeneratorCategory,
+  override val detailedDescription: String,
+  override val example: String,
 ) : GeneratorInfo<T>, GeneratorAnAction(id, name) {
 
   /**

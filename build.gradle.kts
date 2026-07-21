@@ -23,11 +23,14 @@ allprojects {
 }
 
 dependencies {
-  kover(project(":ru-bizgen-core"))
-  kover(project(":ru-bizgen-plugin"))
+  listOf(
+    project(":ru-bizgen-core"),
+    project(":ru-bizgen-plugin")
+  ).forEach { dep ->
+    kover(dep)
+    dokka(dep)
+  }
 
-  dokka(project(":ru-bizgen-core"))
-  dokka(project(":ru-bizgen-plugin"))
   dokka(project(":ru-bizgen-perf"))
 }
 
@@ -38,6 +41,8 @@ dependencies {
  * вставляемых в Докка отчёт.
  */
 val copyKoverToDokka = tasks.register<Copy>("copyKoverToDokka") {
+  group = "documentation"
+  description = "Копирует HTML-отчёт покрытия тестов Kover в каталог Dokka для относительных ссылок."
   dependsOn("koverHtmlReport")
   from(layout.buildDirectory.dir("reports/kover/html"))
   into(layout.buildDirectory.dir("dokka/html/images/kover"))

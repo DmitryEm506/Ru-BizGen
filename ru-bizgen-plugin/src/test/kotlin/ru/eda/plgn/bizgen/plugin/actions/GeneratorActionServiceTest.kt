@@ -10,6 +10,7 @@ import io.mockk.every
 import org.junit.jupiter.api.Test
 import ru.eda.plgn.bizgen.core.generator.Generator
 import ru.eda.plgn.bizgen.core.generator.GeneratorResult
+import ru.eda.plgn.bizgen.core.generator_info.GeneratorCategory
 import ru.eda.plgn.bizgen.plugin.BaseIdeaTest
 import ru.eda.plgn.bizgen.plugin.settings.AppActionSettingsService
 import ru.eda.plgn.bizgen.plugin.settings.model.BizGenAppSettings.PersistenceActionSetting
@@ -127,5 +128,12 @@ internal class GeneratorActionServiceTest : BaseIdeaTest() {
   }
 
   private fun createTestAction(id: String, name: String): BaseGeneratorAction<String> =
-    object : BaseGeneratorAction<String>(id, name, TestGenerator()) {}
+    object : BaseGeneratorAction<String>(
+      id = id,
+      name = name,
+      generator = TestGenerator(),
+      category = GeneratorCategory.TECHNICAL,
+      detailedDescription = "Test action",
+      example = "TEST",
+    ) {}
 }

@@ -7,7 +7,7 @@ intellijJunit = "4.13.2" # !!! ВАЖНО !!! Пока intellij platform исп�
 junit = "6.1.0" # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
 kotest = "6.2.1" # https://plugins.gradle.org/plugin/io.kotest
 dokka = "2.2.0"  # https://plugins.gradle.org/plugin/org.jetbrains.dokka
-kover = "0.9.8"  # https://plugins.gradle.org/plugin/org.jetbrains.kotlinx.kover
+kover = "0.9.9"  # https://plugins.gradle.org/plugin/org.jetbrains.kotlinx.kover
 reflections = "0.10.2" # https://mvnrepository.com/artifact/org.reflections/reflections
 mockk = "1.14.9" # https://mvnrepository.com/artifact/io.mockk/mockk
 jmh-plgn = "0.7.3" # https://plugins.gradle.org/plugin/me.champeau.jmh
@@ -16,6 +16,7 @@ jmh-proc = "1.37" # https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-gener
 kotlinx-serialization = "1.11.0" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-serialization-json
 mcp-kotlin-sdk = "0.14.0" # https://central.sonatype.com/artifact/io.modelcontextprotocol/kotlin-sdk-server
 ktor = "3.5.1" # https://mvnrepository.com/artifact/io.ktor/ktor-server-netty
+slf4j = "2.0.17" # https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
 kodein-di = "7.20.2" # https://mvnrepository.com/artifact/org.kodein.di/kodein-di-jvm — DI для Starter framework (integration tests)
 kotlinx-coroutines = "1.10.1" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm — требуется Starter framework
 
@@ -33,8 +34,13 @@ jmh-proc = { group = "org.openjdk.jmh", name = "jmh-generator-annprocess", versi
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 mcp-kotlin-sdk-server = { group = "io.modelcontextprotocol", name = "kotlin-sdk-server", version.ref = "mcp-kotlin-sdk" }
 ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty", version.ref = "ktor" }
+slf4j-simple = { group = "org.slf4j", name = "slf4j-simple", version.ref = "slf4j" }
 kodein-di-jvm = { group = "org.kodein.di", name = "kodein-di-jvm", version.ref = "kodein-di" }
 kotlinx-coroutines-core-jvm = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core-jvm", version.ref = "kotlinx-coroutines" }
+# Plugin marker artifacts for build-logic convention plugins
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin", version.ref = "kotlin" }
+dokka-gradle-plugin = { module = "org.jetbrains.dokka:org.jetbrains.dokka.gradle.plugin", version.ref = "dokka" }
+kover-gradle-plugin = { module = "org.jetbrains.kotlinx.kover:org.jetbrains.kotlinx.kover.gradle.plugin", version.ref = "kover" }
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

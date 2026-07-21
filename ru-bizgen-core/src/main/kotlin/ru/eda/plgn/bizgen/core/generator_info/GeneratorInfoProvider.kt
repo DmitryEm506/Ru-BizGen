@@ -35,27 +35,26 @@ import ru.eda.plgn.bizgen.core.generator_info.impl.swift.Swift8GeneratorInfo
 /**
  * Провайдер, который содержит список всех реализованных генераторов.
  *
+ * Генераторы сгруппированы по [GeneratorCategory] в порядке:
+ *
+ * - [GeneratorCategory.TECHNICAL],
+ * - [GeneratorCategory.BANKING],
+ * - [GeneratorCategory.LEGAL],
+ * - [GeneratorCategory.GEO],
+ * - [GeneratorCategory.PERSONAL].
+ *
  * @author Dmitry_Emelyanenko
  */
 object GeneratorInfoProvider {
 
   /** Список информаций о доступных генераторах. */
   val generatorInfos: List<GeneratorInfo<*>> = listOf(
-    // Технические
+    // TECHNICAL (1)
     UuidGeneratorInfo(),
 
-    // Организации
+    // BANKING (8)
     AccountRubGeneratorInfo(),
     AccountCnyGeneratorInfo(),
-    InnIndividualGeneratorInfo(),
-    InnLegalGeneratorInfo(),
-    KppGeneratorInfo(),
-    OgrnLegalGeneratorInfo(),
-    OgrnIpGeneratorInfo(),
-    OrgRuNameGeneratorInfo(),
-    OrgEngNameGeneratorInfo(),
-
-    // Банки и платёжные реквизиты
     BikGeneratorInfo(),
     BankAccountGeneratorInfo(),
     Swift8GeneratorInfo(),
@@ -63,13 +62,22 @@ object GeneratorInfoProvider {
     IbanRuGeneratorInfo(),
     IbanTurkishGeneratorInfo(),
 
-    // Адресно-территориальные данные
-    AddressGeneratorInfo(),
-    CountryGeneratorInfo(),
+    // LEGAL (9)
+    InnIndividualGeneratorInfo(),
+    InnLegalGeneratorInfo(),
+    KppGeneratorInfo(),
+    OgrnLegalGeneratorInfo(),
+    OgrnIpGeneratorInfo(),
     Oktmo8GeneratorInfo(),
     Oktmo11GeneratorInfo(),
+    OrgRuNameGeneratorInfo(),
+    OrgEngNameGeneratorInfo(),
 
-    // Персональные данные
+    // GEO (2)
+    AddressGeneratorInfo(),
+    CountryGeneratorInfo(),
+
+    // PERSONAL (11)
     CardNumberGeneratorInfo(),
     FIOFullGeneratorInfo(),
     FIOShortGeneratorInfo(),

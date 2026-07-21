@@ -1,15 +1,9 @@
-import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
-
 plugins {
+  id("ru-bizgen.kotlin-convention")
+  id("ru-bizgen.dokka-convention")
   alias(libs.plugins.jmh)
-  alias(libs.plugins.dokka)
-  alias(libs.plugins.kotlin)
   alias(libs.plugins.kotlin.allopen)
   alias(libs.plugins.kotlin.serialization)
-}
-
-kotlin {
-  jvmToolchain(libs.versions.java.get().toInt())
 }
 
 dependencies {
@@ -20,15 +14,12 @@ dependencies {
   jmhAnnotationProcessor(libs.jmh.proc)
 }
 
-// 1. Создаем конфигурацию для экспорта
 val jmhApiByConf = configurations.create("jmhApiByConf") {
   isCanBeResolved = false
   isCanBeConsumed = true
-  // Подтягиваем зависимости, чтобы в модуле валидации не было ClassNotFound для JMH аннотаций
   extendsFrom(configurations.jmhRuntimeClasspath.get())
 }
 
-// 2. Используем существующую задачу jmhJar вместо создания новой. Настраиваем артефакты, привязывая их к выходу задачи jmhJar
 artifacts {
   add(jmhApiByConf.name, tasks.named("jmhJar"))
 }
@@ -45,18 +36,8 @@ jmh {
   profilers = listOf("gc", "stack")
 }
 
-// Documentation
 dokka {
-  moduleName.set(project.name)
-  moduleVersion.set(version.toString())
-
-  dokkaSourceSets.main {
-    jdkVersion.set(libs.versions.java.get().toInt())
-    languageVersion.set(libs.versions.kotlin.get())
-    reportUndocumented.set(true)
-
-    documentedVisibilities(VisibilityModifier.Public, VisibilityModifier.Protected)
-
+  dokkaSourceSets.getByName("main") {
     sourceRoots.from(sourceSets.jmh.get().kotlin.srcDirs)
 
     sourceLink {
@@ -64,11 +45,6 @@ dokka {
       remoteUrl("https://github.com/DmitryEm506/Ru-BizGen/blob/dev/${project.name}/src/jmh/kotlin")
       remoteLineSuffix.set("#L")
     }
-  }
-
-  dokkaPublications.html {
-    suppressInheritedMembers.set(true)
-    offlineMode.set(true)
   }
 }
 

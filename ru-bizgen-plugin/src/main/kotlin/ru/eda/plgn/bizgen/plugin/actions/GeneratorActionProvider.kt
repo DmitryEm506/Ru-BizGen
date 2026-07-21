@@ -53,7 +53,14 @@ class GeneratorActionProviderImpl : GeneratorActionProvider {
 
   private companion object {
     fun <T : Any> GeneratorInfo<T>.toBaseGeneratorAction(): BaseGeneratorAction<T> {
-      return object : BaseGeneratorAction<T>(id, name, generator) {}
+      return object : BaseGeneratorAction<T>(
+        id = id,
+        name = name,
+        generator = generator,
+        category = category,
+        detailedDescription = detailedDescription,
+        example = example,
+      ) {}
     }
   }
 }

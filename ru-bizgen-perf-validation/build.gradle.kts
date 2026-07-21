@@ -1,16 +1,6 @@
 plugins {
-  alias(libs.plugins.kotlin)
-}
-
-kotlin {
-  jvmToolchain(libs.versions.java.get().toInt())
-}
-
-dependencies {
-  implementation(libs.reflections)
-
-  testImplementation(kotlin("test"))
-  testImplementation(libs.bundles.tests.unit)
+  id("ru-bizgen.kotlin-convention")
+  id("ru-bizgen.testing-convention")
 }
 
 dependencies {
@@ -21,8 +11,6 @@ dependencies {
 
   testImplementation(kotlin("test"))
   testImplementation(libs.bundles.tests.unit)
-}
 
-tasks.test {
-  useJUnitPlatform()
+  testRuntimeOnly(libs.junit.jupiter.engine)
 }
