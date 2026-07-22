@@ -40,7 +40,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Cache IDE test builds
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             out/ide-tests/cache/builds
