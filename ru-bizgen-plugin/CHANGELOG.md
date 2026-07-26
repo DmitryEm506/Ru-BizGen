@@ -4,8 +4,9 @@
 
 - Реализован MCP-сервер (`ru-bizgen-mcp`) — генераторы Ru BizGen теперь доступны вне IntelliJ IDEA через
   [Model Context Protocol](https://modelcontextprotocol.io) (Streamable HTTP, Ktor/Netty). Поддерживается подключение
-  к MCP-клиентам (Cursor, Claude Desktop, Cline и др.). Все 31 генератор как MCP-инструменты с именами
-  `generate_*`. Сервер запускается локально, данные генерируются без обращений к внешним сервисам
+  к MCP-клиентам (Cursor, Claude Desktop, Cline и др.). 5 категорийных инструментов `ru-bizgen_generate_<category>`
+  с параметрами `type` (enum — генератор внутри категории) и `count` (до 1000 значений за вызов). Сервер запускается
+  локально, данные генерируются без обращений к внешним сервисам
 - Добавлен `Dockerfile` и `docker-compose.yml` для контейнерного запуска MCP-сервера
 - Добавлен healthcheck-эндпоинт `GET /health` для мониторинга MCP-сервера
 - Добавлен генератор паспорта РФ (с пробелом) — серия с реальными кодами регионов ОКАТО + номер
@@ -33,7 +34,11 @@
 - Обновлены зависимости:
     - Kotlin `2.3.0` → `2.4.0`
     - IntelliJ Platform Gradle Plugin `2.16.0` → `2.17.0`
-- Добавлены MCP Kotlin SDK `0.13.0` и Ktor `3.4.3` (для модуля `ru-bizgen-mcp`)
+    - Kotest `6.1.2` → `6.2.1`
+- Добавлены MCP Kotlin SDK `0.14.0` и Ktor `3.5.1` (для модуля `ru-bizgen-mcp`)
+- Реализован composite build `build-logic` с convention plugins (kotlin, testing, dokka, kover)
+- Добавлены UI integration-тесты на базе JetBrains IDE Starter + Driver SDK (source set `integrationTest/`)
+- Добавлен CI workflow `ci-integration.yml` для ночных UI integration-тестов
 - Расширены тесты генераторов: добавлены проверки контрольных сумм для счёта, IBAN, ИНН и ОГРН
 
 ## [1.11] - 31-03-2026

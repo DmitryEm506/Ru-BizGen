@@ -14,6 +14,7 @@ import io.kotest.matchers.shouldBe
 import io.mockk.every
 import org.junit.jupiter.api.Test
 import ru.eda.plgn.bizgen.plugin.clipboard.BizGenClipboardSettingsServiceView
+import ru.eda.plgn.bizgen.plugin.escapechar.EscapeCharSettingsServiceView
 import ru.eda.plgn.bizgen.plugin.notification.NotificationCtx
 import ru.eda.plgn.bizgen.plugin.notification.NotificationService
 import ru.eda.plgn.bizgen.plugin.BaseIdeaTest
@@ -97,6 +98,11 @@ internal class BaseGeneratorActionTest : BaseIdeaTest() {
   }
 
   fun configureProject(disposable: Disposable): Pair<BizGenClipboardSettingsServiceView, FakeNotification> {
+    suppressVueLspUncaughtExceptions()
+
+    val escapeCharSettingsService = replaceServiceInApp<EscapeCharSettingsServiceView>(disposable)
+    every { escapeCharSettingsService.getEscapeChar() } returns "\""
+
     val clipboardSettingsService = replaceServiceInApp<BizGenClipboardSettingsServiceView>(disposable)
     val notificationService = replaceServiceInApp<NotificationService>(FakeNotification(), disposable) as FakeNotification
 

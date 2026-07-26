@@ -1,4 +1,4 @@
-package ru.eda.plgn.bizgen.plugin
+package ru.eda.plgn.bizgen.plugin.base
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir

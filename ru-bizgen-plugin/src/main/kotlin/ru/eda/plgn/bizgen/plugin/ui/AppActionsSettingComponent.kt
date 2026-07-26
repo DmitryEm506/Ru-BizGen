@@ -18,6 +18,7 @@ import ru.eda.plgn.bizgen.plugin.actions.BizGenSelectedActionEvent
 import ru.eda.plgn.bizgen.plugin.actions.GeneratorActionProvider
 import ru.eda.plgn.bizgen.plugin.actions.GeneratorActionService
 import ru.eda.plgn.bizgen.plugin.di.getBizGenService
+import ru.eda.plgn.bizgen.plugin.invokeLater
 import ru.eda.plgn.bizgen.plugin.settings.AppActionSettingsService
 import ru.eda.plgn.bizgen.plugin.settings.AppActionSettingsService.Direction
 import ru.eda.plgn.bizgen.plugin.settings.model.BizGenAppSettings.ActionSettingsView
@@ -101,17 +102,19 @@ private class ActionListComponent : CheckBoxList<String>(listener) {
 
   fun reset(): AnAction = object : AnAction("Reset", "Сбросить настройки до значений по умолчанию", AllIcons.Actions.Rollback) {
     override fun actionPerformed(e: AnActionEvent) {
-      showYesNoDialog(
-        "Вы уверены, что хотите сбросить настройки до значений по умолчанию?",
-        "Сброс Настроек",
-        Messages.getInformationIcon()
-      ).takeIf { it == Messages.YES }?.let {
-        clear()
-        fillByActions(getBizGenService<AppActionSettingsService>().restoreByDefault())
+      invokeLater {
+        showYesNoDialog(
+          "Вы уверены, что хотите сбросить настройки до значений по умолчанию?",
+          "Сброс Настроек",
+          Messages.getInformationIcon()
+        ).takeIf { it == Messages.YES }?.let {
+          clear()
+          fillByActions(getBizGenService<AppActionSettingsService>().restoreByDefault())
 
-        val infos = getBizGenService<GeneratorActionProvider>().getInfos().associateBy { it.id }
-        getBizGenService<GeneratorActionProvider>().getAnActions().forEach { action ->
-          infos[action.id]?.let { info -> action.templatePresentation.text = info.name }
+          val infos = getBizGenService<GeneratorActionProvider>().getInfos().associateBy { it.id }
+          getBizGenService<GeneratorActionProvider>().getAnActions().forEach { action ->
+            infos[action.id]?.let { info -> action.templatePresentation.text = info.name }
+          }
         }
       }
     }
@@ -124,24 +127,26 @@ private class ActionListComponent : CheckBoxList<String>(listener) {
 
       val actionSetting = getBizGenService<AppActionSettingsService>().findByPosition(selectedIndex) ?: return
 
-      val newName = showInputDialog(
-        null,
-        "Введите новое имя для генератора:",
-        "Переименование генератора",
-        Messages.getQuestionIcon(),
-        actionSetting.description,
-        null
-      ) ?: return
+      invokeLater {
+        val newName = showInputDialog(
+          null,
+          "Введите новое имя для генератора:",
+          "Переименование генератора",
+          Messages.getQuestionIcon(),
+          actionSetting.description,
+          null
+        ) ?: return@invokeLater
 
-      if (newName.isBlank()) return
+        if (newName.isBlank()) return@invokeLater
 
-      getBizGenService<AppActionSettingsService>().renameAction(selectedIndex, newName)
+        getBizGenService<AppActionSettingsService>().renameAction(selectedIndex, newName)
 
-      getBizGenService<GeneratorActionProvider>().getAnActions()
-        .find { it.id == actionSetting.id }
-        ?.let { it.templatePresentation.text = newName }
+        getBizGenService<GeneratorActionProvider>().getAnActions()
+          .find { it.id == actionSetting.id }
+          ?.let { it.templatePresentation.text = newName }
 
-      fillByActions(getBizGenService<AppActionSettingsService>().getActionSettings())
+        fillByActions(getBizGenService<AppActionSettingsService>().getActionSettings())
+      }
     }
   }
 

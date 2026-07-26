@@ -4,9 +4,9 @@
 
 **Ru BizGen** — генератор российских (и не только) тестовых данных, реализованный в двух форм-факторах: **IntelliJ IDEA Plugin** и **MCP-сервер**. Все данные генерируются локально, без обращений к внешним сервисам.
 
-- **Версия:** 1.11.261
-- **Язык:** Kotlin 2.3.0, JVM 21
-- **Сборка:** Gradle (Kotlin DSL), Version Catalog (`libs.versions.toml`)
+- **Версия:** 1.12.261
+- **Язык:** Kotlin 2.4.0, JVM 21
+- **Сборка:** Gradle (Kotlin DSL), Version Catalog (`libs.versions.toml`), composite build (`build-logic`)
 - **Репозиторий:** [GitHub](https://github.com/DmitryEm506/Ru-BizGen), ветки `main`/`dev`
 - **Статистика кода:** 170 Kotlin-файлов (~4 671 строк main, ~2 394 строк test, ~352 строк JMH)
 
@@ -14,14 +14,28 @@
 
 ```
 ru-bizgen/
-├── ru-bizgen-core          — ядро: генераторы, инфо-описания, утилиты
-├── ru-bizgen-plugin         — IntelliJ IDEA плагин (UI, actions, settings, DI)
-├── ru-bizgen-mcp            — MCP-сервер (Ktor/Netty + MCP Kotlin SDK)
-├── ru-bizgen-perf           — JMH-бенчмарки + генерация markdown-отчётов
+├── build-logic              — composite build: convention plugins (kotlin, testing, dokka, kover)
+├── ru-bizgen-core           — ядро: генераторы, инфо-описания, утилиты
+├── ru-bizgen-plugin          — IntelliJ IDEA плагин (UI, actions, settings, DI, integration tests)
+├── ru-bizgen-mcp             — MCP-сервер (Ktor/Netty + MCP Kotlin SDK)
+├── ru-bizgen-perf            — JMH-бенчмарки + генерация markdown-отчётов
 ├── ru-bizgen-perf-validation — валидация наличия бенчмарков для всех генераторов
-├── _polygon                 — Maven-полигон для ручного тестирования (Java)
-└── build.gradle.kts         — root: Dokka, Kover, общая конфигурация
+├── _polygon                  — Maven-полигон для ручного тестирования (Java, вне Gradle-сборки)
+└── build.gradle.kts          — root: Dokka, Kover, общая конфигурация
 ```
+
+### 2.0. `build-logic` — convention plugins
+
+Composite build (`includeBuild("build-logic")` в `settings.gradle.kts`), содержит 4 convention plugin'а в `src/main/kotlin/`:
+
+| Plugin | Назначение |
+|---|---|
+| `ru-bizgen.kotlin-convention` | `org.jetbrains.kotlin.jvm` + `jvmToolchain(21)` из version catalog |
+| `ru-bizgen.testing-convention` | JUnit Platform, управление тегом `distanceFinderTests` (`-PrunDistanceFinderTests`) |
+| `ru-bizgen.dokka-convention` | Dokka HTML-документация |
+| `ru-bizgen.kover-convention` | Kover покрытие кода |
+
+Применяются в модулях через `id("ru-bizgen.<name>-convention")`.
 
 ### 2.1. `ru-bizgen-core` — ядро генерации
 
@@ -54,7 +68,9 @@ ru-bizgen/
 
 ### 2.2. `ru-bizgen-plugin` — IntelliJ IDEA плагин
 
-**Совместимость:** IntelliJ IDEA 2024.2+ (sinceBuild=242, untilBuild=null), IntelliJ Platform Gradle Plugin 2.16.0.
+**Совместимость:** IntelliJ IDEA 2024.2+ (sinceBuild=242, untilBuild=null), IntelliJ Platform Gradle Plugin 2.17.0.
+
+**Сборка:** Convention plugins из `build-logic` (`kotlin-convention`, `testing-convention`, `dokka-convention`, `kover-convention`) + `changelog` и `gradleIntelliJPlugin` plugins. Версия IDEA выводится из build number: `1.12.261` → buildNumber `261` → `2026.1`.
 
 **DI-архитектура:** Собственный сервисный слой через `BizGenService` маркер + `getBizGenService<T>()` (`BizGenService.kt:19`), делегирующий в `ApplicationManager.getApplication().service<T>()`. Сервисы регистрируются в `plugin.xml`.
 
@@ -81,9 +97,16 @@ ru-bizgen/
 - `BizGenAppSettingsSoftUpdater` (`BizGenAppSettingsSoftUpdater.kt:31`) — удаляет устаревшие генераторы, обновляет названия, добавляет новые в конец, пересчитывает позиции
 - UI: `AppSettingsConfigurable` → `AppSettingsComponent` (Settings → Tools → Ru BizGen)
 
+**Подпись и публикация:**
+- Plugin signing через env vars: `CERTIFICATE_CHAIN`, `PRIVATE_KEY`, `PRIVATE_KEY_PASSWORD`
+- Publishing через env var: `PUBLISH_TOKEN`
+- Plugin verification: каналы RELEASE, RC, PATCH
+
+**Kover:** пакет `ru.eda.plgn.plugin.bizgen.ui` исключён из покрытия.
+
 ### 2.3. `ru-bizgen-mcp` — MCP-сервер
 
-MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.4.3 / Netty**, транспорт — Streamable HTTP.
+MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty**, транспорт — Streamable HTTP.
 
 **Структура:**
 - `McpServerApp.kt` — точка входа: парсинг `--host`/`--port`, фабрика `Server`, регистрация 5 категорийных тулов, старт Ktor/Netty + health endpoint
@@ -117,17 +140,26 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.4.3 / Netty*
 
 ## 3. Тестирование
 
-**Фреймворк:** JUnit Jupiter 6.1.0 + Kotest assertions 6.1.2 + MockK 1.14.9
+**Фреймворк:** JUnit Jupiter 6.1.0 + Kotest assertions 6.2.1 + MockK 1.14.9
 
 **Структура тестов core:**
 - `BaseTest` — базовый класс: `tests()` для dynamic tests, `shouldBeUnique()`
 - `GeneratorBaseTest<T>` — базовый для генераторов: проверяет результат на null, уникальность на `uniqueDistance`, `testsOnDistanceToClipboard/Editor` для параметризованных проверок формата
 - На каждый генератор — свой тест-класс с `@Nested` группами, `@TestFactory` для массовых проверок формата
-- `find_distance/` — отдельная категория тестов уникальности (тег `distanceFinderTests`, исключены из быстрого CI)
+- `find_distance/` — отдельная категория тестов уникальности (тег `distanceFinderTests`, исключены из быстрого CI через `testing-convention`)
 
 **MCP-тесты:** `ToolExecutorTest` (успех/ошибка/все генераторы), `ToolNameResolverTest`
 
-**Plugin-тесты:** `BaseIdeaTest`, тесты сервисов (DI, settings, notifications, actions, clipboard)
+**Plugin unit-тесты:** `BaseIdeaTest`, тесты сервисов (DI, settings, notifications, actions, clipboard)
+
+**Plugin UI integration-тесты** (source set `integrationTest/`):
+- Фреймворк: **JetBrains IDE Starter + Driver SDK** (`TestFrameworkType.Starter`) — запуск реальной IDE, управление UI через Driver
+- DI: **Kodein DI 7.20.2** (требуется Starter framework) + `kotlinx-coroutines 1.10.1`
+- Структура: `base/_BaseIntegrationTest.kt` (базовый класс с `@EnabledIfSystemProperty(named="runIntegrationTests")`), тесты: `BizGenMainActionUITest`, `NotificationAndClipboardSettingsUITest`, `_RuBizGenSettingsUITest`, `_IdeaLifecycleUITest`
+- UI helpers: `base/finder_ext/RadioButtonExt.kt`, `settings/ext/SettingsDialogUiComponentExt.kt`
+- Включение: `-PrunIntegrationTests` или `-DrunIntegrationTests=true` (отключены по умолчанию, не входят в `check`)
+- Запускаются ночью через `ci-integration.yml`
+- Дизайн-спецификации: `docs/superpowers/specs/2026-07-19-integration-tests-feasibility-spike-design.md`, `docs/superpowers/specs/2026-07-22-ui-test-coverage-gradual-plan.md`
 
 ## 4. CI/CD
 
@@ -136,6 +168,7 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.4.3 / Netty*
 | `ci-main.yml` | push/PR → main | `check` (fast tests) + `buildPlugin` + coverage artifact |
 | `ci-dev.yml` | push/PR → dev | То же, что ci-main |
 | `ci-all.yml` | `workflow_dispatch` | `check -PrunDistanceFinderTests` (full) + `buildPlugin` + Dokka |
+| `ci-integration.yml` | ночной/schedule | UI integration-тесты (`-PrunIntegrationTests`): IDE Starter + Driver SDK |
 | `docs.yml` | push → main/dev | Dokka HTML → GitHub Pages |
 | `auto-label.yml` | PR | Авто-лейблинг через labeler |
 
@@ -143,7 +176,7 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.4.3 / Netty*
 
 ## 5. Качество и документация
 
-- **Kover 0.9.4** — покрытие кода, HTML+XML отчёты, интегрировано в Dokka footer
+- **Kover 0.9.9** — покрытие кода, HTML+XML отчёты, интегрировано в Dokka footer (пакет `ru.eda.plgn.plugin.bizgen.ui` исключён)
 - **Dokka 2.2.0** — HTML-документация с source links на GitHub, деплой на GitHub Pages
 - **KDoc** — все публичные API задокументированы на русском
 - **JetBrains Verified** — плагин верифицирован, плагин-подпись через environment variables
@@ -157,28 +190,36 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.4.3 / Netty*
 4. **Мягкая миграция настроек** — `BizGenAppSettingsSoftUpdater` сохраняет пользовательские настройки при обновлении
 5. **Стабильные MCP-имена** — `ToolNameResolver` извлекает имя из UUID-based id, а не из имени класса
 6. **Performance-first** — JMH-бенчмарки на каждый генератор + валидация их наличия
+7. **Convention plugins** — `build-logic` composite build централизует конфигурацию Kotlin/testing/Dokka/Kover
+8. **UI integration tests** — JetBrains IDE Starter + Driver SDK для end-to-end тестирования плагина в реальной IDE
 
 **Зоны для внимания:**
 1. **`_polygon`** — Maven-модуль-полигон вне Gradle-сборки, не включён в `settings.gradle.kts`, но директория существует. Лучше переместить или исключить из репозитория.
 2. **Dockerfile** копирует `ru-bizgen-plugin/` при сборке MCP (т.к. его `build.gradle.kts` читает `description.html` на конфигурации) — хрупкая связь между модулями.
-3. **`org.gradle.parallel=false`** — параллельная сборка отключена, `workers.max=2` — можно ускорить сборку включением parallel.
-4. **Тесты `distanceFinderTests`** исключены из CI по умолчанию (только manual `ci-all`) — стоит оценить добавление в ночной/weekly запуск.
-5. **Версия MCP** передаётся через JVM property (`-Dmcp.version`), хотя в design-spec (`docs/superpowers/specs/`) предлагался переход на compile-time `McpBuildConfig.kt` — спецификация написана, но реализация использует runtime-подход.
+3. **Тесты `distanceFinderTests`** исключены из CI по умолчанию (только manual `ci-all`) — стоит оценить добавление в ночной/weekly запуск.
+4. **Версия MCP** передаётся через JVM property (`-Dmcp.version`), хотя в design-spec (`docs/superpowers/specs/`) предлагался переход на compile-time `McpBuildConfig.kt` — спецификация написана, но реализация использует runtime-подход.
 
 ## 7. Технологический стек (summary)
 
 | Компонент | Версия |
 |---|---|
-| Kotlin | 2.3.0 |
+| Kotlin | 2.4.0 |
 | JDK | 21 |
-| IntelliJ Platform Plugin | 2.16.0 |
+| IntelliJ Platform Plugin | 2.17.0 |
 | MCP Kotlin SDK | 0.14.0 |
-| Ktor | 3.4.3 |
+| Ktor | 3.5.1 |
 | JMH | 1.37 |
 | JUnit Jupiter | 6.1.0 |
-| Kotest | 6.1.2 |
+| Kotest | 6.2.1 |
 | MockK | 1.14.9 |
 | Dokka | 2.2.0 |
-| Kover | 0.9.4 |
+| Kover | 0.9.9 |
+| Changelog Plugin | 2.5.0 |
+| Kodein DI (integration tests) | 7.20.2 |
+| kotlinx-coroutines (integration tests) | 1.10.1 |
+| kotlinx-serialization-json | 1.11.0 |
+| slf4j-simple | 2.0.17 |
+| IDE Starter + Driver SDK | 261.22158.277 |
 | Gradle Configuration Cache | enabled |
 | Gradle Build Cache | enabled |
+| Gradle Parallel | enabled |

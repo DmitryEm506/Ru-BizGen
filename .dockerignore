@@ -11,3 +11,9 @@ _polygon
 *.iws
 *.log
 token.bin
+ru-bizgen-perf
+ru-bizgen-perf-validation
+ru-bizgen-plugin/src/integrationTest
+ru-bizgen-plugin/src/test
+ru-bizgen-core/src/test
+ru-bizgen-mcp/src/test
