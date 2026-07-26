@@ -40,14 +40,14 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Cache IDE test builds
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             out/ide-tests/cache/builds
             out/ide-tests/cache/tools
-          key: ide-test-builds-IC-2024.3-${{ runner.os }}-v1
+          key: ide-test-builds-IC-2025.3-${{ runner.os }}-v2
           restore-keys: |
-            ide-test-builds-IC-2024.3-${{ runner.os }}-
+            ide-test-builds-IC-2025.3-${{ runner.os }}-
 
       - name: Install xvfb (display server for UI tests)
         run: |

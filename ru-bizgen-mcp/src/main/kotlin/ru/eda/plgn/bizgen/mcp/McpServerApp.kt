@@ -78,7 +78,7 @@ private fun Server.addCategoryTool(
   categoryInfos: List<GeneratorInfo<*>>,
   allInfos: List<GeneratorInfo<*>>,
 ) {
-  val toolName = "ru-bizneg_generate_${category.name.lowercase()}"
+  val toolName = "ru-bizgen_generator_${category.name.lowercase()}"
   val title = "Ru BizGen: ${category.title}"
   val description = buildCategoryDescription(category, categoryInfos)
   val inputSchema = buildCategoryInputSchema(categoryInfos)

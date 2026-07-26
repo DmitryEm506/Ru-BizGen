@@ -2,7 +2,7 @@
 kotlin = "2.4.0" # https://plugins.gradle.org/plugin/org.jetbrains.kotlin.jvm
 java = "21"
 changelog = "2.5.0" # https://plugins.gradle.org/plugin/org.jetbrains.changelog
-gradleIntelliJPlugin = "2.17.0" # https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
+gradleIntelliJPlugin = "2.18.1" # https://plugins.gradle.org/plugin/org.jetbrains.intellij.platform
 intellijJunit = "4.13.2" # !!! ВАЖНО !!! Пока intellij platform использует старый Junit внутри, поэтому надо добавлять, чтобы был корректный запуск
 junit = "6.1.0" # https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
 kotest = "6.2.1" # https://plugins.gradle.org/plugin/io.kotest
@@ -17,8 +17,8 @@ kotlinx-serialization = "1.11.0" # https://mvnrepository.com/artifact/org.jetbra
 mcp-kotlin-sdk = "0.14.0" # https://central.sonatype.com/artifact/io.modelcontextprotocol/kotlin-sdk-server
 ktor = "3.5.1" # https://mvnrepository.com/artifact/io.ktor/ktor-server-netty
 slf4j = "2.0.17" # https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-kodein-di = "7.20.2" # https://mvnrepository.com/artifact/org.kodein.di/kodein-di-jvm — DI для Starter framework (integration tests)
-kotlinx-coroutines = "1.10.1" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm — требуется Starter framework
+kodein-di = "7.33.0" # https://mvnrepository.com/artifact/org.kodein.di/kodein-di-jvm — DI для Starter framework (integration tests)
+kotlinx-coroutines = "1.11.0" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm — требуется Starter framework
 
 [libraries]
 intellij-junit = { group = "junit", name = "junit", version.ref = "intellijJunit" }

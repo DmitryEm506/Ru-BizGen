@@ -16,6 +16,7 @@ RUN sed -i 's/\r$//' gradlew && chmod +x gradlew
 COPY ru-bizgen-core/ ru-bizgen-core/
 COPY ru-bizgen-mcp/ ru-bizgen-mcp/
 COPY ru-bizgen-plugin/ ru-bizgen-plugin/
+COPY build-logic/ build-logic/
 
 # ru-bizgen-perf и ru-bizgen-perf-validation не нужны для сборки MCP,
 # но Gradle требует существования директорий всех включённых в settings.gradle.kts модулей.
@@ -28,6 +29,8 @@ RUN --mount=type=cache,target=/root/.gradle \
 # ===== runtime =====
 FROM eclipse-temurin:21-jre-jammy AS runtime
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /work/ru-bizgen-mcp/build/install/ru-bizgen-mcp /app
 
 EXPOSE 8081

@@ -4,10 +4,27 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/build-logic" name="build-logic">
+                <projects>
+                  <project path="$PROJECT_DIR$/build-logic" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/build-logic" />
+            <option value="$PROJECT_DIR$/ru-bizgen-core" />
+            <option value="$PROJECT_DIR$/ru-bizgen-mcp" />
+            <option value="$PROJECT_DIR$/ru-bizgen-perf" />
+            <option value="$PROJECT_DIR$/ru-bizgen-perf-validation" />
+            <option value="$PROJECT_DIR$/ru-bizgen-plugin" />
           </set>
         </option>
       </GradleProjectSettings>

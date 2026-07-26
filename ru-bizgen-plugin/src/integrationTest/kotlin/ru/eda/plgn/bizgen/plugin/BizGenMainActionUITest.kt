@@ -7,6 +7,7 @@ import com.intellij.driver.sdk.ui.present
 import com.intellij.driver.sdk.ui.shouldBe
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
+import ru.eda.plgn.bizgen.plugin.base.BaseUIIntegrationTest
 import java.nio.file.Path
 
 /**

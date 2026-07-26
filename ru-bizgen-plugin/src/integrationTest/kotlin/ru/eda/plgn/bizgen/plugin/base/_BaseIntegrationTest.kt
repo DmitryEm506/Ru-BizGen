@@ -1,7 +1,7 @@
-package ru.eda.plgn.bizgen.plugin
+package ru.eda.plgn.bizgen.plugin.base
 
 import com.intellij.driver.client.Driver
-import com.intellij.driver.sdk.waitForProjectOpen
+import com.intellij.driver.sdk.waitForIndicators
 import com.intellij.ide.starter.ci.CIServer
 import com.intellij.ide.starter.ci.NoCIServer
 import com.intellij.ide.starter.di.di
@@ -19,16 +19,15 @@ import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
 /**
  * Маркерная аннотация для интеграционных тестов плагина.
  *
- * Совмещает два механизма фильтрации (симметрично [ru.eda.plgn.bizgen.core.generator.impl.find_distance.DistanceFinderTest]):
+ * Совмещает два механизма фильтрации:
  * - [Tag] `"integrationTests"` — для будущей тег-фильтрации на gradle-уровне.
  * - [EnabledIfSystemProperty] `runIntegrationTests=true` — для запуска из IDE через VM options
- *   и для gradle-запуска (см. `ru-bizgen-plugin/build.gradle.kts:86,103`, задача `integrationTest`
- *   дополнительно ограничена `enabled = runIntegrationTests`).
  *
  * @author Dmitry_Emelyanenko
  */
@@ -51,15 +50,19 @@ annotation class IntegrationTest
  * @author Dmitry_Emelyanenko
  */
 @IntegrationTest
-internal abstract class BaseUIIntegrationTest {
+abstract class BaseUIIntegrationTest {
 
   /**
-   * Версия IntelliJ IDEA IC, на которой запускаются интеграционные тесты.
+   * Версия IntelliJ IDEA для тестирования — fallback при ручном запуске из IDE без gradle.
    *
-   * Наследники могут переопределить для запуска на другой версии.
-   * По умолчанию `"2024.3"` — минимально поддерживаемая плагином (sinceBuild=242).
+   * При запуске через gradle-задачу `integrationTest` фактическая версия берётся из system property `bizgen.test.ide.version`
+   * (пробрасывается из `ideaVersion` в `ru-bizgen-plugin/build.gradle.kts` — та же версия, под которую собирается плагин), см.
+   * [resolveTestIdeVersion].
+   *
+   * Значение по умолчанию `"2026.1"` совпадает с версией сборки плагина (`version=1.12.261` → `ideaVersion="2026.1"`), чтобы ручной запуск
+   * шёл на той же версии. Наследники могут переопределить для запуска на другой версии.
    */
-  protected open val ideVersion: String = "2024.3"
+  protected open val ideVersion: String = "2026.1"
 
   init {
     di = DI {
@@ -84,41 +87,57 @@ internal abstract class BaseUIIntegrationTest {
     }
   }
 
-  protected fun runIdea(testName: String, projectDir: Path, block: Driver.() -> Unit): IDEStartResult {
-    return newContextWithPlugin(testName, projectDir).runIdeWithDriver().useDriverAndCloseIde {
-      // waitForProjectOpen вместо waitForIndicators: waitForIndicators вызывает
-      // StatusBarEx.getBackgroundProcessModels(), отсутствующий в IC 2024.3 (243).
-      // Driver SDK 261 рассчитан на IntelliJ 2026.1 (261), где этот метод есть.
-      // waitForProjectOpen использует только ProjectManager.getOpenProjects() — стандартный API.
-      waitForProjectOpen(1.minutes)
-      block()
-    }
+  protected fun runIdea(testName: String, projectDir: Path, runTimeout: Duration = 2.minutes, block: Driver.() -> Unit): IDEStartResult {
+    return newContextWithPlugin(testName, projectDir)
+      .runIdeWithDriver(runTimeout = runTimeout)
+      .useDriverAndCloseIde {
+        waitForIndicators(1.minutes)
+        block()
+      }
   }
 
   /**
    * Создаёт [IDETestContext] с установленным плагином для теста [testName].
    *
+   * Продукт: IntelliJ IDEA **Ultimate** ([IdeProductProvider.IU]).
+   *
+   * Версия берётся из [resolveTestIdeVersion] — совпадает с версией, под которую собирается плагин (`ideaVersion` в
+   * `ru-bizgen-plugin/build.gradle.kts`). IU 2026.1 используется вместо IC, т.к. IC 2026.1 не опубликована в products-releases API (см.
+   * KDoc [ideVersion]).
+   *
    * @param testName имя тест-кейса (используется Starter'ом для логирования/артефактов)
    * @param projectDir директория проекта, открываемого в тестовой IDE
    * @return настроенный контекст с установленным плагином
    */
-  protected fun newContextWithPlugin(testName: String, projectDir: Path): IDETestContext {
+  private fun newContextWithPlugin(testName: String, projectDir: Path): IDETestContext {
     val context = Starter.newContext(
       testName = testName,
-      TestCase(IdeProductProvider.IC, projectInfo = LocalProjectInfo(projectDir)).withVersion(ideVersion),
+      TestCase(IdeProductProvider.IU, projectInfo = LocalProjectInfo(projectDir)).withVersion(resolveTestIdeVersion()),
     )
     context.pluginConfigurator.installPluginFromPath(resolvePluginArchivePath())
     return context
   }
 
   /**
+   * Резолвинг версии IntelliJ IDEA IC для тестирования.
+   *
+   * Приоритет:
+   * 1. System property `bizgen.test.ide.version` (выставляется gradle-задачей `integrationTest` из `ideaVersion` в
+   *    `ru-bizgen-plugin/build.gradle.kts` — та же версия, под которую собирается плагин).
+   * 2. Поле [ideVersion] — fallback для ручного запуска из IDE без gradle.
+   *
+   * @return версия IDE для тестирования
+   */
+  private fun resolveTestIdeVersion(): String = System.getProperty("bizgen.test.ide.version") ?: ideVersion
+
+  /**
    * Резолвинг пути к архиву плагина для установки в тестовую IDE.
    *
    * Приоритет:
-   * 1. System property `path.to.build.plugin` (выставляется gradle-задачей `integrationTest`,
-   *    см. `ru-bizgen-plugin/build.gradle.kts:96-99`).
-   * 2. Последний по версии `ru-bizgen-*.zip` в `build/distributions/` — для запуска из IDE
-   *    после ручного выполнения `:ru-bizgen-plugin:buildPlugin` без необходимости править VM options.
+   * 1. System property `path.to.build.plugin` (выставляется gradle-задачей `integrationTest`, см.
+   *    `ru-bizgen-plugin/build.gradle.kts:96-99`).
+   * 2. Последний по версии `ru-bizgen-*.zip` в `build/distributions/` — для запуска из IDE после ручного выполнения
+   *    `:ru-bizgen-plugin:buildPlugin` без необходимости править VM options.
    *
    * @return путь к архиву плагина
    */

@@ -103,6 +103,16 @@ val integrationTest = intellijPlatformTesting.testIdeUi.register("integrationTes
       tasks.buildPlugin.get().archiveFile.get().asFile.absolutePath,
     )
 
+    // Версия IDE для тестирования = версия, под которую собирается плагин (ideaVersion,
+    // выводится из version проекта). В BaseUIIntegrationTest.newContextWithPlugin читается
+    // из system property `bizgen.test.ide.version` с fallback на поле ideVersion
+    // (для ручного запуска из IDE без gradle).
+    // Переопределяема через `-Pbizgen.test.ide.version=<версия>` (эксперименты на других сборках).
+    systemProperty(
+      "bizgen.test.ide.version",
+      (project.findProperty("bizgen.test.ide.version") as String?) ?: ideaVersion,
+    )
+
     // Пробрасываем флаг включения в test JVM, чтобы @EnabledIfSystemProperty
     // на BaseIntegrationTest пропустил тесты (gradle property сама туда не попадает).
     if (runIntegrationTests) {
@@ -133,9 +143,9 @@ intellijPlatform {
 
   pluginVerification {
     ides {
-      create(ProductReleasesValueSource {
-        channels.convention(listOf(Channel.RELEASE, Channel.RC, Channel.PATCH))
-      })
+      select {
+        channels = listOf(Channel.RELEASE, Channel.RC, Channel.PATCH)
+      }
     }
   }
 
