@@ -37,7 +37,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v6
+        uses: gradle/actions/setup-gradle@v6.2.0
 
       - name: Cache IDE test builds
         uses: actions/cache@v6
