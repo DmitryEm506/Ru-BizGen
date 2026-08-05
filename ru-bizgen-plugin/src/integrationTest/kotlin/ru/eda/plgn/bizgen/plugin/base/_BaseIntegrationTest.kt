@@ -114,6 +114,11 @@ abstract class BaseUIIntegrationTest {
       testName = testName,
       TestCase(IdeProductProvider.IU, projectInfo = LocalProjectInfo(projectDir)).withVersion(resolveTestIdeVersion()),
     )
+    // systemDir сохраняется между запусками одного testName (см. IDEDataPaths.createPaths),
+    // поэтому прерванный предыдущий запуск оставляет индексы (в т.ч. IdIndex.storage) в состоянии
+    // "already registered" -> StartupAbortedException: Fatal error initializing 'IdIndexImpl'.
+    // pluginsDir лежит вне systemDir, поэтому установленный плагин не затрагивается.
+    context.wipeSystemDir()
     context.pluginConfigurator.installPluginFromPath(resolvePluginArchivePath())
     return context
   }

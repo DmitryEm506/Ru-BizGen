@@ -82,6 +82,7 @@ class ActionResultPreviewComponent : Disposable {
         UndoUtil.disableUndoFor(it)
       }
       previewEditor = factory.createEditor(previewDocument) as EditorEx
+      previewEditor.settings.isLineNumbersShown = false
 
       cell(previewEditor.component.apply {
         preferredSize = JBUI.size(600, 200)
