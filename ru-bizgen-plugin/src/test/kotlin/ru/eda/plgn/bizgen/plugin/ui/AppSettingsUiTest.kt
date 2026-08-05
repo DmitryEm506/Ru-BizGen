@@ -215,6 +215,32 @@ internal class AppSettingsUiTest : BaseIdeaTest() {
     restored.all { it.customName.isBlank() } shouldBe true
   }
 
+  @Test
+  fun `Should set all actions inactive via setAllActive`() {
+    val actionSettingsService = getBizGenService<AppActionSettingsService>()
+
+    val count = actionSettingsService.setAllActive(false)
+
+    count shouldBe GeneratorInfoProvider.generatorInfos.size
+    actionSettingsService.getActionSettings().none { it.active } shouldBe true
+    actionSettingsService.getActiveActionSettings() shouldHaveSize 0
+    actionSettingsService.activeCount() shouldBe 0
+  }
+
+  @Test
+  fun `Should set all actions active via setAllActive`() {
+    val actionSettingsService = getBizGenService<AppActionSettingsService>()
+
+    actionSettingsService.setAllActive(false)
+
+    val count = actionSettingsService.setAllActive(true)
+
+    count shouldBe GeneratorInfoProvider.generatorInfos.size
+    actionSettingsService.getActionSettings().all { it.active } shouldBe true
+    actionSettingsService.getActiveActionSettings() shouldHaveSize GeneratorInfoProvider.generatorInfos.size
+    actionSettingsService.activeCount() shouldBe GeneratorInfoProvider.generatorInfos.size
+  }
+
   private fun <T : JComponent> findComponents(container: Container, type: Class<T>): List<T> {
     val result = mutableListOf<T>()
     for (component in container.components) {

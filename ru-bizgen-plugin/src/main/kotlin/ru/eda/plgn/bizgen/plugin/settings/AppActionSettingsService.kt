@@ -69,6 +69,21 @@ interface AppActionSettingsService : BizGenService {
    */
   fun renameAction(position: Int, newName: String): ActionSettingsView?
 
+  /**
+   * Массовое изменение признака [ActionSettingsView.active] для всех действий.
+   *
+   * @param active новое значение признака активности для всех действий
+   * @return количество изменённых действий
+   */
+  fun setAllActive(active: Boolean): Int
+
+  /**
+   * Количество активных действий.
+   *
+   * @return количество действий с признаком [ActionSettingsView.active] = true
+   */
+  fun activeCount(): Int
+
   /** Направление перемещения действия. */
   enum class Direction {
 
@@ -126,6 +141,16 @@ class AppActionSettingsServiceImpl : AppActionSettingsService {
       customName = newName
       description = newName
     }
+  }
+
+  override fun setAllActive(active: Boolean): Int {
+    val allActions = actions()
+    allActions.forEach { it.active = active }
+    return allActions.size
+  }
+
+  override fun activeCount(): Int {
+    return actions().count { it.active }
   }
 
   private companion object {

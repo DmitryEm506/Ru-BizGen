@@ -8,6 +8,7 @@ import com.intellij.driver.sdk.ui.components.settings.settingsDialog
 import com.intellij.driver.sdk.ui.present
 import com.intellij.driver.sdk.ui.shouldBe
 import com.intellij.driver.sdk.waitFor
+import com.intellij.driver.sdk.waitNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
@@ -66,14 +67,19 @@ internal class AppActionsSettingUITest : RuBizGenSettingsUITest() {
       val actionList = list { byType(JList::class.java) }
       val checkBoxList = driver.cast(actionList.component, CheckBoxListRef::class)
 
-      val wasChecked = checkBoxList.isItemSelected(0)
-      assertTrue(wasChecked, "First generator checkbox should be checked by default")
+      val firstItem = waitNotNull("First generator item key should be available", 10.seconds) {
+        checkBoxList.getItemAt(0)
+      }
+      waitFor("First generator checkbox should be checked by default", 10.seconds) {
+        checkBoxList.isItemSelected(firstItem)
+      }
+      val wasChecked = checkBoxList.isItemSelected(firstItem)
 
       val bounds = actionList.getCellBounds(0)
       actionList.clickItemAtIndex(0, Point(10, bounds.height / 2))
 
-      waitFor("Checkbox state should toggle after click on checkbox area", 15.seconds) {
-        checkBoxList.isItemSelected(0) != wasChecked
+      waitFor("Checkbox state should toggle after click on checkbox area", 10.seconds) {
+        checkBoxList.isItemSelected(firstItem) != wasChecked
       }
     }
   }
@@ -92,6 +98,24 @@ internal class AppActionsSettingUITest : RuBizGenSettingsUITest() {
 
       waitFor("Second item should move to first position after MoveUp", 15.seconds) {
         actionList.items[0] == itemsBefore[1]
+      }
+    }
+  }
+
+  @Test
+  internal fun `Should Driver UI - move generator down in list`(@TempDir projectDir: Path) {
+    workWithRuBizGenSettings("moveDown", projectDir) {
+      val actionList = list { byType(JList::class.java) }
+      val itemsBefore = actionList.items
+
+      assertTrue(itemsBefore.size >= 2, "Generator list should have at least 2 items")
+
+      actionList.clickItemAtIndex(0)
+
+      actionButtonByAccessibleNameAndPerform("Down")
+
+      waitFor("First item should move to second position after MoveDown", 15.seconds) {
+        actionList.items[1] == itemsBefore[0]
       }
     }
   }
@@ -181,9 +205,14 @@ internal class AppActionsSettingUITest : RuBizGenSettingsUITest() {
 /**
  * @remote-интерфейс для чтения состояния checkbox в [com.intellij.ui.CheckBoxList].
  *
- * `CheckBoxList.isItemSelected(index)` наследуется из `CheckBoxListBase` и возвращает текущее состояние checkbox для элемента по индексу.
+ * `isItemSelected(item: String)` принимает ключ элемента (action ID), а не индекс.
+ * Это позволяет избежать конфликта перегрузок: `CheckBoxList` имеет `isItemSelected(int)` и
+ * `isItemSelected(T)`, который стирается в `isItemSelected(Object)`. При передаче `Integer`
+ * драйвер может выбрать `isItemSelected(Object)` — тогда `myItemMap.get(Integer)` вернёт `null`.
+ * Передача `String` совместима только с `Object`, поэтому перегрузка разрешается однозначно.
  */
 @Remote("com.intellij.ui.CheckBoxList")
 interface CheckBoxListRef {
-  fun isItemSelected(index: Int): Boolean
+  fun getItemAt(index: Int): String?
+  fun isItemSelected(item: String): Boolean
 }
