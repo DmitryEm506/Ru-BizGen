@@ -7,5 +7,5 @@ include(
   "ru-bizgen-mcp",
   "ru-bizgen-perf",
   "ru-bizgen-plugin",
-  "ru-bizgen-perf-validation"
+  "ru-bizgen-archunit"
 )

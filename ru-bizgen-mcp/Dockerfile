@@ -18,9 +18,9 @@ COPY ru-bizgen-mcp/ ru-bizgen-mcp/
 COPY ru-bizgen-plugin/ ru-bizgen-plugin/
 COPY build-logic/ build-logic/
 
-# ru-bizgen-perf и ru-bizgen-perf-validation не нужны для сборки MCP,
+# ru-bizgen-perf и ru-bizgen-archunit не нужны для сборки MCP,
 # но Gradle требует существования директорий всех включённых в settings.gradle.kts модулей.
-RUN mkdir -p ru-bizgen-perf ru-bizgen-perf-validation
+RUN mkdir -p ru-bizgen-perf ru-bizgen-archunit
 
 RUN --mount=type=cache,target=/root/.gradle \
     --mount=type=cache,target=/root/.konan \

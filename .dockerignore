@@ -12,7 +12,7 @@ _polygon
 *.log
 token.bin
 ru-bizgen-perf
-ru-bizgen-perf-validation
+ru-bizgen-archunit
 ru-bizgen-plugin/src/integrationTest
 ru-bizgen-plugin/src/test
 ru-bizgen-core/src/test

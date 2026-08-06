@@ -20,10 +20,10 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/build-logic" />
+            <option value="$PROJECT_DIR$/ru-bizgen-archunit" />
             <option value="$PROJECT_DIR$/ru-bizgen-core" />
             <option value="$PROJECT_DIR$/ru-bizgen-mcp" />
             <option value="$PROJECT_DIR$/ru-bizgen-perf" />
-            <option value="$PROJECT_DIR$/ru-bizgen-perf-validation" />
             <option value="$PROJECT_DIR$/ru-bizgen-plugin" />
           </set>
         </option>
