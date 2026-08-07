@@ -5,8 +5,16 @@
   const toc = document.querySelector(".toc");
   const tocToggle = document.querySelector(".toc-toggle");
   const graphCaption = document.querySelector(".graph__caption");
+  const slideCounter = document.querySelector(".slide-counter");
+  const navPrev = document.querySelector("[data-nav='prev']");
+  const navNext = document.querySelector("[data-nav='next']");
 
   const sectionById = Object.fromEntries(sections.map((s) => [s.id, s]));
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const SLIDE_MS = reduceMotion ? 0 : 420;
+
+  let activeIndex = 0;
+  let animating = false;
 
   function setCurrent(id) {
     tocLinks.forEach((a) => {
@@ -14,14 +22,41 @@
       if (active) a.setAttribute("aria-current", "true");
       else a.removeAttribute("aria-current");
     });
-    sections.forEach((s) => s.classList.toggle("is-active", s.id === id));
   }
 
-  function goTo(id, { updateHash = true } = {}) {
-    const el = sectionById[id];
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  function updateChrome(idx) {
+    if (progress) {
+      const pct = sections.length > 1 ? ((idx + 1) / sections.length) * 100 : 100;
+      progress.style.width = `${pct}%`;
+    }
+    if (slideCounter) {
+      slideCounter.textContent = `${idx + 1} / ${sections.length}`;
+    }
+    if (navPrev) navPrev.disabled = idx <= 0;
+    if (navNext) navNext.disabled = idx >= sections.length - 1;
+  }
+
+  function clearAnimClasses(el) {
+    el.classList.remove(
+      "is-active",
+      "is-enter-from-right",
+      "is-enter-from-left",
+      "is-exit-to-left",
+      "is-exit-to-right"
+    );
+  }
+
+  function goTo(id, { updateHash = true, dir } = {}) {
+    const nextIndex = sections.findIndex((s) => s.id === id);
+    if (nextIndex < 0 || nextIndex === activeIndex || animating) return;
+
+    const from = sections[activeIndex];
+    const to = sections[nextIndex];
+    const direction = dir ?? (nextIndex > activeIndex ? 1 : -1);
+
     setCurrent(id);
+    updateChrome(nextIndex);
+
     if (updateHash) {
       history.replaceState(null, "", `#${id}`);
     }
@@ -29,42 +64,49 @@
       toc.classList.remove("is-open");
       tocToggle?.setAttribute("aria-expanded", "false");
     }
+
+    if (reduceMotion || SLIDE_MS === 0) {
+      clearAnimClasses(from);
+      clearAnimClasses(to);
+      to.classList.add("is-active");
+      to.scrollTop = 0;
+      activeIndex = nextIndex;
+      return;
+    }
+
+    animating = true;
+    clearAnimClasses(to);
+    to.scrollTop = 0;
+
+    // Prepare incoming slide off-screen, then flip in the same frame.
+    to.classList.add(direction > 0 ? "is-enter-from-right" : "is-enter-from-left");
+    // Force layout so the starting transform is applied before we transition.
+    void to.offsetWidth;
+
+    from.classList.add(direction > 0 ? "is-exit-to-left" : "is-exit-to-right");
+    from.classList.remove("is-active");
+    to.classList.add("is-active");
+    to.classList.remove("is-enter-from-right", "is-enter-from-left");
+
+    window.setTimeout(() => {
+      clearAnimClasses(from);
+      to.classList.add("is-active");
+      activeIndex = nextIndex;
+      animating = false;
+    }, SLIDE_MS);
   }
 
-  function currentIndex() {
-    const y = window.scrollY + window.innerHeight * 0.28;
-    let idx = 0;
-    sections.forEach((s, i) => {
-      if (s.offsetTop <= y) idx = i;
-    });
-    return idx;
+  function goBy(delta) {
+    const next = activeIndex + delta;
+    if (next < 0 || next >= sections.length) return;
+    goTo(sections[next].id, { dir: delta > 0 ? 1 : -1 });
   }
 
-  function updateProgress() {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
-    if (progress) progress.style.width = `${pct}%`;
-  }
-
-  // IntersectionObserver for reveal + TOC sync
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) e.target.classList.add("is-visible");
-      });
-      const idx = currentIndex();
-      if (sections[idx]) setCurrent(sections[idx].id);
-      updateProgress();
-    },
-    { rootMargin: "-20% 0px -55% 0px", threshold: [0, 0.2, 0.5] }
-  );
-  sections.forEach((s) => io.observe(s));
-
-  window.addEventListener("scroll", () => {
-    updateProgress();
-    const idx = currentIndex();
-    if (sections[idx]) setCurrent(sections[idx].id);
-  }, { passive: true });
+  // Initial state
+  sections.forEach((s, i) => {
+    clearAnimClasses(s);
+    if (i === 0) s.classList.add("is-active");
+  });
 
   tocLinks.forEach((a) => {
     a.addEventListener("click", (ev) => {
@@ -78,26 +120,49 @@
     btn.addEventListener("click", () => goTo(btn.getAttribute("data-go")));
   });
 
-  // Keyboard nav
+  navPrev?.addEventListener("click", () => goBy(-1));
+  navNext?.addEventListener("click", () => goBy(1));
+
+  // Keyboard: ← → or J K (no Home / End)
   window.addEventListener("keydown", (ev) => {
     const tag = (ev.target && ev.target.tagName) || "";
     if (tag === "INPUT" || tag === "TEXTAREA" || ev.target?.isContentEditable) return;
 
-    const idx = currentIndex();
     if (ev.key === "ArrowRight" || ev.key === "j" || ev.key === "J") {
       ev.preventDefault();
-      if (sections[idx + 1]) goTo(sections[idx + 1].id);
+      goBy(1);
     } else if (ev.key === "ArrowLeft" || ev.key === "k" || ev.key === "K") {
       ev.preventDefault();
-      if (sections[idx - 1]) goTo(sections[idx - 1].id);
-    } else if (ev.key === "Home") {
-      ev.preventDefault();
-      goTo(sections[0].id);
-    } else if (ev.key === "End") {
-      ev.preventDefault();
-      goTo(sections[sections.length - 1].id);
+      goBy(-1);
     }
   });
+
+  // Touch swipe (horizontal)
+  let touchX = null;
+  let touchY = null;
+  document.querySelector(".main")?.addEventListener(
+    "touchstart",
+    (ev) => {
+      const t = ev.changedTouches[0];
+      touchX = t.clientX;
+      touchY = t.clientY;
+    },
+    { passive: true }
+  );
+  document.querySelector(".main")?.addEventListener(
+    "touchend",
+    (ev) => {
+      if (touchX == null) return;
+      const t = ev.changedTouches[0];
+      const dx = t.clientX - touchX;
+      const dy = t.clientY - touchY;
+      touchX = null;
+      touchY = null;
+      if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+      goBy(dx < 0 ? 1 : -1);
+    },
+    { passive: true }
+  );
 
   // TOC mobile
   tocToggle?.addEventListener("click", () => {
@@ -108,11 +173,16 @@
   // Hash on load
   const initial = location.hash?.slice(1);
   if (initial && sectionById[initial]) {
-    setTimeout(() => goTo(initial, { updateHash: false }), 50);
+    const idx = sections.findIndex((s) => s.id === initial);
+    sections.forEach((s) => clearAnimClasses(s));
+    sections[idx].classList.add("is-active");
+    activeIndex = idx;
+    setCurrent(initial);
+    updateChrome(idx);
   } else if (sections[0]) {
     setCurrent(sections[0].id);
+    updateChrome(0);
   }
-  updateProgress();
 
   // Glossary / code highlight interactivity
   const glossaryItems = [...document.querySelectorAll(".glossary__item[data-api]")];
@@ -142,6 +212,7 @@
   // Module graph hotspots
   const edges = [...document.querySelectorAll(".graph__edge")];
   const nodes = [...document.querySelectorAll(".graph__node")];
+  const mapMods = [...document.querySelectorAll(".map-mod[data-map]")];
   const captions = {
     core: "Ядро: только Kotlin stdlib. Не знает о plugin, mcp, perf.",
     plugin: "IntelliJ-адаптер. Зависит только от core. Правила границ — в PluginBoundaryArchTest.",
@@ -150,22 +221,34 @@
     arch: "Тестовый модуль: читает bytecode core/mcp/perf (+ jmhJar), не тянет IntelliJ Platform.",
   };
 
+  function setMapActive(id) {
+    nodes.forEach((n) => n.classList.toggle("is-active", n.getAttribute("data-node") === id));
+    mapMods.forEach((m) => m.classList.toggle("is-active", m.getAttribute("data-map") === id));
+    edges.forEach((e) => {
+      const lit =
+        e.getAttribute("data-from") === id || e.getAttribute("data-to") === id;
+      e.classList.toggle("is-lit", lit);
+    });
+    if (graphCaption) graphCaption.textContent = captions[id] || "";
+  }
+
+  function clearMapActive() {
+    nodes.forEach((n) => n.classList.remove("is-active"));
+    mapMods.forEach((m) => m.classList.remove("is-active"));
+    edges.forEach((e) => e.classList.remove("is-lit"));
+    if (graphCaption) graphCaption.textContent = "Наведите на модуль, чтобы подсветить связи.";
+  }
+
   nodes.forEach((node) => {
     const id = node.getAttribute("data-node");
-    node.addEventListener("mouseenter", () => {
-      nodes.forEach((n) => n.classList.toggle("is-active", n === node));
-      edges.forEach((e) => {
-        const lit =
-          e.getAttribute("data-from") === id || e.getAttribute("data-to") === id;
-        e.classList.toggle("is-lit", lit);
-      });
-      if (graphCaption) graphCaption.textContent = captions[id] || "";
-    });
-    node.addEventListener("mouseleave", () => {
-      nodes.forEach((n) => n.classList.remove("is-active"));
-      edges.forEach((e) => e.classList.remove("is-lit"));
-      if (graphCaption) graphCaption.textContent = "Наведите на модуль, чтобы подсветить связи.";
-    });
+    node.addEventListener("mouseenter", () => setMapActive(id));
+    node.addEventListener("mouseleave", clearMapActive);
+  });
+
+  mapMods.forEach((mod) => {
+    const id = mod.getAttribute("data-map");
+    mod.addEventListener("mouseenter", () => setMapActive(id));
+    mod.addEventListener("mouseleave", clearMapActive);
   });
 
   // Minimal Kotlin-ish highlighter for static blocks marked data-highlight
@@ -182,8 +265,6 @@
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;");
 
-    // Сначала уводим строки и комментарии в плейсхолдеры,
-    // иначе подсветка `class` ломает атрибут class="tok-str".
     html = html
       .replace(/(\/\/.*)$/gm, (m) => park(`<span class="tok-cm">${m}</span>`))
       .replace(/("(?:\\.|[^"\\])*")/g, (m) => park(`<span class="tok-str">${m}</span>`));

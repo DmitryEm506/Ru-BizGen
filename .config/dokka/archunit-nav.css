@@ -1,0 +1,147 @@
+/* Доп. кнопки в шапке Dokka (после версии): Guides + Code Coverage. */
+
+.navigation .bizgen-extras {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 28px;
+  flex-shrink: 0;
+}
+
+.navigation .bizgen-docs {
+  position: relative;
+}
+
+.navigation .bizgen-docs__toggle {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
+  background: rgba(48, 127, 255, 0.22);
+  color: #fff;
+  font: 600 13px/1 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  list-style: none;
+  text-decoration: none;
+  user-select: none;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+a.bizgen-docs__toggle_link {
+  padding: 0 14px;
+}
+
+.navigation .bizgen-docs__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.navigation .bizgen-docs__toggle::marker {
+  content: "";
+}
+
+.navigation .bizgen-docs__chevron {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid rgba(255, 255, 255, 0.85);
+  transition: transform 0.15s ease;
+}
+
+.navigation .bizgen-docs[open] > .bizgen-docs__toggle {
+  background: rgba(48, 127, 255, 0.38);
+  border-color: rgba(48, 127, 255, 0.85);
+  box-shadow: 0 0 0 3px rgba(48, 127, 255, 0.22);
+}
+
+.navigation .bizgen-docs[open] .bizgen-docs__chevron {
+  transform: rotate(180deg);
+}
+
+.navigation .bizgen-docs__toggle:hover,
+.navigation .bizgen-docs__toggle:focus-visible {
+  background: rgba(48, 127, 255, 0.34);
+  border-color: rgba(255, 255, 255, 0.55);
+  outline: none;
+}
+
+.navigation .bizgen-docs__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 40;
+  min-width: 260px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: #1e1f23;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+.navigation .bizgen-docs__caption {
+  margin: 0 0 6px;
+  padding: 4px 10px;
+  color: rgba(255, 255, 255, 0.45);
+  font: 600 11px/1.2 Inter, system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.navigation .bizgen-docs__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.12s ease;
+}
+
+.navigation .bizgen-docs__item:hover,
+.navigation .bizgen-docs__item:focus-visible {
+  background: rgba(48, 127, 255, 0.2);
+  outline: none;
+}
+
+.navigation .bizgen-docs__item-name {
+  font: 600 14px/1.25 Inter, system-ui, sans-serif;
+}
+
+.navigation .bizgen-docs__item-hint {
+  color: rgba(255, 255, 255, 0.55);
+  font: 400 12px/1.3 Inter, system-ui, sans-serif;
+}
+
+@media (max-width: 899px) {
+  .navigation .bizgen-extras {
+    margin-left: 16px;
+    gap: 6px;
+  }
+
+  .navigation .bizgen-docs__toggle {
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  a.bizgen-docs__toggle_link {
+    padding: 0 10px;
+  }
+
+  .navigation .bizgen-docs__panel {
+    left: auto;
+    right: 0;
+    min-width: 240px;
+  }
+}

@@ -48,24 +48,46 @@ val copyKoverToDokka = tasks.register<Copy>("copyKoverToDokka") {
   into(layout.buildDirectory.dir("dokka/html/images/kover"))
 }
 
+/**
+ * Копирование интерактивной документации ArchUnit в вывод Dokka.
+ * Путь под `images/`, чтобы относительные ссылки из footer / Module.md / header работали так же, как у Kover.
+ */
+val copyArchunitToDokka = tasks.register<Copy>("copyArchunitToDokka") {
+  group = "documentation"
+  description = "Копирует интерактивную документацию ArchUnit в каталог Dokka."
+  from(file("docs/archunit"))
+  into(layout.buildDirectory.dir("dokka/html/images/archunit"))
+}
+
 tasks {
   dokka {
+    moduleName.set(rootProject.name)
+
+    dokkaPublications.html {
+      includes.from(file(".config/dokka/Module.md"))
+    }
+
     pluginsConfiguration.html {
       // TODO: Нет возможности стандартным образом прокинуть логотип и указать путь до него. Поэтому приходится называть именно так файл https://github.com/Kotlin/dokka/issues/4369
       customAssets.from(
         file(".config/dokka/logo-icon.svg")
       )
+      customStyleSheets.from(
+        file(".config/dokka/archunit-nav.css")
+      )
+      templatesDir.set(file(".config/dokka/templates"))
 
       footerMessage.set(
         """
-            &copy; ${Year.now().value} Dmitry&nbsp;A.&nbsp;Emelyanenko | 
-            <a href="images/kover/index.html">Code Coverage</a>
+            &copy; ${Year.now().value} Dmitry&nbsp;A.&nbsp;Emelyanenko |
+            <a href="images/kover/index.html">Code Coverage</a> |
+            <a href="images/archunit/index.html">ArchUnit</a>
         """.trimIndent()
       )
     }
   }
 
   withType<DokkaGenerateTask>().configureEach {
-    finalizedBy(copyKoverToDokka)
+    finalizedBy(copyKoverToDokka, copyArchunitToDokka)
   }
 }
