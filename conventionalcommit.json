@@ -1,0 +1,93 @@
+{
+  "types": {
+    "feat": {
+      "description": "Новая функциональность (генератор, тул, настройка, UI)."
+    },
+    "fix": {
+      "description": "Исправление бага или некорректного поведения."
+    },
+    "refactor": {
+      "description": "Рефакторинг без изменения внешнего поведения."
+    },
+    "perf": {
+      "description": "Улучшение производительности генераторов или инфраструктуры."
+    },
+    "test": {
+      "description": "Добавление или правка unit/integration/ArchUnit/JMH-тестов."
+    },
+    "docs": {
+      "description": "Документация: KDoc, Dokka, README, specs, CHANGELOG."
+    },
+    "build": {
+      "description": "Сборка, Gradle, convention plugins, зависимости.",
+      "scopes": {
+        "deps": {
+          "description": "Обновление внешних зависимостей (Dependabot и вручную)."
+        },
+        "gradle": {
+          "description": "Корневой Gradle / Version Catalog / settings."
+        },
+        "build-logic": {
+          "description": "Convention plugins в build-logic."
+        }
+      }
+    },
+    "ci": {
+      "description": "GitHub Actions и CI-скрипты.",
+      "scopes": {
+        "actions": {
+          "description": "Workflows в .github/workflows."
+        }
+      }
+    },
+    "chore": {
+      "description": "Вспомогательные изменения без влияния на прод-код."
+    },
+    "style": {
+      "description": "Форматирование, без логики."
+    },
+    "revert": {
+      "description": "Откат предыдущего коммита."
+    }
+  },
+  "commonScopes": {
+    "core": {
+      "description": "Модуль ru-bizgen-core (генераторы, utils, GeneratorInfo)."
+    },
+    "plugin": {
+      "description": "Модуль ru-bizgen-plugin (IDE UI, actions, settings, DI)."
+    },
+    "mcp": {
+      "description": "Модуль ru-bizgen-mcp (сервер, тулы, Docker)."
+    },
+    "perf": {
+      "description": "Модуль ru-bizgen-perf (JMH, markdown-отчёты)."
+    },
+    "archunit": {
+      "description": "Модуль ru-bizgen-archunit (границы модулей и слои)."
+    },
+    "docs": {
+      "description": "Документация и GitHub Pages / Dokka."
+    }
+  },
+  "footerTypes": {
+    "BREAKING-CHANGE": {
+      "description": "Обратно несовместимое изменение (API генераторов, MCP tools, settings)."
+    },
+    "Closes": {
+      "description": "Закрывает issue (номер или URL)."
+    },
+    "Fixes": {
+      "description": "Исправляет issue."
+    },
+    "Refs": {
+      "description": "Ссылка на связанный issue/PR/коммит."
+    },
+    "Co-authored-by": {
+      "description": "Соавтор коммита."
+    },
+    "Assisted-by": {
+      "description": "Помощь AI-агента при подготовке изменений."
+    }
+  }
+}

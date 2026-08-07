@@ -19,7 +19,7 @@ ru-bizgen/
 ├── ru-bizgen-plugin          — IntelliJ IDEA плагин (UI, actions, settings, DI, integration tests)
 ├── ru-bizgen-mcp             — MCP-сервер (Ktor/Netty + MCP Kotlin SDK)
 ├── ru-bizgen-perf            — JMH-бенчмарки + генерация markdown-отчётов
-├── ru-bizgen-perf-validation — валидация наличия бенчмарков для всех генераторов
+├── ru-bizgen-archunit        — ArchUnit: границы модулей, слои core, naming Generator↔Benchmark
 ├── _polygon                  — Maven-полигон для ручного тестирования (Java, вне Gradle-сборки)
 └── build.gradle.kts          — root: Dokka, Kover, общая конфигурация
 ```
@@ -133,20 +133,27 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty*
 - `JmhMarkdownReport.kt` — генерация markdown-отчёта из JSON-результата JMH
 - Результаты в README: все генераторы в диапазоне 0.05–3.75 µs/оп
 
-### 2.5. `ru-bizgen-perf-validation` — валидация бенчмарков
+### 2.5. `ru-bizgen-archunit` — архитектурные правила (ArchUnit)
 
-- `ImplementedBenchCheckFormat.kt` — через Reflections проверяет: (1) количество бенчмарков = количество генераторов, (2) имена классов бенчмарков = имена генераторов + "Benchmark"
-- Зависимость от `ru-bizgen-perf` через custom configuration `jmhApiByConf` (экспорт `jmhJar`)
+Тестовый модуль (только `src/test`), входит в `check`:
+
+- `ModuleBoundaryArchTest` — границы core/mcp/perf, запрет сторонних deps в ядре, acyclic slices
+- `CoreLayerArchTest` — слои `utils` ← `generator` ← `generator_info`
+- `BenchmarkNamingArchTest` — 1:1 Generator↔`*Benchmark` + count == `GeneratorInfoProvider` (замена бывшего `ImplementedBenchCheckFormat`)
+- JMH-классы через `jmhApiByConf`; plugin-правила (`plugin ↛ mcp/Ktor`) — в `PluginBoundaryArchTest` внутри `ru-bizgen-plugin` (чтобы arch-модуль не тянул IntelliJ Platform)
+- Интерактивная документация: [`docs/archunit/index.html`](docs/archunit/index.html)
 
 ## 3. Тестирование
 
-**Фреймворк:** JUnit Jupiter 6.1.0 + Kotest assertions 6.2.1 + MockK 1.14.9
+**Фреймворк:** JUnit Jupiter 6.1.0 + Kotest assertions 6.2.1 + MockK 1.14.9 + ArchUnit 1.4.2
 
 **Структура тестов core:**
 - `BaseTest` — базовый класс: `tests()` для dynamic tests, `shouldBeUnique()`
 - `GeneratorBaseTest<T>` — базовый для генераторов: проверяет результат на null, уникальность на `uniqueDistance`, `testsOnDistanceToClipboard/Editor` для параметризованных проверок формата
 - На каждый генератор — свой тест-класс с `@Nested` группами, `@TestFactory` для массовых проверок формата
 - `find_distance/` — отдельная категория тестов уникальности (тег `distanceFinderTests`, исключены из быстрого CI через `testing-convention`)
+
+**ArchUnit:** `:ru-bizgen-archunit` + `PluginBoundaryArchTest` в plugin
 
 **MCP-тесты:** `ToolExecutorTest` (успех/ошибка/все генераторы), `ToolNameResolverTest`
 
@@ -189,9 +196,10 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty*
 3. **Алгоритмическая корректность** — все генераторы используют реальные контрольные суммы
 4. **Мягкая миграция настроек** — `BizGenAppSettingsSoftUpdater` сохраняет пользовательские настройки при обновлении
 5. **Стабильные MCP-имена** — `ToolNameResolver` извлекает имя из UUID-based id, а не из имени класса
-6. **Performance-first** — JMH-бенчмарки на каждый генератор + валидация их наличия
+6. **Performance-first** — JMH-бенчмарки на каждый генератор + ArchUnit naming/полнота (`BenchmarkNamingArchTest`)
 7. **Convention plugins** — `build-logic` composite build централизует конфигурацию Kotlin/testing/Dokka/Kover
 8. **UI integration tests** — JetBrains IDE Starter + Driver SDK для end-to-end тестирования плагина в реальной IDE
+9. **ArchUnit** — исполняемые границы модулей и слои core (ядро без IntelliJ/Ktor/MCP/JMH)
 
 **Зоны для внимания:**
 1. **`_polygon`** — Maven-модуль-полигон вне Gradle-сборки, не включён в `settings.gradle.kts`, но директория существует. Лучше переместить или исключить из репозитория.
@@ -212,6 +220,7 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty*
 | JUnit Jupiter | 6.1.0 |
 | Kotest | 6.2.1 |
 | MockK | 1.14.9 |
+| ArchUnit | 1.4.2 |
 | Dokka | 2.2.0 |
 | Kover | 0.9.9 |
 | Changelog Plugin | 2.5.0 |

@@ -4,11 +4,12 @@ plugins {
 }
 
 dependencies {
-  implementation(libs.reflections)
-
-  // Подключаем именно классы бенчмарков через созданную конфигурацию
+  testImplementation(project(":ru-bizgen-core"))
+  testImplementation(project(":ru-bizgen-mcp"))
+  testImplementation(project(":ru-bizgen-perf"))
   testImplementation(project(path = ":ru-bizgen-perf", configuration = "jmhApiByConf"))
 
+  testImplementation(libs.archunit.junit5)
   testImplementation(kotlin("test"))
   testImplementation(libs.bundles.tests.unit)
 

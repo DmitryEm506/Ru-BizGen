@@ -51,6 +51,7 @@ dependencies {
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-test-jvm")
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-jdk8")
   }
+  testImplementation(libs.archunit.junit5)
 
   testRuntimeOnly(libs.junit.jupiter.engine)
 
