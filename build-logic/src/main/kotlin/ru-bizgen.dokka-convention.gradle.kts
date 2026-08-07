@@ -1,4 +1,3 @@
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
 
 plugins {
@@ -28,5 +27,12 @@ dokka {
   dokkaPublications.getByName("html") {
     suppressInheritedMembers.set(true)
     offlineMode.set(true)
+  }
+
+  // HTML-кастомизация должна быть и на модулях: иначе header/CSS есть только на корневой странице.
+  // https://github.com/Kotlin/dokka/issues/3883
+  pluginsConfiguration.html {
+    templatesDir.set(rootProject.file(".config/dokka/templates"))
+    customStyleSheets.from(rootProject.file(".config/dokka/archunit-nav.css"))
   }
 }
