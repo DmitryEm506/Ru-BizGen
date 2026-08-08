@@ -88,3 +88,4 @@ com
 META-INF
 out
 intellij.driver.sdk.xml
+.run

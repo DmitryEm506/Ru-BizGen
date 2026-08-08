@@ -1,3 +1,4 @@
+/* Shared controller for Ru BizGen HTML presentations. */
 (() => {
   const sections = [...document.querySelectorAll("section.deck")];
   const tocLinks = [...document.querySelectorAll(".toc nav a")];
