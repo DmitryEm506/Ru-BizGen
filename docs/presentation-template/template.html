@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{PRESENTATION_TITLE}}</title>
+  <meta name="description" content="{{PRESENTATION_DESCRIPTION}}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Презентация в docs/presentations/<slug>/ → ../../presentation-template/styles.css -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!--
+    Каталог layout-паттернов Ru BizGen (эталоны: archunit + gradle).
+    Для новой темы: скопируйте нужные <section>, удалите лишние, замените демо-текст.
+    Плотность: OUTLINE_CRITERIA.md + DENSITY.md. Контракт: TEMPLATE.md.
+  -->
+  <a class="skip-link" href="#intro">К содержимому</a>
+  <div class="progress" aria-hidden="true"></div>
+
+  <button type="button" class="toc-toggle" aria-expanded="false" aria-controls="toc">Оглавление</button>
+
+  <div class="layout">
+    <aside class="toc" id="toc">
+      <p class="toc__brand">{{BRAND}}</p>
+      <p class="toc__sub">{{PRESENTATION_CONTEXT}}</p>
+      <nav aria-label="Содержание">
+        <a href="#intro"><span class="toc__num">01</span> Введение</a>
+        <a href="#facts-qr"><span class="toc__num">02</span> Facts + QR</a>
+        <a href="#comparison"><span class="toc__num">03</span> Comparison</a>
+        <a href="#cards"><span class="toc__num">04</span> Cards 2×2</a>
+        <a href="#lifecycle"><span class="toc__num">05</span> Pipeline + SVG</a>
+        <a href="#facts-rule"><span class="toc__num">06</span> Facts + Rule</a>
+        <a href="#diagram"><span class="toc__num">07</span> Diagram map</a>
+        <a href="#code"><span class="toc__num">08</span> Code</a>
+        <a href="#rule"><span class="toc__num">09</span> Rule</a>
+        <a href="#duo-lists"><span class="toc__num">10</span> Duo lists</a>
+        <a href="#checklist"><span class="toc__num">11</span> Checklist</a>
+        <a href="#takeaways"><span class="toc__num">12</span> Итог</a>
+      </nav>
+      <p class="toc__hint">
+        Листать: <kbd>←</kbd> <kbd>→</kbd> или <kbd>J</kbd> <kbd>K</kbd>
+      </p>
+    </aside>
+
+    <main class="main">
+      <div class="deck-chrome">
+        <span class="slide-counter" aria-live="polite">1 / 12</span>
+        <div class="deck-nav">
+          <button type="button" class="deck-nav__btn" data-nav="prev" aria-label="Предыдущий слайд" disabled>
+            <span aria-hidden="true">←</span>
+          </button>
+          <button type="button" class="deck-nav__btn" data-nav="next" aria-label="Следующий слайд">
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-shell">
+        <!-- 01. HERO — один на презентацию (оба эталона) -->
+        <section class="deck hero is-active" id="intro">
+          <div class="hero__glow" aria-hidden="true"></div>
+          <p class="hero__eyebrow">{{EYEBROW}}</p>
+          <h1 class="hero__brand">{{PRESENTATION_TITLE}}</h1>
+          <p class="hero__title">{{MAIN_THESIS}}</p>
+          <p class="hero__lead">{{INTRODUCTION}}</p>
+        </section>
+
+        <!--
+          02. FACTS + QR + выводы — gradle #popularity / archunit #history
+          PNG: utils/qr/generate_qr.py → рядом с index.html
+        -->
+        <section class="deck deck--fill" id="facts-qr">
+          <h2 class="section-title">Популярность / контекст</h2>
+          <p class="section-lead">
+            Метрики слева, QR справа, выводы снизу — один тезис «зачем тема жива».
+          </p>
+
+          <div class="history-layout">
+            <div class="history-main">
+              <div class="fact-grid">
+                <div class="fact">
+                  <span class="fact__label">Метрика A</span>
+                  <span class="fact__value">42%</span>
+                  <span class="fact__note">
+                    Развёрнутая note: откуда цифра и как её читать (1–2 предложения).
+                  </span>
+                </div>
+                <div class="fact">
+                  <span class="fact__label">Метрика B</span>
+                  <span class="fact__value">~95%</span>
+                  <span class="fact__note">
+                    Вторая плашка с контекстом; не оставляйте note из пяти слов.
+                  </span>
+                </div>
+                <div class="fact">
+                  <span class="fact__label">Метрика C</span>
+                  <span class="fact__value">20M+/мес</span>
+                  <span class="fact__note">
+                    Укажите источник в note (опрос, docs, GitHub).
+                  </span>
+                </div>
+                <div class="fact">
+                  <span class="fact__label">Метрика D</span>
+                  <span class="fact__value">2–3:1</span>
+                  <span class="fact__note">
+                    Сравнение с альтернативой, если это часть тезиса слайда.
+                  </span>
+                </div>
+              </div>
+
+              <ul class="history-points">
+                <li>Вывод №1 — что следует из метрик для читателя.</li>
+                <li>Вывод №2 — где тема доминирует / где нет.</li>
+                <li>Вывод №3 — куда идти дальше (docs / репозиторий).</li>
+              </ul>
+
+              <p class="history-links">
+                Сайт:
+                <a href="https://example.org" target="_blank" rel="noopener noreferrer">example.org</a>
+                · Docs:
+                <a href="https://example.org/docs" target="_blank" rel="noopener noreferrer">User Guide</a>
+              </p>
+            </div>
+
+            <aside class="qr-card">
+              <img
+                class="qr-card__img"
+                src="example-qr.png"
+                width="180"
+                height="180"
+                alt="QR-код на официальный сайт"
+              />
+              <p class="qr-card__title">Сканируйте → сайт</p>
+              <p class="qr-card__url">
+                <a href="https://example.org" target="_blank" rel="noopener noreferrer">example.org</a>
+              </p>
+            </aside>
+          </div>
+        </section>
+
+        <!-- 03. COMPARISON + нижний callout — gradle #vs-maven / #commands-rules -->
+        <section class="deck deck--fill" id="comparison">
+          <h2 class="section-title">Сравнение двух подходов</h2>
+          <p class="section-lead">
+            Равноплотные колонки + блок «когда выбирать», иначе низ слайда пустеет.
+          </p>
+
+          <div class="duo-grid">
+            <article class="duo-card">
+              <header class="duo-card__head">
+                <p class="method-card__kicker">Подход A</p>
+                <h3 class="method-card__title">Вариант слева</h3>
+              </header>
+              <ul class="duo-card__list">
+                <li>модель: краткое описание механики;</li>
+                <li>плюсы: скорость / гибкость / масштаб;</li>
+                <li>минусы: онбординг / churn / сложность;</li>
+                <li>где силён: типичный кейс A;</li>
+                <li>ещё один сопоставимый пункт.</li>
+              </ul>
+            </article>
+            <article class="duo-card">
+              <header class="duo-card__head">
+                <p class="method-card__kicker">Подход B</p>
+                <h3 class="method-card__title">Вариант справа</h3>
+              </header>
+              <ul class="duo-card__list">
+                <li>модель: краткое описание механики;</li>
+                <li>плюсы: предсказуемость / дефолт / найм;</li>
+                <li>минусы: verbosity / кастомизация;</li>
+                <li>где силён: типичный кейс B;</li>
+                <li>ещё один сопоставимый пункт.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="callout callout--cyan">
+            <strong>Когда выбирать.</strong>
+            Бери A, если нужны гибкость и multi-module.
+            Бери B, если важнее дефолт и совпадение с вакансиями.
+            Общее: не спорьте хайпом — смотрите модель и стоимость поддержки.
+          </div>
+        </section>
+
+        <!-- 04. DENSE CARDS 2×2 — gradle #model-run / #conventions / archunit #methods -->
+        <section class="deck deck--fill" id="cards">
+          <h2 class="section-title">Четыре опоры темы</h2>
+          <p class="section-lead">
+            В каждой карточке: kicker, title, абзац и список — не одно короткое предложение.
+          </p>
+
+          <div class="method-grid method-grid--2x2">
+            <article class="method-card">
+              <p class="method-card__kicker">Модель</p>
+              <h3 class="method-card__title">Главная идея №1</h3>
+              <p class="method-card__text">
+                Короткий абзац: что это и почему важно. Можно с расшифровкой термина.
+              </p>
+              <ul class="method-card__list">
+                <li>буллет с деталью A</li>
+                <li>буллет с деталью B</li>
+                <li>буллет с командой / API</li>
+              </ul>
+            </article>
+            <article class="method-card">
+              <p class="method-card__kicker">Артефакты</p>
+              <h3 class="method-card__title">Главная идея №2</h3>
+              <p class="method-card__text">
+                Расшифруйте аббревиатуры (как GAV: Group / Artifact / Version).
+              </p>
+              <ul class="method-card__list">
+                <li><strong>G</strong> — …</li>
+                <li><strong>A</strong> — …</li>
+                <li><strong>V</strong> — …</li>
+              </ul>
+            </article>
+            <article class="method-card">
+              <p class="method-card__kicker">Запуск</p>
+              <h3 class="method-card__title">Главная идея №3</h3>
+              <p class="method-card__text">
+                Контракт повторяемости: что фиксируется в репозитории.
+              </p>
+              <ul class="method-card__list">
+                <li>всегда один входной скрипт / wrapper</li>
+                <li>обновление — осознанный diff</li>
+                <li>CI и локаль совпадают</li>
+              </ul>
+            </article>
+            <article class="method-card">
+              <p class="method-card__kicker">Скорость</p>
+              <h3 class="method-card__title">Главная идея №4</h3>
+              <p class="method-card__text">
+                Долгоживущий процесс / кэш: что переиспользуется между запусками.
+              </p>
+              <ul class="method-card__list">
+                <li>первая итерация дороже (прогрев)</li>
+                <li>при сбоях — явный reset / stop</li>
+                <li>в CI — границы шаринга</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="callout">
+            Callout под сеткой: единый контракт для всех модулей / потребителей.
+          </div>
+        </section>
+
+        <!-- 05. PIPELINE + SVG + легенда — gradle #lifecycle -->
+        <section class="deck deck--fill" id="lifecycle">
+          <h2 class="section-title">Процесс и граф</h2>
+          <p class="section-lead">
+            Pipeline с пояснениями + компактный SVG: стрелки к граням, длинные подписи в две строки.
+          </p>
+
+          <div class="fill-stack">
+            <div class="pipeline" aria-label="Пример lifecycle">
+              <span class="pipeline__step">Init · подготовка</span>
+              <span class="pipeline__arrow" aria-hidden="true">→</span>
+              <span class="pipeline__step">Configure · структура</span>
+              <span class="pipeline__arrow" aria-hidden="true">→</span>
+              <span class="pipeline__step">Execute · работа</span>
+              <span class="pipeline__arrow" aria-hidden="true">→</span>
+              <span class="pipeline__step">Result · артефакты</span>
+            </div>
+
+            <div class="graph">
+              <svg viewBox="0 0 480 170" role="img" aria-label="Пример DAG: A → B → C → D и ветка B → E">
+                <defs>
+                  <marker id="arrTpl" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+                    <path d="M0,0 L6,2.5 L0,5 Z" fill="#476bf0" />
+                  </marker>
+                </defs>
+
+                <path class="graph__edge" d="M116,38 L150,38" marker-end="url(#arrTpl)" />
+                <path class="graph__edge" d="M250,38 L286,38" marker-end="url(#arrTpl)" />
+                <path class="graph__edge" d="M350,38 L386,38" marker-end="url(#arrTpl)" />
+                <path class="graph__edge" d="M200,60 L200,100" marker-end="url(#arrTpl)" />
+
+                <g class="graph__node" transform="translate(16,16)">
+                  <rect width="100" height="44" rx="5" />
+                  <text text-anchor="middle">
+                    <tspan x="50" y="18">settings</tspan>
+                    <tspan x="50" y="34">configure</tspan>
+                  </text>
+                </g>
+                <g class="graph__node" transform="translate(150,16)">
+                  <rect width="100" height="44" rx="5" />
+                  <text text-anchor="middle">
+                    <tspan x="50" y="18">compile</tspan>
+                    <tspan x="50" y="34">Kotlin</tspan>
+                  </text>
+                </g>
+                <g class="graph__node" transform="translate(286,20)">
+                  <rect width="64" height="36" rx="5" />
+                  <text x="32" y="23" text-anchor="middle">test</text>
+                </g>
+                <g class="graph__node" transform="translate(386,20)">
+                  <rect width="64" height="36" rx="5" />
+                  <text x="32" y="23" text-anchor="middle">check</text>
+                </g>
+                <g class="graph__node" transform="translate(150,100)">
+                  <rect width="100" height="36" rx="5" />
+                  <text x="50" y="23" text-anchor="middle">jar</text>
+                </g>
+              </svg>
+              <div class="graph__legend">
+                <span class="graph__legend-item"><i class="graph__swatch graph__swatch--solid"></i> dependsOn / implicit</span>
+                <span class="graph__legend-item"><i class="graph__swatch graph__swatch--solid"></i> ветка jar после compile</span>
+              </div>
+            </div>
+
+            <ul class="history-points">
+              <li>рёбра заканчиваются на гранях узлов — не в пустоте;</li>
+              <li>длинные имена — две строки (<code>tspan</code>), узлы компактные;</li>
+              <li>легенда + факты под схемой закрывают нижнюю половину слайда.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 06. FACTS + RULE — gradle #caches -->
+        <section class="deck deck--fill" id="facts-rule">
+          <h2 class="section-title">Метрики и правило</h2>
+          <p class="section-lead">
+            Плотные fact-плашки + один <code>.rule</code> того же тезиса (скорость / контракт).
+          </p>
+
+          <div class="fill-stack">
+            <div class="fact-grid">
+              <div class="fact">
+                <span class="fact__label">Флаг A</span>
+                <span class="fact__value">true</span>
+                <span class="fact__note">
+                  Что кэшируется / ускоряется. Зачем на multi-project.
+                  Ключ в конфиге: <code>org.example.a=true</code>.
+                </span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">Флаг B</span>
+                <span class="fact__value">true</span>
+                <span class="fact__note">
+                  Другой уровень кэша (не путать с A).
+                  Локально и опционально между агентами.
+                </span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">Parallel</span>
+                <span class="fact__value">true</span>
+                <span class="fact__note">
+                  Независимые узлы графа / модули бегут параллельно.
+                  Выигрыш растёт с числом модулей.
+                </span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">JVM</span>
+                <span class="fact__value">-Xmx4g</span>
+                <span class="fact__note">
+                  Запас heap под тяжёлые задачи (docs, plugin, тесты).
+                </span>
+              </div>
+            </div>
+
+            <article class="rule">
+              <h3 class="rule__name">Configuration Cache first</h3>
+              <p class="rule__because">
+                На multi-project фаза Configure часто дороже полезной работы Execute.
+              </p>
+              <p class="rule__human">
+                Не читайте окружение «как попало» на configuration time без declaration.
+              </p>
+              <div class="rule__flow">
+                <span class="badge badge--ok">сериализуемая конфигурация</span>
+                <span class="badge badge--bad">скрытые side effects</span>
+              </div>
+              <details class="break">
+                <summary>Пример из репозитория</summary>
+                <div class="break-body">
+                  <pre class="code" data-highlight>org.gradle.configuration-cache=true
+org.gradle.caching=true
+org.gradle.parallel=true</pre>
+                </div>
+              </details>
+            </article>
+
+            <div class="callout callout--tight">
+              Оба механизма дополняют друг друга — не заменяют.
+            </div>
+          </div>
+        </section>
+
+        <!-- 07. DIAGRAM MAP — gradle #build-map / archunit #project (компактные узлы) -->
+        <section class="deck deck--fill" id="diagram">
+          <h2 class="section-title">Карта модулей</h2>
+          <p class="section-lead">
+            Root сверху, модули рядом, shared-logic снизу; solid / dashed в легенде.
+          </p>
+
+          <div class="fill-stack">
+            <div class="graph graph--fill">
+              <svg viewBox="0 0 720 230" role="img" aria-label="Пример: root → модули; build-logic → conventions">
+                <defs>
+                  <marker id="arrMapTpl" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                    <path d="M0,0 L7,3 L0,6 Z" fill="#476bf0" />
+                  </marker>
+                  <marker id="arrMapTplGray" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                    <path d="M0,0 L7,3 L0,6 Z" fill="#8b95a8" />
+                  </marker>
+                </defs>
+
+                <!-- solid: root bottom-center → module top-centers -->
+                <path class="graph__edge" d="M360,52 L64,90" marker-end="url(#arrMapTpl)" />
+                <path class="graph__edge" d="M360,52 L212,90" marker-end="url(#arrMapTpl)" />
+                <path class="graph__edge" d="M360,52 L360,90" marker-end="url(#arrMapTpl)" />
+                <path class="graph__edge" d="M360,52 L508,90" marker-end="url(#arrMapTpl)" />
+                <path class="graph__edge" d="M360,52 L656,90" marker-end="url(#arrMapTpl)" />
+
+                <!-- dashed: build-logic top-center → module bottom-centers -->
+                <path class="graph__edge graph__edge--dashed" d="M360,175 L64,126" marker-end="url(#arrMapTplGray)" />
+                <path class="graph__edge graph__edge--dashed" d="M360,175 L212,126" marker-end="url(#arrMapTplGray)" />
+                <path class="graph__edge graph__edge--dashed" d="M360,175 L360,126" marker-end="url(#arrMapTplGray)" />
+                <path class="graph__edge graph__edge--dashed" d="M360,175 L508,126" marker-end="url(#arrMapTplGray)" />
+                <path class="graph__edge graph__edge--dashed" d="M360,175 L656,126" marker-end="url(#arrMapTplGray)" />
+
+                <g class="graph__node" transform="translate(300,16)">
+                  <rect width="120" height="36" rx="5" />
+                  <text x="60" y="23" text-anchor="middle">ru-bizgen</text>
+                </g>
+                <g class="graph__node" transform="translate(20,90)">
+                  <rect width="88" height="36" rx="5" />
+                  <text x="44" y="23" text-anchor="middle">core</text>
+                </g>
+                <g class="graph__node" transform="translate(168,90)">
+                  <rect width="88" height="36" rx="5" />
+                  <text x="44" y="23" text-anchor="middle">plugin</text>
+                </g>
+                <g class="graph__node" transform="translate(316,90)">
+                  <rect width="88" height="36" rx="5" />
+                  <text x="44" y="23" text-anchor="middle">mcp</text>
+                </g>
+                <g class="graph__node" transform="translate(464,90)">
+                  <rect width="88" height="36" rx="5" />
+                  <text x="44" y="23" text-anchor="middle">perf</text>
+                </g>
+                <g class="graph__node" transform="translate(612,90)">
+                  <rect width="88" height="36" rx="5" />
+                  <text x="44" y="23" text-anchor="middle">archunit</text>
+                </g>
+                <g class="graph__node" transform="translate(300,175)">
+                  <rect width="120" height="36" rx="5" />
+                  <text x="60" y="23" text-anchor="middle">build-logic</text>
+                </g>
+              </svg>
+              <div class="graph__legend">
+                <span class="graph__legend-item"><i class="graph__swatch graph__swatch--solid"></i> include(…)</span>
+                <span class="graph__legend-item"><i class="graph__swatch graph__swatch--dash"></i> includeBuild → conventions</span>
+              </div>
+            </div>
+
+            <ul class="history-points">
+              <li>узлы ~88×36 / 120×36 — стрелки читаются лучше;</li>
+              <li>solid и dashed несут разный смысл (легенда обязательна);</li>
+              <li>факты под схемой: что нельзя потерять при сжатии текста;</li>
+              <li><code>viewBox</code> с запасом снизу — нижний узел не обрезается.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 08. CODE + пояснения + вторичный список — gradle #kotlin-convention / #version-catalog -->
+        <section class="deck deck--fill" id="code">
+          <h2 class="section-title">Технический пример</h2>
+          <p class="section-lead">
+            Код доказывает тезис; ниже — пояснения и блок «ещё в проекте».
+          </p>
+
+          <pre class="code" data-highlight>plugins {
+  id("org.jetbrains.kotlin.jvm")
+}
+
+val libs = extensions.getByType&lt;VersionCatalogsExtension&gt;().named("libs")
+
+kotlin {
+  jvmToolchain(libs.findVersion("java").get().requiredVersion.toInt())
+}</pre>
+
+          <ul>
+            <li>модулям не нужно дублировать toolchain локально;</li>
+            <li>версия JDK — из version catalog (<code>java = "21"</code>);</li>
+            <li>подключение: <code>id("ru-bizgen.kotlin-convention")</code>.</li>
+          </ul>
+
+          <div class="callout">
+            <strong>Ещё conventions в проекте.</strong>
+            <ul class="history-points">
+              <li><code>testing-convention</code> — JUnit Platform и теги дорогих тестов;</li>
+              <li><code>dokka-convention</code> — HTML модуля и source links;</li>
+              <li><code>kover-convention</code> — покрытие onCheck;</li>
+              <li><code>dokka-root-convention</code> — Guides / sync презентаций.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 09. RULE — archunit #boundaries / gradle caches rule -->
+        <section class="deck deck--fill" id="rule">
+          <h2 class="section-title">Правило / контракт</h2>
+          <p class="section-lead">
+            Одно правило на слайд: имя, because, human, flow, опциональный details.
+          </p>
+
+          <article class="rule">
+            <h3 class="rule__name">coreMustNotDependOnAdapters</h3>
+            <p class="rule__because">
+              «ядро не должно зависеть от адаптеров (plugin, mcp, perf)»
+            </p>
+            <p class="rule__human">
+              <code>core</code> остаётся переиспользуемым без знания об IDE и HTTP.
+            </p>
+            <div class="rule__flow">
+              <span class="badge badge--ok">core → stdlib / свои пакеты</span>
+              <span class="badge badge--bad">core → plugin / mcp / perf</span>
+            </div>
+            <details class="break">
+              <summary>Пример проверки</summary>
+              <div class="break-body">
+                <pre class="code" data-highlight>@ArchTest
+val coreMustNotDependOnAdapters =
+  noClasses().that().resideInAPackage("..core..")
+    .should().dependOnClassesThat()
+    .resideInAnyPackage("..plugin..", "..mcp..", "..perf..")</pre>
+              </div>
+            </details>
+          </article>
+        </section>
+
+        <!-- 10. DUO двух плотных списков — gradle #commands-rules -->
+        <section class="deck deck--fill" id="duo-lists">
+          <h2 class="section-title">Команды и правила</h2>
+          <p class="section-lead">
+            Два чеклиста рядом лучше, чем два полупустых слайда.
+          </p>
+
+          <div class="duo-grid">
+            <article class="duo-card">
+              <header class="duo-card__head">
+                <p class="method-card__kicker">Локаль · CI</p>
+                <h3 class="method-card__title">Команды</h3>
+              </header>
+              <ul class="duo-card__list">
+                <li><code>./gradlew check</code> — быстрые проверки;</li>
+                <li><code>./gradlew buildPlugin</code> — артефакт плагина;</li>
+                <li><code>./gradlew dokkaGenerateHtml</code> — docs + Guides;</li>
+                <li><code>-PrunDistanceFinderTests</code> — полный прогон;</li>
+                <li><code>-PrunIntegrationTests</code> — UI integration;</li>
+                <li>push/PR CI — короткий feedback без тяжёлых тегов.</li>
+              </ul>
+            </article>
+            <article class="duo-card">
+              <header class="duo-card__head">
+                <p class="method-card__kicker">Контракт</p>
+                <h3 class="method-card__title">Правила</h3>
+              </header>
+              <ul class="duo-card__list">
+                <li>версии только в catalog;</li>
+                <li>общая логика в conventions;</li>
+                <li>только Wrapper локально и в CI;</li>
+                <li>не отключать кэши без замера;</li>
+                <li>тяжёлые теги — явными флагами;</li>
+                <li>configuration time без скрытых side effects.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="callout callout--cyan">
+            Тяжёлые наборы включайте явно — быстрый PR-check важнее полного прогона на каждый коммит.
+          </div>
+        </section>
+
+        <!-- 11. CHECKLIST — archunit #howto -->
+        <section class="deck deck--fill" id="checklist">
+          <h2 class="section-title">Следующие шаги</h2>
+          <p class="section-lead">
+            Действия с глагола; 5–7 пунктов + финальный callout.
+          </p>
+
+          <ol class="checklist">
+            <li>Скопировать нужные layout-секции из этого шаблона.</li>
+            <li>Заполнить <code>outline.md</code> по верхней границе бюджетов.</li>
+            <li>Смержить жидкие слайды (см. <code>DENSITY.md</code>).</li>
+            <li>Сгенерировать HTML и пройтись глазами на desktop.</li>
+            <li>Проверить SVG: узлы, стрелки, отсутствие вылезающего текста.</li>
+            <li>Включить Guides: <code>guides: true</code> после ревью.</li>
+          </ol>
+
+          <div class="callout">
+            Сборка презентации — тоже API: плотные слайды и стабильные пути лучше сырого объёма.
+          </div>
+        </section>
+
+        <!-- 12. TAKEAWAYS + дальше — gradle #takeaways -->
+        <section class="deck deck--fill" id="takeaways">
+          <h2 class="section-title">Итог и дальше</h2>
+          <p class="section-lead">
+            Четыре опоры + развёрнутый блок ссылок / next steps.
+          </p>
+
+          <div class="method-grid method-grid--2x2">
+            <article class="method-card">
+              <p class="method-card__kicker">Модель</p>
+              <h3 class="method-card__title">Тезис A</h3>
+              <p class="method-card__text">Короткое напоминание главной модели.</p>
+              <ul class="method-card__list">
+                <li>деталь 1</li>
+                <li>деталь 2</li>
+              </ul>
+            </article>
+            <article class="method-card">
+              <p class="method-card__kicker">Скорость</p>
+              <h3 class="method-card__title">Тезис B</h3>
+              <p class="method-card__text">Что уже включено и что беречь.</p>
+              <ul class="method-card__list">
+                <li>деталь 1</li>
+                <li>деталь 2</li>
+              </ul>
+            </article>
+            <article class="method-card">
+              <p class="method-card__kicker">Структура</p>
+              <h3 class="method-card__title">Тезис C</h3>
+              <p class="method-card__text">Как устроены модули / слои.</p>
+              <ul class="method-card__list">
+                <li>деталь 1</li>
+                <li>деталь 2</li>
+              </ul>
+            </article>
+            <article class="method-card">
+              <p class="method-card__kicker">Контракт</p>
+              <h3 class="method-card__title">Тезис D</h3>
+              <p class="method-card__text">Где единое место правды.</p>
+              <ul class="method-card__list">
+                <li>деталь 1</li>
+                <li>деталь 2</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="callout">
+            <strong>Дальше.</strong>
+            <ul class="history-points">
+              <li>официальные docs темы;</li>
+              <li>соседние Guides в Dokka (ArchUnit, Gradle, …);</li>
+              <li>следующая отдельная презентация, если тема вынесена за скоуп.</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <p class="kbd-bar" aria-hidden="true"><kbd>←</kbd> <kbd>→</kbd> · <kbd>J</kbd> <kbd>K</kbd></p>
+  <!-- Презентация в docs/presentations/<slug>/ → ../../presentation-template/app.js -->
+  <script src="app.js"></script>
+</body>
+</html>

@@ -32,7 +32,8 @@ Composite build (`includeBuild("build-logic")` в `settings.gradle.kts`), сод
 |---|---|
 | `ru-bizgen.kotlin-convention` | `org.jetbrains.kotlin.jvm` + `jvmToolchain(21)` из version catalog |
 | `ru-bizgen.testing-convention` | JUnit Platform, управление тегом `distanceFinderTests` (`-PrunDistanceFinderTests`) |
-| `ru-bizgen.dokka-convention` | Dokka HTML-документация |
+| `ru-bizgen.dokka-convention` | Dokka HTML-документация (модули) |
+| `ru-bizgen.dokka-root-convention` | Корневая Dokka: агрегация, Guides/презентации, Kover copy |
 | `ru-bizgen.kover-convention` | Kover покрытие кода |
 
 Применяются в модулях через `id("ru-bizgen.<name>-convention")`.
@@ -141,7 +142,7 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty*
 - `CoreLayerArchTest` — слои `utils` ← `generator` ← `generator_info`
 - `BenchmarkNamingArchTest` — 1:1 Generator↔`*Benchmark` + count == `GeneratorInfoProvider` (замена бывшего `ImplementedBenchCheckFormat`)
 - JMH-классы через `jmhApiByConf`; plugin-правила (`plugin ↛ mcp/Ktor`) — в `PluginBoundaryArchTest` внутри `ru-bizgen-plugin` (чтобы arch-модуль не тянул IntelliJ Platform)
-- Интерактивная документация: [`docs/archunit/index.html`](docs/archunit/index.html)
+- Интерактивная документация: [`docs/presentations/archunit/index.html`](docs/presentations/archunit/index.html)
 
 ## 3. Тестирование
 

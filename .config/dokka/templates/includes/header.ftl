@@ -16,20 +16,20 @@
             <#-- This can be handled by the versioning plugin -->
             <@version/>
         </div>
-        <#-- Доп. разделы после версии: hub Guides + быстрый переход к coverage. -->
+        <#-- Guides: автосписок презентаций из images/presentations/guides.json -->
         <@template_cmd name="pathToRoot">
             <div class="bizgen-extras">
                 <details class="bizgen-docs">
-                    <summary class="bizgen-docs__toggle" title="Дополнительная документация">
+                    <summary class="bizgen-docs__toggle" title="Презентации">
                         <span class="bizgen-docs__toggle-text">Guides</span>
                         <span class="bizgen-docs__chevron" aria-hidden="true"></span>
                     </summary>
-                    <div class="bizgen-docs__panel" role="menu">
-                        <p class="bizgen-docs__caption">Документация</p>
-                        <a class="bizgen-docs__item" href="${pathToRoot}images/archunit/index.html" role="menuitem">
-                            <span class="bizgen-docs__item-name">ArchUnit</span>
-                            <span class="bizgen-docs__item-hint">Исполняемая архитектура</span>
-                        </a>
+                    <div class="bizgen-docs__panel" role="menu"
+                         id="bizgen-guides-panel"
+                         data-path-to-root="${pathToRoot}"
+                         data-guides-url="${pathToRoot}images/presentations/guides.json">
+                        <p class="bizgen-docs__caption">Презентации</p>
+                        <div id="bizgen-guides-list"></div>
                     </div>
                 </details>
                 <a class="bizgen-docs__toggle bizgen-docs__toggle_link"
@@ -60,6 +60,55 @@
                     }
                 });
             });
+
+            var panel = document.getElementById("bizgen-guides-panel");
+            var list = document.getElementById("bizgen-guides-list");
+            if (!panel || !list) {
+                return;
+            }
+
+            var pathToRoot = panel.getAttribute("data-path-to-root") || "";
+            var guidesUrl = panel.getAttribute("data-guides-url");
+            if (!guidesUrl) {
+                return;
+            }
+
+            fetch(guidesUrl)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error("guides.json HTTP " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(function (guides) {
+                    if (!Array.isArray(guides) || guides.length === 0) {
+                        list.innerHTML = "<p class=\"bizgen-docs__item-hint\" style=\"padding:8px 12px\">Пока нет презентаций</p>";
+                        return;
+                    }
+                    guides.forEach(function (guide) {
+                        var link = document.createElement("a");
+                        link.className = "bizgen-docs__item";
+                        link.setAttribute("role", "menuitem");
+                        link.href = pathToRoot + (guide.href || "");
+
+                        var name = document.createElement("span");
+                        name.className = "bizgen-docs__item-name";
+                        name.textContent = guide.name || guide.slug || "Guide";
+                        link.appendChild(name);
+
+                        if (guide.hint) {
+                            var hint = document.createElement("span");
+                            hint.className = "bizgen-docs__item-hint";
+                            hint.textContent = guide.hint;
+                            link.appendChild(hint);
+                        }
+
+                        list.appendChild(link);
+                    });
+                })
+                .catch(function () {
+                    list.innerHTML = "<p class=\"bizgen-docs__item-hint\" style=\"padding:8px 12px\">Не удалось загрузить Guides</p>";
+                });
         })();
     </script>
 </#macro>
