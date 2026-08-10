@@ -19,7 +19,7 @@ ktor = "3.5.1" # https://mvnrepository.com/artifact/io.ktor/ktor-server-netty
 slf4j = "2.0.17" # https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
 kodein-di = "7.33.0" # https://mvnrepository.com/artifact/org.kodein.di/kodein-di-jvm — DI для Starter framework (integration tests)
 kotlinx-coroutines = "1.11.0" # https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm — требуется Starter framework
-archunit = "1.4.2" # https://mvnrepository.com/artifact/com.tngtech.archunit/archunit-junit5
+archunit = "1.5.0" # https://mvnrepository.com/artifact/com.tngtech.archunit/archunit-junit5
 
 [libraries]
 intellij-junit = { group = "junit", name = "junit", version.ref = "intellijJunit" }
