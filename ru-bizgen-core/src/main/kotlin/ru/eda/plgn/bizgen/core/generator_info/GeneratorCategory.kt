@@ -5,7 +5,7 @@ package ru.eda.plgn.bizgen.core.generator_info
  *
  * Определяет логическую группу генераторов тестовых данных.
  *
- * Используется для группировки в [GeneratorInfoProvider] и формирования категорийных MCP-инструментов (`generate_<category>`).
+ * Используется для группировки в [GeneratorInfoProvider] и формирования категорийных MCP-инструментов (`ru-bizgen_generator_<category>`).
  *
  * @property title человекочитаемое имя категории для `title` MCP-тулов (например "Технические данные")
  * @author Dmitry_Emelyanenko

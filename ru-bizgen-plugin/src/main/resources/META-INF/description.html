@@ -15,11 +15,12 @@ Ru BizGen is a generator of Russian-like test data for fast development.<br/>
   <ul>
     <li>🚀 <strong>Быстрая генерация</strong> реалистичных тестовых данных</li>
     <li>⌨️ <strong>Горячие клавиши</strong> (по умолчанию Ctrl+Alt+E, можно переназначить)</li>
-    <li>🎛️ <strong>Гибкие настройки</strong> генераторов (порядок, включение/отключение)</li>
+    <li>🎛️ <strong>Гибкие настройки</strong> генераторов (порядок, включение/отключение, переименование)</li>
+    <li>💬 <strong>Символ обрамления</strong> при вставке в редактор (двойные кавычки, одинарные, без обрамления)</li>
     <li>🔔 <strong>Настраиваемые уведомления</strong> о срабатывании генераторов</li>
     <li>👀 <strong>Предпросмотр результата</strong> перед вставкой</li>
     <li>📋 <strong>Интеграция с Alt+Ins</strong> — доступен в стандартном диалоге генерации кода IntelliJ</li>
-    <li>🔄 <strong>Без сброса настроек генераторов при обновлениях</strong> — порядок и признак активности генераторов сохраняются
+    <li>🔄 <strong>Без сброса настроек генераторов при обновлениях</strong> — порядок, активность и пользовательские имена генераторов сохраняются
       автоматически
     </li>
   </ul>
@@ -67,6 +68,7 @@ Ru BizGen is a generator of Russian-like test data for fast development.<br/>
       <ul>
         <li>✔️ Включение и отключение генераторов</li>
         <li>⬆️⬇️ Изменение порядка генераторов</li>
+        <li>✏️ Переименование генераторов</li>
         <li>🔄 Сброс к настройкам по умолчанию</li>
       </ul>
     </div>
@@ -75,6 +77,7 @@ Ru BizGen is a generator of Russian-like test data for fast development.<br/>
       <ul>
         <li>🔔 Выбор способа уведомления</li>
         <li>👀 Предпросмотр результата генерации</li>
+        <li>💬 Символ обрамления при вставке</li>
         <li>📋 Быстрое тестирование генераторов</li>
       </ul>
     </div>
@@ -101,7 +104,7 @@ Ru BizGen is a generator of Russian-like test data for fast development.<br/>
 
   <h4>Возможности MCP-сервера:</h4>
   <ul>
-    <li>🔧 <strong>5 категорийных инструментов</strong> — <code>generate_&lt;category&gt;</code> с параметром <code>type</code> (enum) и
+    <li>🔧 <strong>5 категорийных инструментов</strong> — <code>ru-bizgen_generator_&lt;category&gt;</code> с параметром <code>type</code> (enum) и
       <code>count</code> для пакетной генерации</li>
     <li>🌐 <strong>Streamable HTTP</strong> транспорт на базе Ktor/Netty</li>
     <li>🐳 <strong>Docker-ready</strong> — multi-stage сборка, порт 8081</li>

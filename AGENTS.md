@@ -8,7 +8,7 @@
 - **Язык:** Kotlin 2.4.0, JVM 21
 - **Сборка:** Gradle (Kotlin DSL), Version Catalog (`libs.versions.toml`), composite build (`build-logic`)
 - **Репозиторий:** [GitHub](https://github.com/DmitryEm506/Ru-BizGen), ветки `main`/`dev`
-- **Статистика кода:** 170 Kotlin-файлов (~4 671 строк main, ~2 394 строк test, ~352 строк JMH)
+- **Статистика кода:** 204 Kotlin-файла (~5 451 строк main, ~3 850 unit-test, ~1 110 integration, ~382 JMH)
 
 ## 2. Архитектура модулей
 
@@ -26,7 +26,7 @@ ru-bizgen/
 
 ### 2.0. `build-logic` — convention plugins
 
-Composite build (`includeBuild("build-logic")` в `settings.gradle.kts`), содержит 4 convention plugin'а в `src/main/kotlin/`:
+Composite build (`includeBuild("build-logic")` в `settings.gradle.kts`), содержит 5 convention plugin'ов в `src/main/kotlin/`:
 
 | Plugin | Назначение |
 |---|---|
@@ -62,14 +62,15 @@ Composite build (`includeBuild("build-logic")` в `settings.gradle.kts`), сод
 | Персональные | ФИО (полное/сокращённое/инициалы), карта, телефон (формат/цифры), СНИЛС, паспорт РФ (компактный/с пробелом), загранпаспорт РФ (номер/MRZ) |
 
 **Утилиты:**
-- `LuhnAlgorithm` (`LuhnAlgorithm.kt:10`) — алгоритм Луна для валидации/расчёта контрольных цифр (карты, счета)
-- `StringExt.withEscape()` (`StringExt.kt:10`) — обрамление строки в кавычки
+- `LuhnAlgorithm` (`LuhnAlgorithm.kt`) — алгоритм Луна для валидации/расчёта контрольных цифр (карты)
+- `AccountKeyAlgorithm` (`AccountKeyAlgorithm.kt`) — контрольный ключ лицевого счёта по Положению ЦБ РФ № 515 (счета RUB/CNY, корр. счёт)
+- `StringExt.withEscape()` (`StringExt.kt`) — обрамление строки в кавычки
 
 **Алгоритмическая корректность:** Генераторы используют реальные контрольные суммы (ИНН — веса P10/P11/P12, IBAN — mod-97, СНИЛС — контрольное число, карты — Луна). Это гарантирует прохождение валидации в реальных системах.
 
 ### 2.2. `ru-bizgen-plugin` — IntelliJ IDEA плагин
 
-**Совместимость:** IntelliJ IDEA 2024.2+ (sinceBuild=242, untilBuild=null), IntelliJ Platform Gradle Plugin 2.17.0.
+**Совместимость:** IntelliJ IDEA 2024.2+ (sinceBuild=242, untilBuild=null), IntelliJ Platform Gradle Plugin 2.18.1.
 
 **Сборка:** Convention plugins из `build-logic` (`kotlin-convention`, `testing-convention`, `dokka-convention`, `kover-convention`) + `changelog` и `gradleIntelliJPlugin` plugins. Версия IDEA выводится из build number: `1.12.261` → buildNumber `261` → `2026.1`.
 
@@ -81,11 +82,12 @@ Composite build (`includeBuild("build-logic")` в `settings.gradle.kts`), сод
 |---|---|---|---|
 | `GeneratorActionProvider` | `GeneratorActionProvider` | `GeneratorActionProviderImpl` | Конвертация `GeneratorInfo` → `BaseGeneratorAction` |
 | `GeneratorActionService` | `GeneratorActionService` | `GeneratorActionServiceImpl` | Фильтрация активных действий по настройкам |
-| `AppActionSettingsService` | `AppActionSettingsService` | `AppActionSettingsServiceImpl` | CRUD настроек (активность, порядок, сброс) |
+| `AppActionSettingsService` | `AppActionSettingsService` | `AppActionSettingsServiceImpl` | CRUD настроек (активность, порядок, сброс, переименование) |
 | `BizGenAppSettingsRepository` | `BizGenAppSettingsRepository` | `BizGenAppSettingsPersistent` | PersistentStateComponent (XML) |
 | `BizGenAppSettingsSoftUpdater` | `BizGenAppSettingsSoftUpdater` (fun interface) | `BizGenAppSettingsSoftUpdaterImpl` | Мягкая миграция настроек при обновлении плагина |
 | `NotificationService` | `NotificationService` | `NotificationServiceImpl` | 3 режима: BELL/HINT/DISABLE |
 | `BizGenClipboardSettingsService` | `BizGenClipboardSettingsService` | `BizGenClipboardSettingsServiceImpl` | Управление копированием в буфер |
+| `EscapeCharSettingsService` | `EscapeCharSettingsService` | `EscapeCharSettingsServiceImpl` | Символ обрамления при вставке: `"`, `'`, или пусто |
 
 **Action-система:**
 - `BizGenMainAction` (`BizGenMainAction.kt:19`) — главное действие, показывает popup со списком генераторов (Ctrl+Alt+E, Alt+Ins, Shift+Shift)
@@ -93,29 +95,29 @@ Composite build (`includeBuild("build-logic")` в `settings.gradle.kts`), сод
 - `GeneratorActionProviderImpl` (`GeneratorActionProvider.kt:37`) — конвертация `GeneratorInfo` → анонимный `BaseGeneratorAction`
 
 **Настройки:**
-- `BizGenAppSettings` (`BizGenAppSettings.kt:12`) — конфиг: notificationMode, actualActions (список с id/position/active), insToClipboard
-- `BizGenAppSettingsPersistent` (`BizGenAppSettingsPersistent.kt:25`) — `@State` storage в `bizgen_plugin_settings.xml`, вызывает мягкую миграцию при `loadState()`
-- `BizGenAppSettingsSoftUpdater` (`BizGenAppSettingsSoftUpdater.kt:31`) — удаляет устаревшие генераторы, обновляет названия, добавляет новые в конец, пересчитывает позиции
-- UI: `AppSettingsConfigurable` → `AppSettingsComponent` (Settings → Tools → Ru BizGen)
+- `BizGenAppSettings` (`BizGenAppSettings.kt`) — конфиг: notificationMode, actualActions (id/position/active/customName), insToClipboard, escapeChar
+- `BizGenAppSettingsPersistent` (`BizGenAppSettingsPersistent.kt`) — `@State` storage в `bizgen_plugin_settings.xml`, вызывает мягкую миграцию при `loadState()`
+- `BizGenAppSettingsSoftUpdater` (`BizGenAppSettingsSoftUpdater.kt`) — удаляет устаревшие генераторы, обновляет названия, сохраняет `customName`, добавляет новые в конец, пересчитывает позиции
+- UI: `AppSettingsConfigurable` → `AppSettingsComponent` (Settings → Tools → Ru BizGen); переименование через `AppActionsSettingComponent`
 
 **Подпись и публикация:**
 - Plugin signing через env vars: `CERTIFICATE_CHAIN`, `PRIVATE_KEY`, `PRIVATE_KEY_PASSWORD`
 - Publishing через env var: `PUBLISH_TOKEN`
 - Plugin verification: каналы RELEASE, RC, PATCH
 
-**Kover:** пакет `ru.eda.plgn.plugin.bizgen.ui` исключён из покрытия.
+**Kover:** в `ru-bizgen-plugin/build.gradle.kts` из покрытия исключён пакет `ru.eda.plgn.plugin.bizgen.ui`. Фактический UI-пакет — `ru.eda.plgn.bizgen.plugin.ui` (исключение может не срабатывать).
 
 ### 2.3. `ru-bizgen-mcp` — MCP-сервер
 
-MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty**, транспорт — Streamable HTTP.
+MCP-сервер на базе **MCP Kotlin SDK 0.15.0** + **Ktor 3.5.1 / Netty**, транспорт — Streamable HTTP.
 
 **Структура:**
-- `McpServerApp.kt` — точка входа: парсинг `--host`/`--port`, фабрика `Server`, регистрация 5 категорийных тулов, старт Ktor/Netty + health endpoint
+- `McpServerApp.kt` — точка входа: парсинг `--host`/`--port`, фабрика `Server`, регистрация 5 категорийных тулов `ru-bizgen_generator_<category>`, старт Ktor/Netty + health endpoint `GET /health` (`{"status":"UP"}`)
 - `ToolDispatcher.kt` — диспетчер категорийных тулов: lookup `GeneratorInfo` по `(category, type)`, batch-генерация с dedup через `Set<String>` + bounded retry, `structuredContent` для `count > 1`, bugfix `CancellationException` (re-throw)
 - `TypeKeyResolver.kt` — резолвер type-key: извлекает префикс из `GeneratorInfo.id` (формат `<TypeName>_<UUID>`), CamelCase → snake_case, lowercase (например `InnLegal_...` → `inn_legal`)
 
 **5 категорийных тулов** (вместо 31 плоского):
-- Каждый тул `generate_<category>` принимает `type: enum` (генератор внутри категории) + опциональный `count: int` (1..1000)
+- Каждый тул `ru-bizgen_generator_<category>` принимает `type: enum` (генератор внутри категории) + опциональный `count: int` (1..1000)
 - Enum-описания собираются из `GeneratorInfo.detailedDescription` + `example` — без хардкода
 - `ToolAnnotations(readOnlyHint=true, idempotentHint=true, destructiveHint=false, openWorldHint=false)` на каждом туле
 
@@ -130,9 +132,9 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty*
 
 - `BaseGeneratorBenchmark<T>` (`BaseGeneratorBenchmark.kt:59`) — базовый класс: `@State(Benchmark)`, `AverageTime` в µs, 5 warmup × 1s, 10 measurement × 2s, 2 fork, `-Xms2g -Xmx2g -XX:+UseG1GC`, profilers: gc, stack
 - `StrGeneratorBenchmark` — обёртка для строковых генераторов
-- 26 реализаций бенчмарков (по одной на каждый генератор)
+- 31 реализация бенчмарков (по одной на каждый генератор)
 - `JmhMarkdownReport.kt` — генерация markdown-отчёта из JSON-результата JMH
-- Результаты в README: все генераторы в диапазоне 0.05–3.75 µs/оп
+- Результаты в README: все генераторы в диапазоне ~0.06–4.0 µs/оп (последний прогон таблицы — JMH 1.36; в каталоге сейчас JMH 1.37)
 
 ### 2.5. `ru-bizgen-archunit` — архитектурные правила (ArchUnit)
 
@@ -146,7 +148,7 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty*
 
 ## 3. Тестирование
 
-**Фреймворк:** JUnit Jupiter 6.1.0 + Kotest assertions 6.2.1 + MockK 1.14.9 + ArchUnit 1.4.2
+**Фреймворк:** JUnit Jupiter 6.1.0 + Kotest assertions 6.2.1 + MockK 1.14.9 + ArchUnit 1.5.0
 
 **Структура тестов core:**
 - `BaseTest` — базовый класс: `tests()` для dynamic tests, `shouldBeUnique()`
@@ -156,14 +158,15 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty*
 
 **ArchUnit:** `:ru-bizgen-archunit` + `PluginBoundaryArchTest` в plugin
 
-**MCP-тесты:** `ToolExecutorTest` (успех/ошибка/все генераторы), `ToolNameResolverTest`
+**MCP-тесты:** `ToolDispatcherTest` (успех/ошибка/batch/все генераторы), `TypeKeyResolverTest`
 
-**Plugin unit-тесты:** `BaseIdeaTest`, тесты сервисов (DI, settings, notifications, actions, clipboard)
+**Plugin unit-тесты:** `BaseIdeaTest`, тесты сервисов (DI, settings, notifications, actions, clipboard, escape char, rename)
 
 **Plugin UI integration-тесты** (source set `integrationTest/`):
 - Фреймворк: **JetBrains IDE Starter + Driver SDK** (`TestFrameworkType.Starter`) — запуск реальной IDE, управление UI через Driver
-- DI: **Kodein DI 7.20.2** (требуется Starter framework) + `kotlinx-coroutines 1.10.1`
-- Структура: `base/_BaseIntegrationTest.kt` (базовый класс с `@EnabledIfSystemProperty(named="runIntegrationTests")`), тесты: `BizGenMainActionUITest`, `NotificationAndClipboardSettingsUITest`, `_RuBizGenSettingsUITest`, `_IdeaLifecycleUITest`
+- DI: **Kodein DI 7.33.0** (требуется Starter framework) + `kotlinx-coroutines 1.11.0`
+- Структура: `base/_BaseIntegrationTest.kt` (базовый класс с `@EnabledIfSystemProperty(named="runIntegrationTests")`), тесты: `BizGenMainActionUITest`, `NotificationAndClipboardSettingsUITest`, `_RuBizGenSettingsUITest`, `_IdeaLifecycleUITest`, `AppSettingsComponentUITest`, `AppActionsSettingUITest`, `ActionResultPreviewComponentUITest`
+- Структура: `base/_BaseIntegrationTest.kt` (базовый класс с `@EnabledIfSystemProperty(named="runIntegrationTests")`), тесты: `BizGenMainActionUITest`, `NotificationAndClipboardSettingsUITest`, `_RuBizGenSettingsUITest`, `_IdeaLifecycleUITest`, `AppSettingsComponentUITest`, `AppActionsSettingUITest`, `ActionResultPreviewComponentUITest`
 - UI helpers: `base/finder_ext/RadioButtonExt.kt`, `settings/ext/SettingsDialogUiComponentExt.kt`
 - Включение: `-PrunIntegrationTests` или `-DrunIntegrationTests=true` (отключены по умолчанию, не входят в `check`)
 - Запускаются ночью через `ci-integration.yml`
@@ -184,8 +187,8 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty*
 
 ## 5. Качество и документация
 
-- **Kover 0.9.9** — покрытие кода, HTML+XML отчёты, интегрировано в Dokka footer (пакет `ru.eda.plgn.plugin.bizgen.ui` исключён)
-- **Dokka 2.2.0** — HTML-документация с source links на GitHub, деплой на GitHub Pages
+- **Kover 0.9.9** — покрытие кода, HTML+XML отчёты, интегрировано в Dokka footer (в plugin исключён пакет `ru.eda.plgn.plugin.bizgen.ui`; фактический UI-пакет — `ru.eda.plgn.bizgen.plugin.ui`)
+- **Dokka 2.2.0** — HTML-документация с source links на GitHub, деплой на GitHub Pages; Guides: презентации ArchUnit и Gradle (`docs/presentations/`)
 - **KDoc** — все публичные API задокументированы на русском
 - **JetBrains Verified** — плагин верифицирован, плагин-подпись через environment variables
 
@@ -196,7 +199,7 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty*
 2. **Единый реестр генераторов** — `GeneratorInfoProvider` — единый source of truth для plugin и MCP
 3. **Алгоритмическая корректность** — все генераторы используют реальные контрольные суммы
 4. **Мягкая миграция настроек** — `BizGenAppSettingsSoftUpdater` сохраняет пользовательские настройки при обновлении
-5. **Стабильные MCP-имена** — `ToolNameResolver` извлекает имя из UUID-based id, а не из имени класса
+5. **Стабильные MCP type-key** — `TypeKeyResolver` извлекает ключ из UUID-based id, а не из имени класса; имена тулов — `ru-bizgen_generator_<category>`
 6. **Performance-first** — JMH-бенчмарки на каждый генератор + ArchUnit naming/полнота (`BenchmarkNamingArchTest`)
 7. **Convention plugins** — `build-logic` composite build централизует конфигурацию Kotlin/testing/Dokka/Kover
 8. **UI integration tests** — JetBrains IDE Starter + Driver SDK для end-to-end тестирования плагина в реальной IDE
@@ -214,19 +217,19 @@ MCP-сервер на базе **MCP Kotlin SDK 0.14.0** + **Ktor 3.5.1 / Netty*
 |---|---|
 | Kotlin | 2.4.0 |
 | JDK | 21 |
-| IntelliJ Platform Plugin | 2.17.0 |
-| MCP Kotlin SDK | 0.14.0 |
+| IntelliJ Platform Plugin | 2.18.1 |
+| MCP Kotlin SDK | 0.15.0 |
 | Ktor | 3.5.1 |
 | JMH | 1.37 |
 | JUnit Jupiter | 6.1.0 |
 | Kotest | 6.2.1 |
 | MockK | 1.14.9 |
-| ArchUnit | 1.4.2 |
+| ArchUnit | 1.5.0 |
 | Dokka | 2.2.0 |
 | Kover | 0.9.9 |
 | Changelog Plugin | 2.5.0 |
-| Kodein DI (integration tests) | 7.20.2 |
-| kotlinx-coroutines (integration tests) | 1.10.1 |
+| Kodein DI (integration tests) | 7.33.0 |
+| kotlinx-coroutines (integration tests) | 1.11.0 |
 | kotlinx-serialization-json | 1.11.0 |
 | slf4j-simple | 2.0.17 |
 | IDE Starter + Driver SDK | 261.22158.277 |

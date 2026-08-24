@@ -32,7 +32,7 @@ private val logger = LoggerFactory.getLogger("McpServerApp")
 /**
  * Точка входа в процесс запуска MCP сервера.
  *
- * Регистрирует 5 категорийных тулов (`generate_<category>`) вместо 31 плоского тулa. Каждый тул принимает `type: enum` (генератор внутри
+ * Регистрирует 5 категорийных тулов (`ru-bizgen_generator_<category>`) вместо 31 плоского тулa. Каждый тул принимает `type: enum` (генератор внутри
  * категории) и опциональный `count: int`.
  *
  * @properties args входные аргументы. Обрабатываются следующие аргументы: host, port
@@ -72,7 +72,7 @@ private fun createBizGenServer(version: String, infos: List<GeneratorInfo<*>>): 
   }
 }
 
-/** Регистрирует один категорийный тул `generate_<category>`. */
+/** Регистрирует один категорийный тул `ru-bizgen_generator_<category>`. */
 private fun Server.addCategoryTool(
   category: GeneratorCategory,
   categoryInfos: List<GeneratorInfo<*>>,
