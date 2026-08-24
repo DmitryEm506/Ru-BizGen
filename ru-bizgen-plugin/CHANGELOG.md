@@ -1,24 +1,25 @@
-## [1.12] - 11-07-2026
+## [1.12] - 24-08-2026
 
 ### 🚀 Новое
 
 - Реализован MCP-сервер (`ru-bizgen-mcp`) — генераторы Ru BizGen теперь доступны вне IntelliJ IDEA через
   [Model Context Protocol](https://modelcontextprotocol.io) (Streamable HTTP, Ktor/Netty). Поддерживается подключение
-  к MCP-клиентам (Cursor, Claude Desktop, Cline и др.). 5 категорийных инструментов `ru-bizgen_generate_<category>`
+  к MCP-клиентам (Cursor, Claude Desktop, Cline и др.). 5 категорийных инструментов `ru-bizgen_generator_<category>`
   с параметрами `type` (enum — генератор внутри категории) и `count` (до 1000 значений за вызов). Сервер запускается
   локально, данные генерируются без обращений к внешним сервисам
 - Добавлен `Dockerfile` и `docker-compose.yml` для контейнерного запуска MCP-сервера
-- Добавлен healthcheck-эндпоинт `GET /health` для мониторинга MCP-сервера
+- Добавлен healthcheck-эндпоинт `GET /health` (`{"status":"UP"}`) для мониторинга MCP-сервера
 - Добавлен генератор паспорта РФ (с пробелом) — серия с реальными кодами регионов ОКАТО + номер
 - Добавлен генератор паспорта РФ (без пробела) — компактный формат
 - Добавлен генератор загранпаспорта РФ (номер) — 9 цифр, серия 70/71
 - Добавлен генератор загранпаспорта РФ (MRZ) — машинно-читаемая зона по стандарту ICAO 9303 (TD-3)
-- Добавлен настраиваемый символ экранирования для вставки в редактор (двойная кавычка, одинарная кавычка, без экранирования)
+- Добавлен настраиваемый символ обрамления для вставки в редактор (двойная кавычка, одинарная кавычка, без обрамления)
 - Добавлена возможность переименования генераторов в настройках плагина
+- В Dokka Guides добавлены интерактивные презентации: ArchUnit и Gradle
 
 ### 🛠 Исправлено
 
-- **Расчётный счёт (RUB/CNY)** — контрольный разряд теперь рассчитывается по Положению ЦБ РФ № 515-П через
+- **Расчётный счёт (RUB/CNY)** — контрольный разряд теперь рассчитывается по Положению ЦБ РФ № 515 через
   `AccountKeyAlgorithm` (ранее был захардкожен как `0`)
 - **Корреспондентский счёт** — переход на единый алгоритм `AccountKeyAlgorithm` (ранее использовался упрощённый
   алгоритм с весовыми коэффициентами, не учитывающий РКЦ)
@@ -33,12 +34,19 @@
 
 - Обновлены зависимости:
     - Kotlin `2.3.0` → `2.4.0`
-    - IntelliJ Platform Gradle Plugin `2.16.0` → `2.17.0`
+    - IntelliJ Platform Gradle Plugin `2.16.0` → `2.18.1`
     - Kotest `6.1.2` → `6.2.1`
-- Добавлены MCP Kotlin SDK `0.14.0` и Ktor `3.5.1` (для модуля `ru-bizgen-mcp`)
-- Реализован composite build `build-logic` с convention plugins (kotlin, testing, dokka, kover)
-- Добавлены UI integration-тесты на базе JetBrains IDE Starter + Driver SDK (source set `integrationTest/`)
-- Добавлен CI workflow `ci-integration.yml` для ночных UI integration-тестов
+    - Kover `0.9.8` → `0.9.9`
+    - ArchUnit `1.5.0`
+    - Kodein DI `7.33.0`, kotlinx-coroutines `1.11.0` (integration-тесты)
+- Добавлены MCP Kotlin SDK `0.15.0` и Ktor `3.5.1` (для модуля `ru-bizgen-mcp`)
+- Реализован composite build `build-logic` с convention plugins (kotlin, testing, dokka, dokka-root, kover)
+- Добавлен модуль `ru-bizgen-archunit`: исполняемые границы модулей, слои core, naming Generator↔Benchmark
+  (вместо прежней валидации бенчмарков в perf)
+- Добавлены UI integration-тесты на базе JetBrains IDE Starter + Driver SDK (source set `integrationTest/`);
+  покрыты popup генераторов, настройки, уведомления, буфер, символ обрамления, переименование и сброс
+- Задача `integrationTest` отвязана от `check` — UI-тесты не входят в обычный CI и запускаются ночью
+  через `ci-integration.yml`
 - Расширены тесты генераторов: добавлены проверки контрольных сумм для счёта, IBAN, ИНН и ОГРН
 
 ## [1.11] - 31-03-2026
