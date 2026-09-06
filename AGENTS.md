@@ -34,6 +34,10 @@
 ./gradlew :ru-bizgen-plugin:verifyPlugin                  # границы диапазона: 2024.2 (sinceBuild) и целевая сборка
 ./gradlew :ru-bizgen-plugin:verifyPlugin -PverifyAllIdes  # полная матрица (все каналы, ~10 ГБ загрузки)
 
+# Пересъёмка иллюстраций README и Marketplace (реальная IDE, ~1 мин)
+./gradlew :ru-bizgen-plugin:docsScreenshots
+./gradlew :ru-bizgen-plugin:docsScreenshots -PdocsImgDir=build/docs-screenshots  # не трогая .github/img
+
 # UI integration-тесты (реальная IDE + Driver SDK; отключены по умолчанию, ~6-10 мин)
 ./gradlew :ru-bizgen-plugin:integrationTest -PrunIntegrationTests
 # Linux/CI требует xvfb: xvfb-run -a ./gradlew :ru-bizgen-plugin:integrationTest -PrunIntegrationTests
@@ -376,6 +380,27 @@ intellij-repository.
   (`docs/presentations/`)
 - **KDoc** — все публичные API задокументированы на русском
 - **JetBrains Verified** — плагин верифицирован, плагин-подпись через environment variables
+
+**Иллюстрации README и Marketplace.** `.github/img/generators.png` и `settings.png` не снимаются руками:
+их генерирует `DocsScreenshotsUITest` (source set `integrationTest`, задача `:ru-bizgen-plugin:docsScreenshots`).
+Тест поднимает IDE с плагином, открывает попап генераторов и экран настроек и **отрисовывает компоненты
+в offscreen-картинку внутри JVM тестовой IDE** (`Component.paint` в EDT через `@Remote`-прокси), а не снимает
+экран: `Driver.takeScreenshot` фотографирует физический монитор целиком — со всем, что на нём открыто, — и
+промахивается, если окно тестовой IDE не поверх остальных.
+
+Кадр воспроизводим: фиксированы размер окна (`FRAME_WIDTH`/`FRAME_HEIGHT`), размер диалога настроек,
+положение сплиттера (в проде `DEFAULT_SPLITTER_PROPORTION = 0.25`, для кадра шире — иначе длинные имена
+генераторов обрезаются) и масштаб отрисовки. Кадр генераторов собирается из двух слоёв — редактор и попап
+поверх него, — обрезанных по рамке попапа.
+
+Переснимать после любого изменения списка генераторов или UI настроек. Вручную остаются `main.gif`,
+`work-sample.gif` (анимация) и `pluginIcon.png`. Снимать локально: на Linux-раннере другие шрифты.
+
+**Задача исключена из Kover** (`disabledForTestTasks`). Отчёты Kover висят на `check` (`onCheck = true`),
+а зависят от всех задач типа `Test` — без исключения `check` тянет `docsScreenshots` за собой, то есть
+поднимает реальную IDE: на CI-раннере без дисплея это падение сборки, локально — лишняя минута и
+перезапись `.github/img` на каждом прогоне. У `integrationTest` та же ловушка закрыта иначе —
+`enabled = runIntegrationTests`, то есть по умолчанию задача выключена.
 
 **Презентации.** `dokka-root-convention` копирует в корневой Dokka-сайт отчёт Kover (`images/kover/`)
 и презентации. Новая презентация = `docs/presentations/<slug>/index.html` — она автоматически попадает во вкладку Guides через
