@@ -180,6 +180,12 @@ val docsScreenshots = intellijPlatformTesting.testIdeUi.register("docsScreenshot
     )
     systemProperty("bizgen.docs.img.dir", docsImgDir.absolutePath)
 
+    // -Pmarketplace добавляет к README-кадрам версии под витрину: канва 1280x800 (16:10,
+    // рекомендация JetBrains), на выходе 2560x1600. Имена файлов — marketplace-*.png.
+    if (project.hasProperty("marketplace")) {
+      systemProperty("bizgen.docs.marketplace", "true")
+    }
+
     // Задача запускается явно, поэтому флаг выставляется всегда — без -PrunIntegrationTests.
     systemProperty("runIntegrationTests", "true")
 
