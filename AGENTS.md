@@ -170,6 +170,13 @@ Composite build (`includeBuild("build-logic")` в `settings.gradle.kts`), сод
 
 **Совместимость:** IntelliJ IDEA 2024.2+ (sinceBuild=242, untilBuild=null), IntelliJ Platform Gradle Plugin 2.18.1.
 
+**Имя на витрине:** `<name>` в `plugin.xml` — `Ru BizGen - Russian Test Data Generator`. Длинное имя выбрано намеренно: `<name>` —
+основной сигнал ранжирования в поиске Marketplace, а по слову `bizgen` в каталоге ровно один результат. Внутри IDE имя плагина видно
+только в списке плагинов; заголовок страницы настроек (`displayName` у `applicationConfigurable`), текст действия и `Alt+Ins` остаются
+короткими — `Ru BizGen`. Первые абзацы `description.html` — это превью в поисковой выдаче, поэтому они начинаются с англоязычной строки
+с ключевыми словами. Разделитель — обычный дефис: `verifyPlugin` отвергает длинное тире с
+`Name '...' contains invalid characters`, в `<name>` разрешены только буквы, цифры, пробелы и `.,+_-/:()#'&[]|`.
+
 **Сборка:** Convention plugins из `build-logic` (`kotlin-convention`, `testing-convention`, `dokka-convention`, `kover-convention`) +
 `changelog` и `gradleIntelliJPlugin` plugins. Версия IDEA выводится из build number: `1.12.261` → buildNumber `261` → `2026.1`.
 
@@ -479,6 +486,17 @@ intellij-repository.
    без перехода. Решение отложено: `sinceBuild = 242` и так ограничивает плагин API уровня 2024.2,
    так что переход не даёт ничего, кроме потери аудитории, и со временем только дешевеет.
    Дату брать из статистики установок по версиям IDE в кабинете вендора Marketplace.
+
+   **Вниз диапазон тоже не двигается: `sinceBuild = 242` — это пол, а не выбор.** Проверено сборкой
+   (попытка `sinceBuild 242 → 233`): 2024.2 — первая ветка платформы на Java 21, все версии 241 и
+   ниже работают на JBR 17 (`build-number-ranges`), а `jvmTarget` обязан совпадать с платформенным
+   по той же причине, что и при переходе вверх, — инлайн-функции Kotlin UI DSL вкомпилируются в
+   классы плагина. Значит, поддержка 241 и ниже требует компиляции против старой платформы, а там
+   упирается в Kotlin: платформа отдаёт плагину свой stdlib (`kotlin.stdlib.default.dependency=false`),
+   до 2024.2 это Kotlin 1.9, а компилятор Kotlin 2.4 отвечает на `apiVersion = 1.9` ошибкой
+   `API version 1.9 is no longer supported; use version 2.0 or greater instead`. Цена спуска —
+   откат компилятора Kotlin на 2.1/2.2 во всех модулях. Не стоит того: 242 держится с 2024.2,
+   то есть покрывает девять релизов платформы.
 5. **Версия MCP** передаётся через JVM property (`-Dmcp.version`) из `applicationDefaultJvmArgs`. При запуске без неё сервер сообщает версию
    `dev` — compile-time альтернатива (генерируемый `McpBuildConfig`) осталась нереализованной.
 

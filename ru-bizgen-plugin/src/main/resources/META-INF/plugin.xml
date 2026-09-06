@@ -1,6 +1,6 @@
 <idea-plugin>
   <id>ru.eda.plgn.bizgen</id>
-  <name>Ru BizGen</name>
+  <name>Ru BizGen - Russian Test Data Generator</name>
 
   <vendor url="https://github.com/DmitryEm506/Ru-BizGen">Emelyanenko Dmitry</vendor>
 
