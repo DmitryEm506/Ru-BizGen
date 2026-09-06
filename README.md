@@ -13,12 +13,16 @@
     <a href="https://dmitryem506.github.io/Ru-BizGen/"><img src="https://img.shields.io/badge/kdoc-ready-blue?style=for-the-badge" alt="Documentation" /></a>
     <a href="https://dmitryem506.github.io/Ru-BizGen/images/kover/index.html"><img src="https://img.shields.io/badge/coverage-Kover-blue?style=for-the-badge" alt="Code Coverage" /></a>
     <a><img src="https://img.shields.io/badge/JetBrains-Verified-blue?style=for-the-badge" alt="JetBrains Verified" /></a>
-    <a><img src="https://img.shields.io/badge/IntelliJ%20IDEA-2024.2+-blue?style=for-the-badge&logo=intellij-idea" alt="IntelliJ IDEA Version" /></a>
+    <a><img src="https://img.shields.io/badge/JetBrains%20IDEs-2024.2+-blue?style=for-the-badge&logo=jetbrains" alt="JetBrains IDEs Version" /></a>
 </p>
 
 # Генератор российских (и не только) тестовых данных
 
 Ускоряйте разработку с мгновенной генерацией приближённых к реалистичным тестовых данных прямо в редакторе кода.
+
+Плагин зависит только от ядра платформы (`com.intellij.modules.platform`), поэтому работает во **всех IDE на
+IntelliJ Platform** 2024.2 и новее: IntelliJ IDEA, PyCharm, GoLand, WebStorm, PhpStorm, RubyMine, CLion, Rider,
+DataGrip, DataSpell, RustRover, Android Studio, MPS.
 
 ## ⚠️ Важно
 
@@ -26,6 +30,9 @@
 ОГРН, ОКТМО и другие) являются случайными и не предназначены для использования в реальных системах.
 
 Все данные генерируются **локально внутри плагина**, без обращений к внешним сервисам.
+
+Плагин не собирает телеметрию и не делает ни одного сетевого вызова — подробности в
+[политике конфиденциальности](PRIVACY.md).
 
 ## ✨ Основные возможности
 
@@ -104,7 +111,7 @@
 
 # 🤖 MCP-сервер
 
-Помимо плагина для IntelliJ IDEA, Ru BizGen доступен как **MCP-сервер** (Model Context Protocol).
+Помимо плагина для IDE, Ru BizGen доступен как **MCP-сервер** (Model Context Protocol).
 Это позволяет подключать генерацию тестовых данных к любым MCP-совместимым AI-клиентам
 (Claude Desktop, Cursor, Cline, Windsurf и др.) и генерировать данные прямо в чате или через AI-агента.
 
