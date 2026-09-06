@@ -1,7 +1,6 @@
 package ru.eda.plgn.bizgen.core.generator_info
 
 import io.kotest.matchers.shouldBe
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test
  *
  * @author Dmitry_Emelyanenko
  */
-@DisplayName("GeneratorInfoProvider: группировка по категориям")
 internal class GeneratorInfoProviderTest {
 
   private val categoryOrder = listOf(
@@ -22,7 +20,6 @@ internal class GeneratorInfoProviderTest {
   )
 
   @Nested
-  @DisplayName("5.5 Группировка по категориям")
   inner class GroupingCases {
 
     @Test

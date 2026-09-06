@@ -7,6 +7,11 @@ on:
         description: "Contains heavy tests, therefore it is run manually"
         required: false
         default: "manual run"
+      verifyAllIdes:
+        description: "Полная матрица verifyPlugin (все каналы диапазона) вместо его границ"
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -36,11 +41,40 @@ jobs:
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Run full test suite (with distanceFinderTests) with coverage
+      # -PrunDistanceFinderTests включает includeTags("distanceFinderTests"), то есть
+      # запускает ТОЛЬКО тесты уникальности и исключает все остальные. Полный прогон —
+      # это два последовательных запуска.
+      #
+      # Порядок важен: каждый прогон перезаписывает test-results и отчёты Kover,
+      # поэтому тяжёлые distance-тесты идут первыми, а обычный check — последним,
+      # чтобы выгружаемый артефакт покрытия совпадал с тем, что дают ci-main/ci-dev.
+      - name: Run distanceFinder test suite (heavy)
         run: ./gradlew check --no-daemon -PrunDistanceFinderTests
+
+      - name: Run fast test suite with coverage
+        run: ./gradlew check --no-daemon
 
       - name: Build plugin
         run: ./gradlew :ru-bizgen-plugin:buildPlugin -x test --no-daemon
+
+      # Полная матрица (-PverifyAllIdes) тянет по дистрибутиву Ultimate на каждую версию
+      # из RELEASE/RC/PATCH во всём диапазоне совместимости — на 09.2026 это 8 сборок,
+      # порядка 10 ГБ. Рядом с предустановленными тулчейнами раннера столько не помещается,
+      # поэтому перед полным прогоном освобождаем место.
+      - name: Free disk space
+        if: ${{ inputs.verifyAllIdes }}
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+
+      - name: Verify plugin
+        run: ./gradlew :ru-bizgen-plugin:verifyPlugin --no-daemon ${{ inputs.verifyAllIdes && '-PverifyAllIdes' || '' }}
+
+      - name: Upload plugin verifier report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: plugin-verifier-report
+          path: ${{ github.workspace }}/ru-bizgen-plugin/build/reports/pluginVerifier
+          if-no-files-found: ignore
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v7

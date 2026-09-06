@@ -63,7 +63,8 @@ private object InnGeneratorBase {
   }
 
   private fun generateRegion(random: Random): String {
-    return random.nextInt(MIN_REGION, MAX_REGION).toString().padStart(2, '0')
+    // Верхняя граница nextInt исключающая, поэтому +1 — иначе регион 99 недостижим.
+    return random.nextInt(MIN_REGION, MAX_REGION + 1).toString().padStart(2, '0')
   }
 
   private fun generateSequence(type: InnType, random: Random): String {

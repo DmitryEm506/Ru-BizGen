@@ -19,7 +19,6 @@ import java.awt.BorderLayout
 import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JSeparator
-import kotlin.random.Random
 
 /**
  * Компонент, который применяется в настройках плагина.
@@ -32,9 +31,6 @@ class ActionResultPreviewComponent : Disposable {
 
   /** Выбранный генератор. */
   private var selectedGenerator: Generator<*>? = null
-
-  /** Для обновления состояния компонента. */
-  private var seed = Random.nextInt()
 
   /** Содержит результат работы генератора. */
   private lateinit var previewEditor: EditorEx
@@ -62,7 +58,6 @@ class ActionResultPreviewComponent : Disposable {
       cell(separatorPanel)
 
       refreshButton = InplaceButton("Generate", AllIcons.Actions.Refresh) {
-        seed = Random.nextInt()
         updatePreviewTextByGenerator()
       }
       cell(refreshButton).align(AlignX.RIGHT)

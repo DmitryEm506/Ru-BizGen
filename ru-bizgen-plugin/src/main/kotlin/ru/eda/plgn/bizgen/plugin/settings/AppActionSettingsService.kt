@@ -87,10 +87,10 @@ interface AppActionSettingsService : BizGenService {
   /** Направление перемещения действия. */
   enum class Direction {
 
-    /** Вниз. */
+    /** Вверх (на позицию меньше). */
     UP,
 
-    /** Вверх. */
+    /** Вниз (на позицию больше). */
     DOWN
   }
 }

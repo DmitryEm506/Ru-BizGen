@@ -39,15 +39,26 @@ jobs:
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v6
 
+      # Версия IDE выводится из version проекта (1.12.261 -> 2026.1), см. ru-bizgen-plugin/build.gradle.kts.
+      # Ключ кэша должен следовать за ней, иначе после смены платформы кэш промахивается каждую ночь.
+      - name: Resolve target IDE version
+        id: ide
+        run: |
+          VERSION=$(grep -m1 '^version = ' build.gradle.kts | sed 's/.*"\(.*\)".*/\1/')
+          BUILD_NUMBER=$(echo "$VERSION" | awk -F. '{print $NF}' | cut -c1-3)
+          IDE_VERSION="20${BUILD_NUMBER:0:2}.${BUILD_NUMBER:2:1}"
+          echo "version=$IDE_VERSION" >> "$GITHUB_OUTPUT"
+          echo "Целевая версия IDE: $IDE_VERSION (из версии проекта $VERSION)"
+
       - name: Cache IDE test builds
         uses: actions/cache@v6
         with:
           path: |
             out/ide-tests/cache/builds
             out/ide-tests/cache/tools
-          key: ide-test-builds-IC-2025.3-${{ runner.os }}-v2
+          key: ide-test-builds-${{ steps.ide.outputs.version }}-${{ runner.os }}-v2
           restore-keys: |
-            ide-test-builds-IC-2025.3-${{ runner.os }}-
+            ide-test-builds-${{ steps.ide.outputs.version }}-${{ runner.os }}-
 
       - name: Install xvfb (display server for UI tests)
         run: |
