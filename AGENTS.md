@@ -396,6 +396,12 @@ intellij-repository.
 Переснимать после любого изменения списка генераторов или UI настроек. Вручную остаются `main.gif`,
 `work-sample.gif` (анимация) и `pluginIcon.png`. Снимать локально: на Linux-раннере другие шрифты.
 
+**Задача исключена из Kover** (`disabledForTestTasks`). Отчёты Kover висят на `check` (`onCheck = true`),
+а зависят от всех задач типа `Test` — без исключения `check` тянет `docsScreenshots` за собой, то есть
+поднимает реальную IDE: на CI-раннере без дисплея это падение сборки, локально — лишняя минута и
+перезапись `.github/img` на каждом прогоне. У `integrationTest` та же ловушка закрыта иначе —
+`enabled = runIntegrationTests`, то есть по умолчанию задача выключена.
+
 **Презентации.** `dokka-root-convention` копирует в корневой Dokka-сайт отчёт Kover (`images/kover/`)
 и презентации. Новая презентация = `docs/presentations/<slug>/index.html` — она автоматически попадает во вкладку Guides через
 сгенерированный `guides.json` (`<title>` и `<meta name="description">` берутся из самого HTML). Скрыть презентацию из Guides можно через

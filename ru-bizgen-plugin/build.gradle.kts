@@ -193,6 +193,18 @@ val docsScreenshots = intellijPlatformTesting.testIdeUi.register("docsScreenshot
   }
 }
 
+// Kover собирает покрытие со ВСЕХ задач типа Test, а его отчёты висят на `check` (onCheck = true
+// в kover-convention). Без этого исключения `check` тянет за собой docsScreenshots, то есть
+// поднимает реальную IDE — на CI-раннере без дисплея это падение, локально — лишняя минута
+// и перезапись .github/img на каждой сборке.
+kover {
+  currentProject {
+    instrumentation {
+      disabledForTestTasks.add("docsScreenshots")
+    }
+  }
+}
+
 intellijPlatform {
   pluginConfiguration {
     ideaVersion {
