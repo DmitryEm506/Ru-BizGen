@@ -65,7 +65,7 @@ docker build -f ru-bizgen-mcp/Dockerfile -t ru-bizgen-mcp .   # контекст
 
 ## 1. Обзор
 
-**Ru BizGen** — генератор российских (и не только) тестовых данных, реализованный в двух форм-факторах: **IntelliJ IDEA Plugin** и
+**Ru BizGen** — генератор российских (и не только) тестовых данных, реализованный в двух форм-факторах: **плагин для IDE на IntelliJ Platform** и
 **MCP-сервер**. Все данные генерируются локально, без обращений к внешним сервисам.
 
 - **Версия:** 1.12.261
@@ -80,7 +80,7 @@ docker build -f ru-bizgen-mcp/Dockerfile -t ru-bizgen-mcp .   # контекст
 ru-bizgen/
 ├── build-logic              — composite build: convention plugins (kotlin, testing, dokka, dokka-root, kover)
 ├── ru-bizgen-core           — ядро: генераторы, инфо-описания, утилиты
-├── ru-bizgen-plugin          — IntelliJ IDEA плагин (UI, actions, settings, DI, integration tests)
+├── ru-bizgen-plugin          — плагин для IDE на IntelliJ Platform (UI, actions, settings, DI, integration tests)
 ├── ru-bizgen-mcp             — MCP-сервер (Ktor/Netty + MCP Kotlin SDK)
 ├── ru-bizgen-perf            — JMH-бенчмарки + генерация markdown-отчётов
 ├── ru-bizgen-archunit        — ArchUnit: границы модулей, слои core, naming Generator↔Benchmark
@@ -166,9 +166,18 @@ Composite build (`includeBuild("build-logic")` в `settings.gradle.kts`), сод
 Слои внутри core зафиксированы ArchUnit: `utils` <- `generator` <- `generator_info`
 (в обратную сторону нельзя).
 
-### 2.2. `ru-bizgen-plugin` — IntelliJ IDEA плагин
+### 2.2. `ru-bizgen-plugin` — плагин для IDE на IntelliJ Platform
 
-**Совместимость:** IntelliJ IDEA 2024.2+ (sinceBuild=242, untilBuild=null), IntelliJ Platform Gradle Plugin 2.18.1.
+**Совместимость:** 2024.2+ (sinceBuild=242, untilBuild=null), IntelliJ Platform Gradle Plugin 2.18.1.
+
+Плагин объявляет только `<depends>com.intellij.modules.platform</depends>`, поэтому Marketplace считает его
+совместимым со всеми продуктами на платформе — на 09.2026 их 16: `IDEA`, `PYCHARM`, `GOLAND`, `WEBSTORM`,
+`PHPSTORM`, `RUBYMINE`, `CLION`, `RIDER`, `DBE` (DataGrip), `DATASPELL`, `RUST` (RustRover), `ANDROID_STUDIO`,
+`MPS`, `GATEWAY`, `CWMGUEST`, `JBCLIENT` (список отдаёт `GET /api/plugins/29294/compatible-products`).
+Тексты README и `description.html` должны это отражать: пока в них говорилось «плагин для IntelliJ IDEA»,
+аудитория остальных пятнадцати продуктов не понимала, что плагин ей подходит. `verifyPlugin` при этом
+проверяет только сборки IDEA — API у них платформенное и общее, но если понадобится подкрепить заявку
+проверкой, добавляйте в `pluginVerification.ides` точку на не-IDEA продукте.
 
 **Имя на витрине:** `<name>` в `plugin.xml` — `Ru BizGen - Russian Test Data Generator`. Длинное имя выбрано намеренно: `<name>` —
 основной сигнал ранжирования в поиске Marketplace, а по слову `bizgen` в каталоге ровно один результат. Внутри IDE имя плагина видно
