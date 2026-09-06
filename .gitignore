@@ -75,3 +75,17 @@ gradle-app.setting
 .classpath
 
 _polygon/.idea
+
+.agents
+.codegraph
+.codegraph-junction-test
+.cursor
+.idea
+.intellijPlatform
+.opencode
+.vscode
+com
+META-INF
+out
+intellij.driver.sdk.xml
+.run

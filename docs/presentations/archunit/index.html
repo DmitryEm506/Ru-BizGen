@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ru BizGen · ArchUnit</title>
+  <meta name="description" content="Интерактивная документация ArchUnit в проекте Ru BizGen: модель, API и все правила." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../presentation-template/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#intro">К содержимому</a>
+  <div class="progress" aria-hidden="true"></div>
+
+  <button type="button" class="toc-toggle" aria-expanded="false" aria-controls="toc">Оглавление</button>
+
+  <div class="layout">
+    <aside class="toc" id="toc">
+      <p class="toc__brand">Ru BizGen</p>
+      <p class="toc__sub">ArchUnit 1.5.0</p>
+      <nav aria-label="Содержание">
+        <a href="#intro"><span class="toc__num">01</span> Введение</a>
+        <a href="#history"><span class="toc__num">02</span> История ArchUnit</a>
+        <a href="#why"><span class="toc__num">03</span> Зачем ArchUnit</a>
+        <a href="#model"><span class="toc__num">04</span> Модель работы</a>
+        <a href="#api"><span class="toc__num">05</span> Fluent API</a>
+        <a href="#methods"><span class="toc__num">06</span> Методики правил</a>
+        <a href="#library"><span class="toc__num">07</span> Library API</a>
+        <a href="#extensibility"><span class="toc__num">08</span> Предикаты и conditions</a>
+        <a href="#project"><span class="toc__num">09</span> Карта проекта</a>
+        <a href="#boundaries"><span class="toc__num">10</span> Границы модулей</a>
+        <a href="#plugin"><span class="toc__num">11</span> Границы plugin</a>
+        <a href="#layers"><span class="toc__num">12</span> Слои core</a>
+        <a href="#benchmarks"><span class="toc__num">13</span> Naming бенчмарков</a>
+        <a href="#howto"><span class="toc__num">14</span> Новое правило</a>
+        <a href="#run"><span class="toc__num">15</span> Запуск</a>
+      </nav>
+      <p class="toc__hint">
+        Листать: <kbd>←</kbd> <kbd>→</kbd> или <kbd>J</kbd> <kbd>K</kbd>
+      </p>
+    </aside>
+
+    <main class="main">
+      <div class="deck-chrome">
+        <span class="slide-counter" aria-live="polite">1 / 15</span>
+        <div class="deck-nav">
+          <button type="button" class="deck-nav__btn" data-nav="prev" aria-label="Предыдущий слайд" disabled>
+            <span aria-hidden="true">←</span>
+          </button>
+          <button type="button" class="deck-nav__btn" data-nav="next" aria-label="Следующий слайд">
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-shell">
+      <!-- 1. INTRO -->
+      <section class="deck hero is-active" id="intro">
+        <div class="hero__glow" aria-hidden="true"></div>
+        <p class="hero__eyebrow">Исполняемая архитектура · ArchUnit 1.5.0</p>
+        <h1 class="hero__brand">Ru BizGen</h1>
+        <p class="hero__title">ArchUnit как исполняемая архитектура</p>
+        <p class="hero__lead">
+          Fitness-функции на bytecode: границы модулей, чистота ядра, слои
+          <code>core</code> и соответствие Generator ↔ Benchmark — без надежды
+          только на Gradle и code review.
+        </p>
+      </section>
+
+      <!-- HISTORY -->
+      <section class="deck" id="history">
+        <h2 class="section-title">История ArchUnit</h2>
+        <p class="section-lead">
+          Открытая библиотека архитектурных тестов для JVM: правила пишутся как обычные unit-тесты и проверяют bytecode.
+        </p>
+
+        <div class="history-layout">
+          <div class="history-main">
+            <div class="fact-grid">
+              <div class="fact">
+                <span class="fact__label">Первый релиз</span>
+                <span class="fact__value">апрель 2017</span>
+                <span class="fact__note">v0.4.0 — core, lang, library, JUnit</span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">Авторы / компания</span>
+                <span class="fact__value">TNG Technology Consulting</span>
+                <span class="fact__note">Германия, open source</span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">Тип проекта</span>
+                <span class="fact__value">Java library</span>
+                <span class="fact__note">Apache License 2.0 · test-scope</span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">Сейчас в Ru BizGen</span>
+                <span class="fact__value">1.5.0</span>
+                <span class="fact__note">archunit-junit5 · апрель 2026</span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">Сообщество GitHub</span>
+                <span class="fact__value">≈3.8k ★</span>
+                <span class="fact__note">107 контрибьютеров · TNG/ArchUnit</span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">Форки</span>
+                <span class="fact__value">345</span>
+                <span class="fact__note">копии репозитория · август 2026</span>
+              </div>
+            </div>
+
+            <ul class="history-points">
+              <li>Анализирует bytecode, а не «диаграмму на Confluence» — архитектура становится исполняемой.</li>
+              <li>Работает с JUnit 4/5 (и другими фреймворками): те же ./gradlew test/ CI.</li>
+              <li>Есть порт для .NET — ArchUnitNET; экосистема живая (релизы, examples, user guide).</li>
+            </ul>
+
+            <br>
+            <p class="history-links">
+              Сайт:
+              <a href="https://www.archunit.org/" target="_blank" rel="noopener noreferrer">archunit.org</a>
+              · Исходники:
+              <a href="https://github.com/TNG/ArchUnit" target="_blank" rel="noopener noreferrer">github.com/TNG/ArchUnit</a>
+              · Примеры:
+              <a href="https://github.com/TNG/ArchUnit-Examples" target="_blank" rel="noopener noreferrer">ArchUnit-Examples</a>
+            </p>
+          </div>
+
+          <aside class="qr-card">
+            <img
+              class="qr-card__img"
+              src="archunit-github-qr.png"
+              width="180"
+              height="180"
+              alt="QR-код на репозиторий ArchUnit на GitHub"
+            />
+            <p class="qr-card__title">Сканируйте → GitHub</p>
+            <p class="qr-card__url">
+              <a href="https://github.com/TNG/ArchUnit" target="_blank" rel="noopener noreferrer">TNG/ArchUnit</a>
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <!-- WHY / PITCH -->
+      <section class="deck" id="why">
+        <h2 class="section-title">Зачем внедрять ArchUnit</h2>
+        <p class="section-lead">
+          Архитектура «договорились на ревью» со временем размывается.
+          ArchUnit фиксирует договорённости так же жёстко, как unit-тест на баг.
+        </p>
+
+        <div class="pitch-grid">
+          <article class="pitch">
+            <h3 class="pitch__title">Ловит утечки раньше прода</h3>
+            <p class="pitch__text">
+              Запрет <code>core → IntelliJ/Ktor</code> или циклов между модулями падает в CI
+              на PR — до того, как зависимость «случайно» расползётся по команде.
+            </p>
+          </article>
+          <article class="pitch">
+            <h3 class="pitch__title">Дешевле, чем процесс</h3>
+            <p class="pitch__text">
+              Не нужен отдельный governance-ритуал. Правило — это код рядом с тестами,
+              с текстом <code>.because("…")</code> на русском в failure report.
+            </p>
+          </article>
+          <article class="pitch">
+            <h3 class="pitch__title">Работает на фактах bytecode</h3>
+            <p class="pitch__text">
+              Gradle <code>implementation</code> не видит «случайный import».
+              ArchUnit читает class-файлы: типы, вызовы, пакеты — то, что реально собралось.
+            </p>
+          </article>
+          <article class="pitch">
+            <h3 class="pitch__title">Масштабируется с командой</h3>
+            <p class="pitch__text">
+              Новый разработчик не обязан помнить все границы: CI напомнит.
+              В Ru BizGen так держатся ядро, MCP, plugin и naming бенчмарков.
+            </p>
+          </article>
+          <article class="pitch">
+            <h3 class="pitch__title">«Временное» не залипает</h3>
+            <p class="pitch__text">
+              Костыль «только на этот PR» без правила остаётся на годы.
+              ArchUnit превращает исключение в явный fail — либо чинят, либо осознанно ослабляют правило.
+            </p>
+          </article>
+          <article class="pitch">
+            <h3 class="pitch__title">Документация, которая не врёт</h3>
+            <p class="pitch__text">
+              Слайд и README устаревают. Падающий <code>ArchRule</code> с
+              <code>.because(…)</code> — актуальный контракт границ прямо в отчёте CI.
+            </p>
+          </article>
+          <article class="pitch">
+            <h3 class="pitch__title">Один <code>check</code> — и архитектура</h3>
+            <p class="pitch__text">
+              Не нужен отдельный nightly-ритуал. В Ru BizGen
+              <code>:ru-bizgen-archunit:test</code> входит в обычный <code>./gradlew check</code> вместе с unit-тестами.
+            </p>
+          </article>
+          <article class="pitch">
+            <h3 class="pitch__title">Спор на ревью → зелёный/красный</h3>
+            <p class="pitch__text">
+              Вместо «мне кажется, core не должен…» — конкретный failing test.
+              Обсуждение смещается с вкуса на правило: ослабить, исправить код или добавить исключение.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout callout--tight" style="margin-top:1.1rem">
+          ArchUnit превращает архитектурные решения из слайда в зелёную галочку в пайплайне.
+          Если правило нельзя выразить тестом — его, скорее всего, нельзя и соблюдать.
+        </div>
+      </section>
+
+      <!-- MODEL -->
+      <section class="deck" id="model">
+        <h2 class="section-title">Модель работы ArchUnit</h2>
+        <p class="section-lead">
+          ArchUnit не смотрит на <code>build.gradle.kts</code>. Он читает
+          скомпилированные <code>.class</code> и проверяет зависимости, пакеты и имена.
+        </p>
+
+        <div class="pipeline" aria-label="Конвейер ArchUnit">
+          <span class="pipeline__step">compile</span>
+          <span class="pipeline__arrow" aria-hidden="true">→</span>
+          <span class="pipeline__step">@AnalyzeClasses</span>
+          <span class="pipeline__arrow" aria-hidden="true">→</span>
+          <span class="pipeline__step">JavaClasses</span>
+          <span class="pipeline__arrow" aria-hidden="true">→</span>
+          <span class="pipeline__step">ArchRule.check()</span>
+          <span class="pipeline__arrow" aria-hidden="true">→</span>
+          <span class="pipeline__step">JUnit fail</span>
+        </div>
+
+        <h3>Что импортируем</h3>
+        <pre class="code" data-highlight>@AnalyzeClasses(
+  packages = ["ru.eda.plgn.bizgen"],
+  importOptions = [ImportOption.DoNotIncludeTests::class],
+)
+internal class ModuleBoundaryArchTest { ... }</pre>
+        <ul>
+          <li><strong>packages</strong> — корень анализа; в classpath попадают классы из зависимостей модуля.</li>
+          <li><strong>DoNotIncludeTests</strong> — тестовые классы не участвуют в правилах.</li>
+        </ul>
+
+        <h3>Два вида @ArchTest</h3>
+        <p><strong>1. Поле-правило</strong> — ArchUnit сам вызывает <code>.check()</code>:</p>
+        <pre class="code" data-highlight>@ArchTest
+val coreMustNotDependOnAdapters: ArchRule = noClasses()
+  .that().resideInAnyPackage("ru.eda.plgn.bizgen.core..")
+  .should().dependOnClassesThat().resideInAnyPackage(/* ... */)
+  .because("ядро не должно зависеть от адаптеров")</pre>
+
+        <p><strong>2. Метод с инъекцией</strong> — получаете <code>JavaClasses</code> и проверяете вручную
+          (нужно для Kotest-ассертов и кастомных условий):</p>
+        <pre class="code" data-highlight>@ArchTest
+fun concreteBenchmarkCountMatchesGeneratorInfos(importedClasses: JavaClasses) {
+  concreteBenchmarks(importedClasses).size shouldBe GeneratorInfoProvider.generatorInfos.size
+}</pre>
+
+        <div class="callout">
+          <strong>Важно.</strong> Обычный <code>@Test</code> с параметром <code>JavaClasses</code>
+          не получит инъекцию — только <code>@ArchTest</code>.
+        </div>
+      </section>
+
+      <!-- 3. API -->
+      <section class="deck" id="api">
+        <h2 class="section-title">Fluent API: анатомия правила</h2>
+        <p class="section-lead">
+          Кликните по методу в коде или по chip — откроется объяснение в glossary.
+        </p>
+
+        <pre class="code-block" id="anatomy-code"><span class="tok-hi" data-api="noClasses">noClasses</span>()
+  .<span class="tok-hi" data-api="that">that</span>().<span class="tok-hi" data-api="resideInAnyPackage">resideInAnyPackage</span>(<span class="tok-str">"ru.eda.plgn.bizgen.core.."</span>)
+  .<span class="tok-hi" data-api="should">should</span>().<span class="tok-hi" data-api="dependOnClassesThat">dependOnClassesThat</span>().<span class="tok-hi" data-api="resideInAnyPackage">resideInAnyPackage</span>(
+    <span class="tok-str">"ru.eda.plgn.bizgen.plugin.."</span>,
+    <span class="tok-str">"ru.eda.plgn.bizgen.mcp.."</span>,
+  )
+  .<span class="tok-hi" data-api="because">because</span>(<span class="tok-str">"ядро не должно зависеть от адаптеров"</span>)</pre>
+
+        <div class="chip-row" role="group" aria-label="API chips">
+          <button type="button" class="chip" data-api="noClasses">noClasses()</button>
+          <button type="button" class="chip" data-api="resideInAnyPackage">resideInAnyPackage</button>
+          <button type="button" class="chip" data-api="dependOnClassesThat">dependOnClassesThat</button>
+          <button type="button" class="chip" data-api="because">because</button>
+          <button type="button" class="chip" data-api="layeredArchitecture">layeredArchitecture</button>
+          <button type="button" class="chip" data-api="slices">slices</button>
+          <button type="button" class="chip" data-api="DescribedPredicate">DescribedPredicate</button>
+          <button type="button" class="chip" data-api="ArchCondition">ArchCondition</button>
+        </div>
+
+        <div class="callout callout--cyan">
+          <strong>Инверсия с noClasses().</strong>
+          Пишем <code>should().dependOnClassesThat(...)</code>, а не
+          <code>notDependOn…</code>. Смысл: «не должно существовать классов,
+          которые зависят от запрещённых пакетов».
+        </div>
+
+        <div class="glossary">
+          <details class="glossary__item" data-api="noClasses">
+            <summary>noClasses()</summary>
+            <div class="body">Стартовая точка «запрета»: правило падает, если найден хотя бы один класс, удовлетворяющий цепочке <code>that…should…</code>.</div>
+          </details>
+          <details class="glossary__item" data-api="that">
+            <summary>that()</summary>
+            <div class="body">Переход к предикатам отбора субъектов правила (кто проверяется).</div>
+          </details>
+          <details class="glossary__item" data-api="resideInAnyPackage">
+            <summary>resideInAnyPackage("a..")</summary>
+            <div class="body">Ant-like matcher пакетов. Суффикс <code>..</code> означает «этот пакет и все вложенные».</div>
+          </details>
+          <details class="glossary__item" data-api="should">
+            <summary>should()</summary>
+            <div class="body">Переход к условию («что нельзя / что должно быть»).</div>
+          </details>
+          <details class="glossary__item" data-api="dependOnClassesThat">
+            <summary>dependOnClassesThat()</summary>
+            <div class="body">Зависимость по bytecode: import, field type, method param/return, superclass и т.д.</div>
+          </details>
+          <details class="glossary__item" data-api="because">
+            <summary>because("…")</summary>
+            <div class="body">Текст попадает в failure report JUnit — пишем на русском, зачем правило существует.</div>
+          </details>
+          <details class="glossary__item" data-api="layeredArchitecture">
+            <summary>layeredArchitecture()</summary>
+            <div class="body">Library API для слоёв: <code>layer / definedBy / whereLayer / mayOnlyBeAccessedByLayers / mayNotBeAccessedByAnyLayer</code>. В core — с <code>consideringOnlyDependenciesInAnyPackage("…core..")</code>, чтобы plugin/mcp не ломали правило «GeneratorInfo никого не зовёт внутри core».</div>
+          </details>
+          <details class="glossary__item" data-api="slices">
+            <summary>slices().matching(…).beFreeOfCycles()</summary>
+            <div class="body"><code>ru.eda.plgn.bizgen.(*)..</code> режет код на slices по первому сегменту после <code>bizgen</code> (<code>core</code>, <code>plugin</code>, <code>mcp</code>, <code>perf</code>). Циклы между ними запрещены.</div>
+          </details>
+          <details class="glossary__item" data-api="ArchRuleDefinition">
+            <summary>ArchRuleDefinition.classes()</summary>
+            <div class="body">Позитивные правила («классы, которые… должны…»). В бенчмарках: <code>.that(predicate).should(condition).check(importedClasses)</code>.</div>
+          </details>
+          <details class="glossary__item" data-api="DescribedPredicate">
+            <summary>DescribedPredicate</summary>
+            <div class="body">Именованный предикат отбора <code>JavaClass</code> (concrete Generator / Benchmark, без abstract и <code>jmh_generated</code>).</div>
+          </details>
+          <details class="glossary__item" data-api="ArchCondition">
+            <summary>ArchCondition + SimpleConditionEvent</summary>
+            <div class="body">Кастомная проверка. При нарушении — <code>SimpleConditionEvent.violated(item, message)</code>.</div>
+          </details>
+          <details class="glossary__item" data-api="JavaClasses">
+            <summary>JavaClasses (injection)</summary>
+            <div class="body">Набор импортированных классов. Фильтрация: <code>classes.that(predicate)</code>. Передаётся в <code>@ArchTest fun(…)</code>.</div>
+          </details>
+        </div>
+      </section>
+
+      <!-- METHODS: Lang API (после Fluent API) -->
+      <section class="deck deck--fill" id="methods">
+        <h2 class="section-title">Методики правил: Lang API</h2>
+        <p class="section-lead">
+          Базовый способ: «кто» + «что нельзя / должно» через
+          <code>ArchRuleDefinition</code> → проверка на <code>JavaClasses</code>.
+        </p>
+
+        <div class="method-grid method-grid--2x2">
+          <article class="method-card">
+            <p class="method-card__kicker">Точка входа</p>
+            <h3 class="method-card__title"><code>classes()</code> / <code>noClasses()</code></h3>
+            <p class="method-card__text">
+              <code>classes()</code> — позитив: «классы, которые… должны…».
+              <code>noClasses()</code> — инверсия: «не должно существовать классов, которые…».
+            </p>
+            <ul class="method-card__list">
+              <li>Запреты зависимостей — почти всегда <code>noClasses()</code></li>
+              <li>Naming / полнота — чаще <code>classes().that(…).should(…)</code></li>
+            </ul>
+            <pre class="code code--sm" data-highlight>noClasses().that().resideInAnyPackage("…core..")
+  .should().dependOnClassesThat()
+  .resideInAnyPackage("…plugin..")</pre>
+          </article>
+
+          <article class="method-card">
+            <p class="method-card__kicker">Отбор субъектов</p>
+            <h3 class="method-card__title"><code>that()</code> + пакеты / имена</h3>
+            <p class="method-card__text">
+              Фильтр «кого проверяем»: пакет, имя, аннотация, модификаторы.
+            </p>
+            <ul class="method-card__list">
+              <li><code>resideInAnyPackage</code> — суффикс <code>..</code> = пакет и вложенные</li>
+              <li>Несколько пакетов = OR</li>
+              <li><code>haveSimpleNameEndingWith</code>, <code>areAnnotatedWith</code></li>
+              <li>Кастом: <code>.that(DescribedPredicate)</code></li>
+            </ul>
+          </article>
+
+          <article class="method-card">
+            <p class="method-card__kicker">Условие</p>
+            <h3 class="method-card__title"><code>should()</code> + зависимости</h3>
+            <p class="method-card__text">
+              Факты из bytecode: import, field type, param/return, superclass…
+            </p>
+            <ul class="method-card__list">
+              <li><code>dependOnClassesThat</code> — с кем связан</li>
+              <li><code>onlyDependOnClassesThat</code> / <code>onlyBeAccessedBy…</code></li>
+              <li>Всегда <code>.because("…")</code> — текст падения в CI</li>
+            </ul>
+            <pre class="code code--sm" data-highlight>.should().dependOnClassesThat()
+  .resideInAnyPackage("io.ktor..")
+  .because("mcp не тянет IntelliJ")</pre>
+          </article>
+
+          <article class="method-card">
+            <p class="method-card__kicker">В Ru BizGen</p>
+            <h3 class="method-card__title">Границы модулей</h3>
+            <p class="method-card__text">
+              Почти все правила в <code>ModuleBoundaryArchTest</code> и
+              <code>PluginBoundaryArchTest</code> — чистый Lang API.
+            </p>
+            <ul class="method-card__list">
+              <li><code>core ↛ plugin/mcp/perf</code> + forbidden third-party</li>
+              <li><code>mcp ↛ plugin/perf/IntelliJ</code></li>
+              <li><code>perf ↛ plugin/mcp/Ktor/MCP</code></li>
+              <li><code>plugin ↛ mcp/perf/Ktor</code> (в plugin-модуле)</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- LIBRARY API -->
+      <section class="deck deck--fill" id="library">
+        <h2 class="section-title">Library API: слои и slices</h2>
+        <p class="section-lead">
+          <code>com.tngtech.archunit.library</code> — готовые стили, когда одной цепочки
+          <code>dependOn</code> мало. В BizGen используем два: слои внутри core и acyclic slices модулей.
+        </p>
+
+        <div class="duo-grid">
+          <article class="duo-card">
+            <header class="duo-card__head">
+              <p class="method-card__kicker">Architectures</p>
+              <h3 class="method-card__title"><code>layeredArchitecture()</code></h3>
+              <p class="duo-card__where">→ <code>CoreLayerArchTest</code></p>
+            </header>
+
+            <div class="mini-layers" aria-hidden="true">
+              <span class="mini-layers__row">GeneratorInfo</span>
+              <span class="mini-layers__arrow">↓ может вызывать</span>
+              <span class="mini-layers__row">Generator</span>
+              <span class="mini-layers__arrow">↓ может вызывать</span>
+              <span class="mini-layers__row">Utils</span>
+            </div>
+
+            <ul class="duo-card__list">
+              <li><code>layer / definedBy</code> — имя слоя ↔ пакет</li>
+              <li><code>mayOnlyBeAccessedByLayers</code> — кто сверху</li>
+              <li><code>mayNotBeAccessedByAnyLayer</code> — верхний слой</li>
+              <li><code>consideringOnlyDependenciesInAnyPackage("…core..")</code> —
+                plugin/mcp могут вызывать Info; внутри core направление всё равно строгое</li>
+            </ul>
+
+            <pre class="code code--sm" data-highlight>layeredArchitecture()
+  .consideringOnlyDependenciesInAnyPackage("…core..")
+  .layer("Utils").definedBy("…utils..")
+  .layer("Generator").definedBy("…generator..")
+  .layer("GeneratorInfo").definedBy("…generator_info..")
+  .whereLayer("Utils").mayOnlyBeAccessedByLayers("Generator", "GeneratorInfo")
+  .whereLayer("Generator").mayOnlyBeAccessedByLayers("GeneratorInfo")
+  .whereLayer("GeneratorInfo").mayNotBeAccessedByAnyLayer()</pre>
+          </article>
+
+          <article class="duo-card">
+            <header class="duo-card__head">
+              <p class="method-card__kicker">Slices</p>
+              <h3 class="method-card__title"><code>slices().matching(…)</code></h3>
+              <p class="duo-card__where">→ <code>modulesMustBeFreeOfCycles</code></p>
+            </header>
+
+            <div class="mini-slices" aria-hidden="true">
+              <span class="mini-slices__chip">core</span>
+              <span class="mini-slices__chip">plugin</span>
+              <span class="mini-slices__chip">mcp</span>
+              <span class="mini-slices__chip">perf</span>
+              <span class="mini-slices__note">(*) = первый сегмент после bizgen</span>
+            </div>
+
+            <ul class="duo-card__list">
+              <li>Паттерн <code>ru.eda.plgn.bizgen.(*)..</code> режет код на slices</li>
+              <li><code>beFreeOfCycles()</code> — запрет A→B→A между slices</li>
+              <li>Не путать со слоями: slices — горизонтальные модули, layers — вертикаль внутри core</li>
+            </ul>
+
+            <pre class="code code--sm" data-highlight>slices()
+  .matching("ru.eda.plgn.bizgen.(*)..")
+  .should().beFreeOfCycles()
+  .because("модули не должны образовывать циклы")</pre>
+
+            <p class="duo-card__aside">
+              Ещё в Library (не используем): <code>onionArchitecture()</code>,
+              <code>adhereToPlantUmlDiagram</code>, <code>GeneralCodingRules</code>.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- EXTENSIBILITY -->
+      <section class="deck deck--fill" id="extensibility">
+        <h2 class="section-title">Предикаты и conditions</h2>
+        <p class="section-lead">
+          Когда Fluent API не выражает правило (naming 1:1, полнота реестра) —
+          пишем свои <code>DescribedPredicate</code> и <code>ArchCondition</code>.
+          В BizGen — только в <code>BenchmarkNamingArchTest</code>.
+        </p>
+
+        <div class="pred-flow" aria-label="Схема правила">
+          <div class="pred-flow__step">
+            <span class="pred-flow__label">кто</span>
+            <code>.that(predicate)</code>
+          </div>
+          <span class="pred-flow__arrow" aria-hidden="true">→</span>
+          <div class="pred-flow__step">
+            <span class="pred-flow__label">что должно</span>
+            <code>.should(condition)</code>
+          </div>
+          <span class="pred-flow__arrow" aria-hidden="true">→</span>
+          <div class="pred-flow__step">
+            <span class="pred-flow__label">прогон</span>
+            <code>.check(classes)</code>
+          </div>
+        </div>
+
+        <div class="duo-grid duo-grid--pred">
+          <article class="duo-card">
+            <header class="duo-card__head">
+              <p class="method-card__kicker">Отбор субъектов</p>
+              <h3 class="method-card__title"><code>DescribedPredicate&lt;JavaClass&gt;</code></h3>
+            </header>
+            <p class="duo-card__text">
+              Именованный фильтр. Описание попадает в failure report рядом с нарушителем.
+            </p>
+            <ul class="duo-card__list">
+              <li><code>isAssignableTo(Generator)</code></li>
+              <li>не interface / не <code>ABSTRACT</code></li>
+              <li>без пакета <code>.jmh_generated.</code></li>
+              <li>для бенчмарков: ещё исключить <code>Base*</code> / <code>Str*Benchmark</code></li>
+            </ul>
+            <pre class="code code--sm" data-highlight>DescribedPredicate.describe(
+  "являются конкретными реализациями Generator"
+) { javaClass ->
+  javaClass.isAssignableTo(Generator::class.java)
+    && !javaClass.isInterface
+    && !javaClass.modifiers.contains(ABSTRACT)
+    && !javaClass.name.contains(".jmh_generated.")
+}</pre>
+          </article>
+
+          <article class="duo-card">
+            <header class="duo-card__head">
+              <p class="method-card__kicker">Условие на субъект</p>
+              <h3 class="method-card__title"><code>ArchCondition&lt;JavaClass&gt;</code></h3>
+            </header>
+            <p class="duo-card__text">
+              В <code>check(item, events)</code> решаете, нарушено ли правило.
+              Нарушение — через <code>SimpleConditionEvent.violated</code>.
+            </p>
+            <ul class="duo-card__list">
+              <li>Generator → имя <code>&lt;SimpleName&gt;Benchmark</code> в set</li>
+              <li>Benchmark → имя без суффикса есть в set генераторов</li>
+              <li>Сообщение на русском — видно в CI</li>
+            </ul>
+            <pre class="code code--sm" data-highlight>object : ArchCondition<JavaClass>("иметь <SimpleName>Benchmark") {
+  override fun check(generator: JavaClass, events: ConditionEvents) {
+    val expected = "${generator.simpleName}Benchmark"
+    if (expected !in benchmarkSimpleNames) {
+      events.add(SimpleConditionEvent.violated(
+        generator, "для ${generator.name} ожидается $expected"))
+    }
+  }
+}</pre>
+          </article>
+        </div>
+
+        <div class="pred-formula">
+          <p class="pred-formula__note">
+            Три правила naming — единственное место с custom API.
+            Остальное закрыто Lang + Library.
+          </p>
+          <pre class="code code--sm" data-highlight>ArchRuleDefinition.classes()
+  .that(isConcreteGenerator())        // DescribedPredicate
+  .should(haveBenchmarkNamed(names))  // ArchCondition
+  .because("для каждого генератора — JMH-бенчмарк <Name>Benchmark")
+  .check(importedClasses)</pre>
+        </div>
+      </section>
+
+      <!-- PROJECT MAP -->
+      <section class="deck deck--fill" id="project">
+        <h2 class="section-title">Карта проекта</h2>
+        <p class="section-lead">
+          ArchUnit читает bytecode на test-classpath, сам в runtime не входит
+        </p>
+
+        <div class="map-layout">
+          <div class="graph graph--fill">
+            <svg viewBox="0 0 640 320" role="img" aria-label="Граф модулей Ru BizGen">
+              <defs>
+                <marker id="arrCyan" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                  <path d="M0,0 L7,3 L0,6 Z" fill="#476bf0" />
+                </marker>
+                <marker id="arrAmber" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                  <path d="M0,0 L7,3 L0,6 Z" fill="#8b95a8" />
+                </marker>
+              </defs>
+
+              <path class="graph__edge" data-from="plugin" data-to="core"
+                    d="M140,68 L260,148" marker-end="url(#arrCyan)" />
+              <path class="graph__edge" data-from="mcp" data-to="core"
+                    d="M320,68 L320,148" marker-end="url(#arrCyan)" />
+              <path class="graph__edge" data-from="perf" data-to="core"
+                    d="M500,68 L380,148" marker-end="url(#arrCyan)" />
+
+              <path class="graph__edge graph__edge--dashed" data-from="arch" data-to="core"
+                    d="M320,248 L320,192" marker-end="url(#arrAmber)" />
+              <path class="graph__edge graph__edge--dashed" data-from="arch" data-to="mcp"
+                    d="M250,270 L160,270 L160,68 L250,68" marker-end="url(#arrAmber)" />
+              <path class="graph__edge graph__edge--dashed" data-from="arch" data-to="perf"
+                    d="M390,270 L540,270 L540,68 L500,68" marker-end="url(#arrAmber)" />
+
+              <g class="graph__node" data-node="plugin" transform="translate(70,24)">
+                <rect width="140" height="44" rx="6" />
+                <text x="70" y="28" text-anchor="middle">plugin</text>
+              </g>
+              <g class="graph__node" data-node="mcp" transform="translate(250,24)">
+                <rect width="140" height="44" rx="6" />
+                <text x="70" y="28" text-anchor="middle">mcp</text>
+              </g>
+              <g class="graph__node" data-node="perf" transform="translate(430,24)">
+                <rect width="140" height="44" rx="6" />
+                <text x="70" y="28" text-anchor="middle">perf</text>
+              </g>
+              <g class="graph__node" data-node="core" transform="translate(250,148)">
+                <rect width="140" height="44" rx="6" />
+                <text x="70" y="28" text-anchor="middle">core</text>
+              </g>
+              <g class="graph__node" data-node="arch" transform="translate(250,248)">
+                <rect width="140" height="44" rx="6" />
+                <text x="70" y="28" text-anchor="middle">archunit</text>
+              </g>
+            </svg>
+            <div class="graph__legend">
+              <span class="graph__legend-item"><i class="graph__swatch graph__swatch--solid"></i> runtime dep</span>
+              <span class="graph__legend-item"><i class="graph__swatch graph__swatch--dash"></i> test classpath</span>
+            </div>
+          </div>
+
+          <aside class="map-side">
+            <div class="map-mod" data-map="core">
+              <h3 class="map-mod__name">core</h3>
+              <p class="map-mod__text">Kotlin stdlib only. Не знает о plugin / mcp / perf.</p>
+            </div>
+            <div class="map-mod" data-map="plugin">
+              <h3 class="map-mod__name">plugin</h3>
+              <p class="map-mod__text">IntelliJ-адаптер → core. Правила границ — в <code>PluginBoundaryArchTest</code>.</p>
+            </div>
+            <div class="map-mod" data-map="mcp">
+              <h3 class="map-mod__name">mcp</h3>
+              <p class="map-mod__text">Ktor + MCP SDK → только core. Без IntelliJ.</p>
+            </div>
+            <div class="map-mod" data-map="perf">
+              <h3 class="map-mod__name">perf</h3>
+              <p class="map-mod__text">JMH + core. На classpath archunit через <code>jmhApiByConf</code>.</p>
+            </div>
+            <div class="map-mod map-mod--arch" data-map="arch">
+              <h3 class="map-mod__name">archunit</h3>
+              <p class="map-mod__text">test-only, в <code>check</code>. Читает bytecode core / mcp / perf (+ JMH). ArchUnit 1.5.0.</p>
+            </div>
+            <div class="callout callout--tight">
+              <strong>Почему plugin отдельно.</strong>
+              <code>archunit → plugin</code> тянет резолв IntelliJ Platform.
+              Поэтому <code>plugin ↛ mcp/perf/Ktor</code> живут внутри plugin-модуля.
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- BOUNDARIES -->
+      <section class="deck" id="boundaries">
+        <h2 class="section-title">Границы модулей</h2>
+        <p class="section-lead">
+          Файл <code>ModuleBoundaryArchTest.kt</code> — семь правил в
+          <code>:ru-bizgen-archunit</code>.
+        </p>
+
+        <div class="rule-grid rule-grid--2">
+        <article class="rule">
+          <h3 class="rule__name">coreMustNotDependOnAdapters</h3>
+          <p class="rule__because">«ядро не должно зависеть от адаптеров (plugin, mcp, perf)»</p>
+          <pre class="code" data-highlight>noClasses().that().resideInAnyPackage("…core..")
+  .should().dependOnClassesThat().resideInAnyPackage(
+    "…plugin..", "…mcp..", "…perf..")</pre>
+          <p class="rule__human"><code>core</code> остаётся переиспользуемым ядром без знания об адаптерах.</p>
+          <div class="rule__flow">
+            <span class="badge badge--ok">plugin → core</span>
+            <span class="badge badge--bad">core → plugin</span>
+          </div>
+          <details class="break">
+            <summary>Что сломает правило?</summary>
+            <div class="break-body">Импорт <code>ru.eda.plgn.bizgen.mcp.ToolDispatcher</code> из класса в <code>core</code>.</div>
+          </details>
+        </article>
+
+        <article class="rule">
+          <h3 class="rule__name">coreMustNotDependOnForbiddenThirdParty</h3>
+          <p class="rule__because">«ядро не должно зависеть от фреймворков адаптеров и инструментов бенчмаркинга»</p>
+          <pre class="code" data-highlight>noClasses().that().resideInAnyPackage("…core..")
+  .should().dependOnClassesThat().resideInAnyPackage(
+    "com.intellij..", "com.jetbrains..", "io.ktor..",
+    "io.modelcontextprotocol..", "org.openjdk.jmh..", "org.kodein..")</pre>
+          <p class="rule__human">Bytecode-страховка к Gradle-контракту «core = stdlib only».</p>
+          <details class="break">
+            <summary>Что сломает правило?</summary>
+            <div class="break-body">Любой <code>import com.intellij.openapi…</code> или <code>io.ktor…</code> в <code>core</code>.</div>
+          </details>
+        </article>
+
+        <article class="rule">
+          <h3 class="rule__name">perfMustNotDependOnPluginOrMcp</h3>
+          <p class="rule__because">«perf не должен зависеть от plugin и mcp»</p>
+          <pre class="code" data-highlight>noClasses().that().resideInAnyPackage("…perf..")
+  .should().dependOnClassesThat().resideInAnyPackage(
+    "…plugin..", "…mcp..")</pre>
+          <p class="rule__human">Бенчмарки меряют генераторы ядра, не UI и не HTTP-транспорт.</p>
+          <details class="break">
+            <summary>Что сломает правило?</summary>
+            <div class="break-body">Зависимость JMH-класса от Ktor/MCP или от plugin actions.</div>
+          </details>
+        </article>
+
+        <article class="rule">
+          <h3 class="rule__name">mcpMustNotDependOnPluginOrPerf</h3>
+          <p class="rule__because">«mcp не должен зависеть от plugin и perf»</p>
+          <pre class="code" data-highlight>noClasses().that().resideInAnyPackage("…mcp..")
+  .should().dependOnClassesThat().resideInAnyPackage(
+    "…plugin..", "…perf..")</pre>
+          <p class="rule__human">MCP-сервер изолирован от IntelliJ-плагина и JMH.</p>
+          <div class="rule__flow">
+            <span class="badge badge--ok">mcp → core</span>
+            <span class="badge badge--bad">mcp → plugin</span>
+          </div>
+          <details class="break">
+            <summary>Что сломает правило?</summary>
+            <div class="break-body">Обращение к <code>BizGenMainAction</code> или к пакету <code>…perf.bench</code> из MCP.</div>
+          </details>
+        </article>
+
+        <article class="rule">
+          <h3 class="rule__name">mcpMustNotDependOnIntelliJ</h3>
+          <p class="rule__because">«mcp не должен зависеть от IntelliJ Platform»</p>
+          <pre class="code" data-highlight>noClasses().that().resideInAnyPackage("…mcp..")
+  .should().dependOnClassesThat().resideInAnyPackage(
+    "com.intellij..", "com.jetbrains..")</pre>
+          <p class="rule__human">Сервер не тащит IDE API (<code>com.intellij..</code> / <code>com.jetbrains..</code>).</p>
+          <details class="break">
+            <summary>Что сломает правило?</summary>
+            <div class="break-body">Использование ApplicationManager или AnAction в MCP-модуле.</div>
+          </details>
+        </article>
+
+        <article class="rule">
+          <h3 class="rule__name">perfMustNotDependOnAdapters</h3>
+          <p class="rule__because">«perf не должен зависеть от IntelliJ Platform, MCP SDK и Ktor»</p>
+          <pre class="code" data-highlight>noClasses().that().resideInAnyPackage("…perf..")
+  .should().dependOnClassesThat().resideInAnyPackage(
+    "com.intellij..", "com.jetbrains..",
+    "io.modelcontextprotocol..", "io.ktor..")</pre>
+          <p class="rule__human">Стек бенчмарков — JMH + core, без чужих адаптеров.</p>
+          <details class="break">
+            <summary>Что сломает правило?</summary>
+            <div class="break-body">Импорт Ktor или MCP SDK из <code>…perf..</code>.</div>
+          </details>
+        </article>
+
+        <article class="rule">
+          <h3 class="rule__name">modulesMustBeFreeOfCycles</h3>
+          <p class="rule__because">«модули ru.eda.plgn.bizgen не должны образовывать циклических зависимостей»</p>
+          <pre class="code" data-highlight>slices()
+  .matching("ru.eda.plgn.bizgen.(*)..")
+  .should().beFreeOfCycles()</pre>
+          <p class="rule__human">Top-level slice = <code>core</code> / <code>plugin</code> / <code>mcp</code> / <code>perf</code>. Цикл A→B→A падает тестом.</p>
+          <details class="break">
+            <summary>Что сломает правило?</summary>
+            <div class="break-body">Взаимные зависимости пакетов разных модульных префиксов (например mcp ↔ plugin).</div>
+          </details>
+        </article>
+        </div>
+      </section>
+
+      <!-- 6. PLUGIN -->
+      <section class="deck" id="plugin">
+        <h2 class="section-title">Границы plugin</h2>
+        <p class="section-lead">
+          <code>PluginBoundaryArchTest.kt</code> в
+          <code>ru-bizgen-plugin/…/archunit/</code> —
+          анализ только пакета <code>ru.eda.plgn.bizgen.plugin</code>.
+        </p>
+
+        <article class="rule">
+          <h3 class="rule__name">pluginMustNotDependOnMcpOrPerf</h3>
+          <p class="rule__because">«plugin не должен зависеть от mcp и perf»</p>
+          <pre class="code" data-highlight>noClasses().that().resideInAnyPackage("…plugin..")
+  .should().dependOnClassesThat().resideInAnyPackage(
+    "…mcp..", "…perf..")</pre>
+          <p class="rule__human">IDE-плагин говорит только с <code>core</code>.</p>
+          <div class="rule__flow">
+            <span class="badge badge--ok">plugin → core</span>
+            <span class="badge badge--bad">plugin → mcp</span>
+            <span class="badge badge--bad">plugin → perf</span>
+          </div>
+          <details class="break">
+            <summary>Что сломает правило?</summary>
+            <div class="break-body">Импорт классов MCP или JMH из action/service плагина.</div>
+          </details>
+        </article>
+
+        <article class="rule">
+          <h3 class="rule__name">pluginMustNotDependOnMcpStack</h3>
+          <p class="rule__because">«plugin не должен зависеть от MCP SDK и Ktor»</p>
+          <pre class="code" data-highlight>noClasses().that().resideInAnyPackage("…plugin..")
+  .should().dependOnClassesThat().resideInAnyPackage(
+    "io.modelcontextprotocol..", "io.ktor..")</pre>
+          <p class="rule__human">Даже без прямого project-dependency на mcp нельзя «подтянуть» чужой стек библиотекой.</p>
+          <details class="break">
+            <summary>Что сломает правило?</summary>
+            <div class="break-body">Добавление <code>ktor-server-netty</code> в plugin и использование его типов.</div>
+          </details>
+        </article>
+      </section>
+
+      <!-- 7. LAYERS -->
+      <section class="deck deck--fill" id="layers">
+        <h2 class="section-title">Слои внутри core</h2>
+        <p class="section-lead">
+          <code>CoreLayerArchTest</code> — направление зависимостей только внутри
+          <code>ru.eda.plgn.bizgen.core..</code>.
+        </p>
+
+        <div class="layers-layout">
+          <div class="layers-diagram">
+            <svg class="layers-svg" viewBox="0 0 280 280" role="img" aria-label="Слои core">
+              <defs>
+                <marker id="arrowHead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                  <path d="M0,0 L6,3 L0,6 Z" fill="#476bf0" />
+                </marker>
+              </defs>
+              <rect class="layer-box" x="24" y="16" width="232" height="52" rx="8" />
+              <text x="140" y="48" text-anchor="middle">GeneratorInfo</text>
+              <path class="arrow" d="M140,68 L140,88" />
+              <rect class="layer-box" x="24" y="88" width="232" height="52" rx="8" />
+              <text x="140" y="120" text-anchor="middle">Generator</text>
+              <path class="arrow" d="M140,140 L140,160" />
+              <rect class="layer-box" x="24" y="160" width="232" height="52" rx="8" />
+              <text x="140" y="192" text-anchor="middle">Utils</text>
+              <text x="140" y="248" text-anchor="middle" fill="#6b7285" font-size="12">доступ снизу вверх по стрелкам</text>
+            </svg>
+          </div>
+
+          <div class="layers-body">
+            <article class="rule">
+              <h3 class="rule__name">coreLayersMustRespectDependencyDirection</h3>
+              <p class="rule__because">«внутри core: Utils ← Generator ← GeneratorInfo»</p>
+              <pre class="code" data-highlight>layeredArchitecture()
+  .consideringOnlyDependenciesInAnyPackage("…core..")
+  .layer("Utils").definedBy("…core.utils..")
+  .layer("Generator").definedBy("…core.generator..")
+  .layer("GeneratorInfo").definedBy("…core.generator_info..")
+  .whereLayer("Utils").mayOnlyBeAccessedByLayers("Generator", "GeneratorInfo")
+  .whereLayer("Generator").mayOnlyBeAccessedByLayers("GeneratorInfo")
+  .whereLayer("GeneratorInfo").mayNotBeAccessedByAnyLayer()</pre>
+              <ul class="compact-list">
+                <li><strong>Utils</strong> — хелперы; вызывают Generator и Info</li>
+                <li><strong>Generator</strong> — алгоритмы; без метаданных</li>
+                <li><strong>GeneratorInfo</strong> — реестр; верхний слой</li>
+                <li><strong>consideringOnly…</strong> — plugin/mcp могут звать Info</li>
+              </ul>
+              <details class="break">
+                <summary>Что сломает правило?</summary>
+                <div class="break-body">Импорт <code>GeneratorInfoProvider</code> из <code>…generator.impl</code>, или generator из <code>utils</code>.</div>
+              </details>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- BENCHMARKS -->
+      <section class="deck deck--fill" id="benchmarks">
+        <h2 class="section-title">Naming Generator ↔ Benchmark</h2>
+
+        <div class="bench-story">
+          <div class="bench-main">
+            <aside class="bench-examples">
+              <div class="bench-lead">
+                <h3 class="bench-lead__title">BenchmarkNamingArchTest</h3>
+                <p class="bench-lead__text">
+                  1:1 соответствие имён Generator ↔ JMH и счёт |Info| == |Bench|.<br />
+                  Fluent API тут не хватает: custom DescribedPredicate + ArchCondition.
+                </p>
+              </div>
+
+              <div class="bench-contract" aria-label="Контракт 31 = 31 ↔ 31">
+                <div class="bench-contract__pill">
+                  <span class="bench-contract__n">31</span>
+                  <div class="bench-contract__meta">
+                    <span class="bench-contract__label">GeneratorInfo</span>
+                    <code>GeneratorInfoProvider</code>
+                  </div>
+                </div>
+                <span class="bench-contract__op" aria-hidden="true">=</span>
+                <div class="bench-contract__pill">
+                  <span class="bench-contract__n">31</span>
+                  <div class="bench-contract__meta">
+                    <span class="bench-contract__label">Generators</span>
+                    <code>…core.generator.impl</code>
+                  </div>
+                </div>
+                <span class="bench-contract__op" aria-hidden="true">↔</span>
+                <div class="bench-contract__pill">
+                  <span class="bench-contract__n">31</span>
+                  <div class="bench-contract__meta">
+                    <span class="bench-contract__label">Benchmarks</span>
+                    <code>…perf.bench.impl</code>
+                  </div>
+                </div>
+              </div>
+
+              <div class="bench-pairs-card">
+                <header class="bench-examples__head">
+                  <p class="method-card__kicker">Живые пары из кода</p>
+                  <h3 class="bench-examples__title">Как выглядит 1:1</h3>
+                </header>
+
+                <ul class="bench-pairs">
+                  <li class="bench-pair">
+                    <code class="bench-pair__gen">InnLegalGenerator</code>
+                    <span class="bench-pair__arrow" aria-hidden="true">→</span>
+                    <code class="bench-pair__bench">InnLegalGeneratorBenchmark</code>
+                  </li>
+                  <li class="bench-pair bench-pair--alt">
+                    <code class="bench-pair__gen">UuidAsStrGenerator</code>
+                    <span class="bench-pair__arrow" aria-hidden="true">→</span>
+                    <code class="bench-pair__bench">UuidAsStrGeneratorBenchmark</code>
+                  </li>
+                </ul>
+
+                <div class="bench-hierarchy" aria-label="Иерархия JMH">
+                  <span class="bench-hierarchy__row">BaseGeneratorBenchmark&lt;T&gt;</span>
+                  <div class="bench-hierarchy__fork">
+                    <span class="bench-hierarchy__branch">
+                      <span class="bench-hierarchy__arrow">↘</span>
+                      <span class="bench-hierarchy__row">Str* → ×30 string</span>
+                    </span>
+                    <span class="bench-hierarchy__branch">
+                      <span class="bench-hierarchy__arrow">↘</span>
+                      <span class="bench-hierarchy__row">Uuid…Benchmark</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            <div class="bench-gates" role="list">
+              <article class="bench-gate" role="listitem">
+                <div class="bench-gate__head">
+                  <span class="bench-gate__n">01</span>
+                  <div>
+                    <p class="method-card__kicker">Полнота реестра</p>
+                    <h3 class="bench-gate__title">count == Info.size</h3>
+                  </div>
+                </div>
+                <pre class="code code--sm" data-highlight>@ArchTest
+fun concreteBenchmarkCountMatchesGeneratorInfos(importedClasses: JavaClasses) {
+  concreteBenchmarks(importedClasses).size shouldBe GeneratorInfoProvider.generatorInfos.size
+}</pre>
+                <p class="bench-gate__fail">
+                  Сломает: новый <code>FooGeneratorInfo</code> без JMH-класса.
+                </p>
+              </article>
+
+              <article class="bench-gate" role="listitem">
+                <div class="bench-gate__head">
+                  <span class="bench-gate__n">02</span>
+                  <div>
+                    <p class="method-card__kicker">Generator → Benchmark</p>
+                    <h3 class="bench-gate__title">есть &lt;Name&gt;Benchmark</h3>
+                  </div>
+                </div>
+                <pre class="code code--sm" data-highlight>@ArchTest
+fun everyConcreteGeneratorHasMatchingBenchmark(importedClasses: JavaClasses) {
+  val benchmarkSimpleNames = concreteBenchmarks(importedClasses).map { it.simpleName }.toSet()
+
+  ArchRuleDefinition.classes()
+    .that(isConcreteGenerator())
+    .should(haveBenchmarkNamed(benchmarkSimpleNames))
+    .because("для каждого генератора должен существовать JMH-бенчмарк с именем &lt;GeneratorSimpleName&gt;Benchmark")
+    .check(importedClasses)
+}</pre>
+              </article>
+
+              <article class="bench-gate" role="listitem">
+                <div class="bench-gate__head">
+                  <span class="bench-gate__n">03</span>
+                  <div>
+                    <p class="method-card__kicker">Benchmark → Generator</p>
+                    <h3 class="bench-gate__title">зеркало, без сирот</h3>
+                  </div>
+                </div>
+                <p class="bench-gate__text">
+                  <code>removeSuffix("Benchmark")</code> ∈ concrete Generators.
+                  Вместе с 02 — полное 1:1.
+                </p>
+                <pre class="code code--sm" data-highlight>@ArchTest
+fun everyConcreteBenchmarkHasMatchingGenerator(importedClasses: JavaClasses) {
+  val generatorSimpleNames = concreteGenerators(importedClasses).map { it.simpleName }.toSet()
+
+  ArchRuleDefinition.classes()
+    .that(isConcreteBenchmark())
+    .should(haveGeneratorNamed(generatorSimpleNames))
+    .because("имя каждого бенчмарка должно совпадать с именем генератора плюс суффикс Benchmark")
+    .check(importedClasses)
+}</pre>
+                <p class="bench-gate__fail">
+                  Сломает: «осиротевший»
+                  <code>LegacyInnBenchmark</code> без генератора.
+                </p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. HOWTO -->
+      <section class="deck" id="howto">
+        <h2 class="section-title">Как добавить новое правило</h2>
+        <p class="section-lead">Короткий чеклист, чтобы правило попало в CI и осталось читаемым.</p>
+        <ol class="checklist">
+          <li>Нужен bytecode <strong>plugin</strong>? → <code>PluginBoundaryArchTest</code>. Иначе → <code>ru-bizgen-archunit</code>.</li>
+          <li>Импорт пакетов: <code>@AnalyzeClasses(packages = ["ru.eda.plgn.bizgen"], …)</code> или уже существующий scope.</li>
+          <li>Предпочитайте готовый Fluent API; custom predicate/condition — только если naming/полнота.</li>
+          <li>Всегда <code>.because("…")</code> на русском — это текст падения в CI.</li>
+          <li>При <code>noClasses()</code> помните инверсию: <code>dependOnClassesThat</code>.</li>
+          <li>Прогон: <code>:ru-bizgen-archunit:test</code> (и plugin-тест при правилах plugin).</li>
+          <li>При желании — добавьте блок в эту документацию (тот же шаблон rule).</li>
+        </ol>
+      </section>
+
+      <!-- 10. RUN -->
+      <section class="deck" id="run">
+        <h2 class="section-title">Запуск</h2>
+        <p class="section-lead">ArchUnit входит в обычный жизненный цикл тестов Gradle.</p>
+
+        <pre class="code" data-highlight># все правила arch-модуля (без IntelliJ download)
+./gradlew :ru-bizgen-archunit:test
+
+# границы plugin (нужна IDE на classpath plugin-тестов)
+./gradlew :ru-bizgen-plugin:test --tests "*PluginBoundaryArchTest*"
+
+# вместе с остальными быстрыми проверками
+./gradlew check</pre>
+
+        <ul>
+          <li>Модуль: <code>ru-bizgen-archunit</code> (только <code>src/test</code>)</li>
+          <li>Зависимости: core, mcp, perf + <code>jmhApiByConf</code>, <code>archunit-junit5</code></li>
+          <li>Исходники правил:
+            <code>…/archunit/ModuleBoundaryArchTest.kt</code>,
+            <code>CoreLayerArchTest.kt</code>,
+            <code>BenchmarkNamingArchTest.kt</code>,
+            <code>plugin/…/PluginBoundaryArchTest.kt</code>
+          </li>
+        </ul>
+
+        <p style="margin-top:2rem;color:var(--ink-muted)">
+          Открыть эту страницу снова:
+          <code>docs/presentations/archunit/index.html</code>
+        </p>
+      </section>
+      </div>
+    </main>
+  </div>
+
+  <p class="kbd-bar" aria-hidden="true"><kbd>←</kbd> <kbd>→</kbd> · <kbd>J</kbd> <kbd>K</kbd></p>
+  <script src="../../presentation-template/app.js"></script>
+</body>
+</html>

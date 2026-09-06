@@ -1,0 +1,22 @@
+services:
+  ru-bizgen-mcp:
+    build:
+      context: ..
+      dockerfile: ru-bizgen-mcp/Dockerfile
+    init: true
+    ports:
+      - "${MCP_PORT:-8081}:8081"
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    mem_limit: 512m
+    cpus: "1.0"
+    restart: unless-stopped
