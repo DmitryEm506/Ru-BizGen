@@ -1,5 +1,6 @@
 package ru.eda.plgn.bizgen.mcp
 
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -49,11 +50,12 @@ internal class ToolDispatcherTest {
     }
 
     @Test
-    internal fun `Should not return structuredContent for single execution`() {
+    internal fun `Should return structuredContent for single execution`() {
       val info = infos.first { it.id.startsWith("InnLegal_") }
       val result = ToolDispatcher.execute(info.category, TypeKeyResolver.resolve(info), count = 1, infos = infos)
 
-      result.structuredContent shouldBe null
+      // Тул объявляет outputSchema, поэтому структурированный результат обязателен и при count = 1.
+      result.structuredContent shouldNotBe null
     }
   }
 
@@ -178,11 +180,30 @@ internal class ToolDispatcherTest {
     }
 
     @Test
-    internal fun `Should not contain structuredContent when count is 1`() {
+    internal fun `Should contain structuredContent when count is 1`() {
       val info = infos.first { it.id.startsWith("UUID_") }
-      val result = ToolDispatcher.execute(info.category, TypeKeyResolver.resolve(info), count = 1, infos = infos)
+      val typeKey = TypeKeyResolver.resolve(info)
+      val result = ToolDispatcher.execute(info.category, typeKey, count = 1, infos = infos)
 
-      result.structuredContent shouldBe null
+      val structured = result.structuredContent
+      structured shouldNotBe null
+
+      structured!!.jsonObject["type"]!!.jsonPrimitive.content shouldBe typeKey
+      structured.jsonObject["count"]!!.jsonPrimitive.intOrNull shouldBe 1
+      structured.jsonObject["values"]!!.jsonArray shouldHaveSize 1
+      structured.jsonObject["requestedCount"]!!.jsonPrimitive.intOrNull shouldBe 1
+    }
+
+    @Test
+    internal fun `Should always declare every field required by outputSchema`() {
+      val info = infos.first { it.id.startsWith("UUID_") }
+      val result = ToolDispatcher.execute(info.category, TypeKeyResolver.resolve(info), count = 2, infos = infos)
+
+      val structured = result.structuredContent!!.jsonObject
+
+      listOf("type", "count", "values", "requestedCount", "partial").forEach { field ->
+        structured.keys shouldContain field
+      }
     }
   }
 

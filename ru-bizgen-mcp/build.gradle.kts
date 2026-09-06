@@ -9,7 +9,14 @@ version = rootProject.version
 
 application {
   mainClass = "ru.eda.plgn.bizgen.mcp.McpServerAppKt"
-  applicationDefaultJvmArgs = listOf("-Dmcp.version=${project.version}")
+  // Логи сервера на русском: без явной кодировки они нечитаемы в консоли Windows
+  // (в Docker на Linux локаль уже UTF-8).
+  applicationDefaultJvmArgs = listOf(
+    "-Dmcp.version=${project.version}",
+    "-Dfile.encoding=UTF-8",
+    "-Dsun.stdout.encoding=UTF-8",
+    "-Dsun.stderr.encoding=UTF-8",
+  )
 }
 
 dependencies {

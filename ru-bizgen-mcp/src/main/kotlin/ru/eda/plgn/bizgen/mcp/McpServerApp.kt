@@ -90,6 +90,7 @@ private fun Server.addCategoryTool(
     description = description,
     inputSchema = inputSchema,
     title = title,
+    outputSchema = categoryOutputSchema(),
     toolAnnotations = ToolAnnotations(
       readOnlyHint = true,
       idempotentHint = true,
@@ -178,6 +179,44 @@ private fun buildCategoryInputSchema(categoryInfos: List<GeneratorInfo<*>>): Too
     required = listOf("type"),
   )
 }
+
+/**
+ * Строит JSON Schema результата категорийного тулa.
+ *
+ * Схема одинакова для всех пяти тулов: [ToolDispatcher] возвращает `structuredContent` единого вида
+ * независимо от категории и от значения `count`.
+ */
+private fun categoryOutputSchema(): ToolSchema = ToolSchema(
+  properties = buildJsonObject {
+    putJsonObject("type") {
+      put("type", JsonPrimitive("string"))
+      put("description", JsonPrimitive("Type-key генератора, которым получены значения"))
+    }
+    putJsonObject("count") {
+      put("type", JsonPrimitive("integer"))
+      put("description", JsonPrimitive("Количество фактически сгенерированных уникальных значений"))
+    }
+    putJsonObject("values") {
+      put("type", JsonPrimitive("array"))
+      putJsonObject("items") {
+        put("type", JsonPrimitive("string"))
+      }
+      put("description", JsonPrimitive("Сгенерированные значения"))
+    }
+    putJsonObject("requestedCount") {
+      put("type", JsonPrimitive("integer"))
+      put("description", JsonPrimitive("Запрошенное количество значений"))
+    }
+    putJsonObject("partial") {
+      put("type", JsonPrimitive("boolean"))
+      put(
+        "description",
+        JsonPrimitive("true, если уникальных значений получилось меньше запрошенного количества")
+      )
+    }
+  },
+  required = listOf("type", "count", "values", "requestedCount", "partial"),
+)
 
 private fun startStreamableHttpServer(server: Server, host: String, port: Int) {
   embeddedServer(factory = Netty, host = host, port = port) {

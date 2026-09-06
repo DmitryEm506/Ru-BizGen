@@ -18,8 +18,12 @@ import ru.eda.plgn.bizgen.core.generator_info.GeneratorInfo
  * делегируют сюда вызов по `(category, type, count)`.
  *
  * Lookup-таблица `Map<Pair<GeneratorCategory, String>, GeneratorInfo<*>>` строится
- * один раз из списка всех генераторов. Ключ — `(category, typeKey)`, где `typeKey`
- * вычисляется через [TypeKeyResolver].
+ * один раз для каждого списка генераторов и кэшируется (см. [lookupFor]). Ключ —
+ * `(category, typeKey)`, где `typeKey` вычисляется через [TypeKeyResolver].
+ *
+ * Успешный результат всегда содержит `structuredContent` по схеме, объявленной тулом
+ * в `outputSchema`: спецификация MCP требует, чтобы при объявленной выходной схеме
+ * структурированный результат присутствовал в каждом неошибочном ответе.
  *
  * @author Dmitry_Emelyanenko
  */
@@ -32,6 +36,28 @@ object ToolDispatcher {
 
   /** Множитель попыток для bounded retry при дедупликации. */
   private const val RETRY_MULTIPLIER: Int = 3
+
+  /**
+   * Закэшированная lookup-таблица вместе со списком, из которого она построена.
+   *
+   * @property infos список генераторов, по которому построена [lookup]
+   * @property lookup таблица `(категория, type-key) -> генератор`
+   */
+  private class LookupCache(
+    val infos: List<GeneratorInfo<*>>,
+    val lookup: Map<Pair<GeneratorCategory, String>, GeneratorInfo<*>>,
+  )
+
+  /**
+   * Кэш последней построенной lookup-таблицы.
+   *
+   * В проде [execute] всегда получает один и тот же список [GeneratorInfoProvider.generatorInfos],
+   * поэтому сравнения по ссылке достаточно. Тесты передают собственные списки — для них таблица
+   * просто перестраивается. Гонка безопасна: в худшем случае таблица построится дважды,
+   * а сам результат неизменяемый.
+   */
+  @Volatile
+  private var lookupCache: LookupCache? = null
 
   /**
    * Выполняет генерацию для заданных параметров.
@@ -48,7 +74,7 @@ object ToolDispatcher {
     count: Int = 1,
     infos: List<GeneratorInfo<*>>,
   ): CallToolResult {
-    val lookup = buildLookup(infos)
+    val lookup = lookupFor(infos)
     val key = category to type
 
     val info = lookup[key]
@@ -107,19 +133,12 @@ object ToolDispatcher {
 
     val isPartial = values.size < count
 
-    return if (count == 1 && values.size == 1) {
-      val value = values.first()
-      logger.debug("Инструмент type='{}' выполнен успешно: {}", type, value)
-      CallToolResult(
-        content = listOf(TextContent(value)),
-      )
-    } else {
-      logger.debug("Инструмент type='{}' выполнен: {}/{} значений (partial={})", type, values.size, count, isPartial)
-      CallToolResult(
-        content = listOf(TextContent(values.joinToString("\n"))),
-        structuredContent = buildStructuredContent(type, count, values, isPartial),
-      )
-    }
+    logger.debug("Инструмент type='{}' выполнен: {}/{} значений (partial={})", type, values.size, count, isPartial)
+
+    return CallToolResult(
+      content = listOf(TextContent(values.joinToString("\n"))),
+      structuredContent = buildStructuredContent(type, count, values, isPartial),
+    )
   }
 
   /**
@@ -136,10 +155,23 @@ object ToolDispatcher {
     putJsonArray("values") {
       values.forEach { add(JsonPrimitive(it)) }
     }
-    if (isPartial) {
-      put("partial", JsonPrimitive(true))
-    }
+    // Поле присутствует всегда, чтобы ответ соответствовал outputSchema без опциональных ветвей.
+    put("partial", JsonPrimitive(isPartial))
     put("requestedCount", JsonPrimitive(count))
+  }
+
+  /**
+   * Возвращает lookup-таблицу для [infos], переиспользуя ранее построенную.
+   *
+   * @param infos список генераторов
+   * @return таблица `(категория, type-key) -> генератор`
+   */
+  private fun lookupFor(infos: List<GeneratorInfo<*>>): Map<Pair<GeneratorCategory, String>, GeneratorInfo<*>> {
+    lookupCache?.let { cached ->
+      if (cached.infos === infos) return cached.lookup
+    }
+
+    return buildLookup(infos).also { lookupCache = LookupCache(infos, it) }
   }
 
   private fun buildLookup(infos: List<GeneratorInfo<*>>): Map<Pair<GeneratorCategory, String>, GeneratorInfo<*>> =

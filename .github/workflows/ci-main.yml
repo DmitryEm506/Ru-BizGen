@@ -42,6 +42,22 @@ jobs:
       - name: Build plugin
         run: ./gradlew :ru-bizgen-plugin:buildPlugin -x test --no-daemon
 
+      # IntelliJ Plugin Verifier на границах заявленного диапазона совместимости
+      # (sinceBuild = 242 и целевая сборка) — см. pluginVerification
+      # в ru-bizgen-plugin/build.gradle.kts. Ловит несовместимости API, которых
+      # не видно ни на компиляции, ни в тестах: плагин собирается под одну версию
+      # платформы, а объявлен совместимым со всем диапазоном.
+      - name: Verify plugin
+        run: ./gradlew :ru-bizgen-plugin:verifyPlugin --no-daemon
+
+      - name: Upload plugin verifier report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: plugin-verifier-report
+          path: ${{ github.workspace }}/ru-bizgen-plugin/build/reports/pluginVerifier
+          if-no-files-found: ignore
+
       - name: Upload coverage report
         uses: actions/upload-artifact@v7
         with:

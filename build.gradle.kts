@@ -29,3 +29,20 @@ dependencies {
 
   dokka(project(":ru-bizgen-perf"))
 }
+
+// Корневой отчёт — тот, что публикуется в CI и в Dokka (build/reports/kover).
+// Фильтры отчётов задаются на уровне того проекта, чей отчёт формируется,
+// поэтому исключения из ru-bizgen-plugin сюда не наследуются и дублируются здесь.
+kover {
+  reports {
+    total {
+      filters {
+        excludes {
+          packages(
+            "ru.eda.plgn.bizgen.plugin.ui"
+          )
+        }
+      }
+    }
+  }
+}

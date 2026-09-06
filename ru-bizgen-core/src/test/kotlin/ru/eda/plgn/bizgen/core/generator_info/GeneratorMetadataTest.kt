@@ -3,7 +3,6 @@ package ru.eda.plgn.bizgen.core.generator_info
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldNotBeBlank
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import ru.eda.plgn.bizgen.core.utils.LuhnAlgorithm
@@ -16,7 +15,6 @@ import java.util.UUID
  *
  * @author Dmitry_Emelyanenko
  */
-@DisplayName("Метаданные генераторов")
 internal class GeneratorMetadataTest {
 
   /** Контрольный список id → name всех 31 генераторов (защита от случайной правки идентификаторов). */
@@ -90,7 +88,6 @@ internal class GeneratorMetadataTest {
   )
 
   @Nested
-  @DisplayName("5.1 Полнота метаданных")
   inner class CompletenessCases {
 
     @Test
@@ -117,7 +114,6 @@ internal class GeneratorMetadataTest {
   }
 
   @Nested
-  @DisplayName("5.2 Категория соответствует ожидаемой")
   inner class CategoryCases {
 
     @Test
@@ -134,7 +130,6 @@ internal class GeneratorMetadataTest {
   }
 
   @Nested
-  @DisplayName("5.3 Стабильность id и name")
   inner class IdentifierStabilityCases {
 
     @Test
@@ -161,7 +156,6 @@ internal class GeneratorMetadataTest {
   }
 
   @Nested
-  @DisplayName("5.4 Валидность example")
   inner class ExampleValidityCases {
 
     @Test
@@ -263,7 +257,6 @@ internal class GeneratorMetadataTest {
   }
 
   // --- Вспомогательные методы ---
-
   private fun findInfo(idPrefix: String): GeneratorInfo<*> =
     GeneratorInfoProvider.generatorInfos.first { it.id.startsWith(idPrefix) }
 

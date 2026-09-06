@@ -1,4 +1,5 @@
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.extensions.intellijPlatform
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease.Channel
@@ -42,7 +43,14 @@ val integrationTestRuntimeOnly = configurations.getByName("integrationTestRuntim
 }
 
 dependencies {
-  implementation(project(":ru-bizgen-core"))
+  // Kotlin stdlib приходит из IntelliJ Platform (см. kotlin.stdlib.default.dependency=false
+  // в gradle.properties), поэтому транзитивную копию из ru-bizgen-core в плагин не тащим:
+  // вторая копия stdlib в lib/ плагина — источник конфликтов загрузчиков на будущих версиях IDE.
+  // В ru-bizgen-core зависимость остаётся: там она нужна, и ей пользуются mcp/perf/archunit.
+  implementation(project(":ru-bizgen-core")) {
+    exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
+    exclude(group = "org.jetbrains", module = "annotations")
+  }
 
   testImplementation(libs.bundles.tests.integration) {
     exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
@@ -90,6 +98,18 @@ testing {
 // чтобы задачу можно было включить обоими способами из IDE.
 val runIntegrationTests = project.hasProperty("runIntegrationTests") ||
   System.getProperty("runIntegrationTests") == "true"
+
+// Полная матрица verifyPlugin (-PverifyAllIdes) качает по IDE на каждую версию из всех каналов —
+// это гигабайты трафика. По умолчанию проверяются только границы диапазона совместимости.
+val verifyAllIdes = project.hasProperty("verifyAllIdes")
+
+// Минимальная поддерживаемая версия IDE — должна соответствовать sinceBuild ниже.
+val MIN_SUPPORTED_IDE = "2024.2"
+
+// Последний вышедший релиз IDEA. untilBuild = null — это заявка на совместимость со всеми
+// будущими версиями платформы, поэтому каждый новый релиз проверяется верификатором отдельно,
+// не дожидаясь перехода на него. Обновляется при выходе новой версии IDEA.
+val LATEST_IDE = "2026.2"
 
 val integrationTest = intellijPlatformTesting.testIdeUi.register("integrationTest") {
   task {
@@ -144,8 +164,34 @@ intellijPlatform {
 
   pluginVerification {
     ides {
-      select {
-        channels = listOf(Channel.RELEASE, Channel.RC, Channel.PATCH)
+      when (verifyAllIdes) {
+        // Полная матрица: все каналы во всём диапазоне совместимости. Тяжёлая (несколько IDE
+        // по ~1 ГБ каждая), поэтому гоняется вручную через ci-all.yml.
+        true -> select {
+          channels = listOf(Channel.RELEASE, Channel.RC, Channel.PATCH)
+        }
+
+        // Края заявленного диапазона совместимости — именно там вылезают несовместимости API:
+        // минимальная поддерживаемая версия (sinceBuild = 242), целевая сборка и последний
+        // вышедший релиз платформы.
+        false -> {
+          // Нижняя граница: до 2025.3 (253) IDEA публиковалась раздельно, Community-дистрибутива
+          // достаточно — плагин зависит только от com.intellij.modules.platform.
+          create(IntelliJPlatformType.IntellijIdeaCommunity, MIN_SUPPORTED_IDE)
+
+          // Целевая сборка. Тип и способ доставки те же, что у платформы в dependencies выше:
+          // с 253 отдельного IC больше нет, остаётся единый IntellijIdea, а useInstaller = false
+          // берёт дистрибутив из intellij-repository вместо инсталлятора.
+          when (buildNumber.toInt() >= 252) {
+            true -> create(IntelliJPlatformType.IntellijIdea, ideaVersion) { useInstaller = false }
+            else -> create(IntelliJPlatformType.IntellijIdeaCommunity, ideaVersion)
+          }
+
+          // Верхняя граница: последний релиз платформы, если он ушёл вперёд целевой сборки.
+          if (LATEST_IDE != ideaVersion) {
+            create(IntelliJPlatformType.IntellijIdea, LATEST_IDE) { useInstaller = false }
+          }
+        }
       }
     }
   }
@@ -161,12 +207,20 @@ changelog {
 }
 
 kover {
+  // Классы source set'а integrationTest компилируются вместе с плагином и иначе попадают
+  // в отчёт как непокрытый продакшен-код.
+  currentProject {
+    sources {
+      excludedSourceSets.add("integrationTest")
+    }
+  }
+
   reports {
     total {
       filters {
         excludes {
           packages(
-            "ru.eda.plgn.plugin.bizgen.ui"
+            "ru.eda.plgn.bizgen.plugin.ui"
           )
         }
       }

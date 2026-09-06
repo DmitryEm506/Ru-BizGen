@@ -1,7 +1,7 @@
 package ru.eda.plgn.bizgen.plugin.settings.model
 
+import com.intellij.util.xmlb.XmlSerializer
 import ru.eda.plgn.bizgen.plugin.actions.GeneratorActionProvider
-import ru.eda.plgn.bizgen.plugin.deepCopyByJson
 import ru.eda.plgn.bizgen.plugin.di.getBizGenService
 
 /**
@@ -28,6 +28,25 @@ open class BizGenAppSettings {
     actualActions.clear()
     actualActions.addAll(BizGenDefaultAppSettings.getDefault().actualActions)
   }
+
+  /**
+   * Полная копия конфига с новыми ссылками.
+   *
+   * Реализована через round-trip сериализации, а не ручным перечислением полей: новое свойство или
+   * вложенный класс попадают в копию автоматически, без риска забыть скопировать его руками.
+   * Глубина гарантирована — из XML собирается полностью новый граф объектов.
+   *
+   * Используется [XmlSerializer] платформы — тот же механизм, которым настройки персистятся через
+   * `PersistentStateComponent`. Поэтому семантика копии совпадает с семантикой сохранения на диск,
+   * и не требуется отдельная зависимость на библиотеку сериализации.
+   *
+   * Свойства, равные значениям по умолчанию, [XmlSerializer] в XML не пишет — это безопасно:
+   * копия создаётся тем же конструктором без аргументов, то есть стартует с тех же инициализаторов.
+   *
+   * @return независимая копия настроек
+   */
+  fun deepCopy(): BizGenAppSettings =
+    XmlSerializer.deserialize(XmlSerializer.serialize(this), BizGenAppSettings::class.java)
 
   private fun initSettingActions(): MutableList<PersistenceActionSetting> {
     val actions = getBizGenService<GeneratorActionProvider>().getInfos()
@@ -114,6 +133,6 @@ internal object BizGenDefaultAppSettings {
    * @return клон конфигурации по умолчанию
    */
   fun getDefault(): BizGenAppSettings {
-    return DEFAULT.deepCopyByJson()
+    return DEFAULT.deepCopy()
   }
 }
