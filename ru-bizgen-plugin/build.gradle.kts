@@ -140,9 +140,56 @@ val integrationTest = intellijPlatformTesting.testIdeUi.register("integrationTes
       systemProperty("runIntegrationTests", "true")
     }
 
+    // DocsScreenshotsUITest лежит в том же source set, но это не проверка поведения, а генератор
+    // картинок для README: он перезаписывает .github/img. Ночному прогону это не нужно и на
+    // Linux-раннере дало бы кадры с чужими шрифтами, поэтому он только в задаче docsScreenshots.
+    filter {
+      excludeTestsMatching("*DocsScreenshotsUITest")
+    }
+
     // Интеграционные тесты (старт IDE + Driver) тяжёлые и запускаются ночью
     // через ci-integration.yml. По умолчанию отключены, чтобы не попадать в `check`.
     enabled = runIntegrationTests
+  }
+}
+
+// Каталог иллюстраций README и страницы в Marketplace. Переопределяется через
+// `-PdocsImgDir=<путь>` — удобно снять кадры в build/ и сравнить с текущими перед перезаписью.
+val docsImgDir = (project.findProperty("docsImgDir") as String?)
+  ?.let { file(it) }
+  ?: rootProject.file(".github/img")
+
+// Пересъёмка иллюстраций для README и Marketplace: поднимает IDE с плагином, открывает попап
+// генераторов и экран настроек, кладёт обрезанные кадры в .github/img.
+// Ручная задача перед релизом: ~1 минута и реальная IDE, в `check` не входит.
+val docsScreenshots = intellijPlatformTesting.testIdeUi.register("docsScreenshots") {
+  task {
+    val integrationTestSourceSet = sourceSets.getByName("integrationTest")
+    testClassesDirs = integrationTestSourceSet.output.classesDirs
+    classpath = integrationTestSourceSet.runtimeClasspath
+    useJUnitPlatform()
+
+    dependsOn("buildPlugin")
+    systemProperty(
+      "path.to.build.plugin",
+      tasks.buildPlugin.get().archiveFile.get().asFile.absolutePath,
+    )
+    systemProperty(
+      "bizgen.test.ide.version",
+      (project.findProperty("bizgen.test.ide.version") as String?) ?: ideaVersion,
+    )
+    systemProperty("bizgen.docs.img.dir", docsImgDir.absolutePath)
+
+    // Задача запускается явно, поэтому флаг выставляется всегда — без -PrunIntegrationTests.
+    systemProperty("runIntegrationTests", "true")
+
+    filter {
+      includeTestsMatching("*DocsScreenshotsUITest")
+    }
+
+    // Кадры каждый раз снимаются заново: результат задачи — файлы вне build/,
+    // и up-to-date проверка по ним не работает.
+    outputs.upToDateWhen { false }
   }
 }
 

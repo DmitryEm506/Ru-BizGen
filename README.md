@@ -41,7 +41,7 @@
 ## 🧩 Доступные генераторы
 
 <p align="center">
-  <img src=".github/img/generators.png" width="800" alt="Available Generators" />
+  <img src=".github/img/generators.png" width="520" alt="Available Generators" />
 </p>
 
 - 💰 **Банковские реквизиты:** расчётный счёт (RUB, CNY), корреспондентский счёт, БИК, SWIFT (российских банков), IBAN (РФ и Турция)

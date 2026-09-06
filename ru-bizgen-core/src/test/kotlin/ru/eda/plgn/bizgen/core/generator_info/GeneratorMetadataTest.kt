@@ -17,7 +17,12 @@ import java.util.UUID
  */
 internal class GeneratorMetadataTest {
 
-  /** Контрольный список id → name всех 31 генераторов (защита от случайной правки идентификаторов). */
+  /**
+   * Контрольный список id → name всех 31 генераторов (защита от случайной правки идентификаторов).
+   *
+   * Если тест упал из-за нового генератора — список в иллюстрациях тоже устарел:
+   * после правки прогнать `./gradlew :ru-bizgen-plugin:docsScreenshots`.
+   */
   private val expectedIdsAndNames: Map<String, String> = mapOf(
     "UUID_ee2bca00-0586-4a7c-869c-bee1285d0732" to "UUID как строка",
     "AccountRub_0ecdce94-c1e4-447a-8dce-94c1e4747aeb" to "Расчетный RUB счет (20)",
