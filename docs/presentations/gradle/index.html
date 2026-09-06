@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gradle в Ru BizGen</title>
+  <meta name="description" content="Как устроена сборка от lifecycle до convention plugins" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../presentation-template/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#intro">К содержимому</a>
+  <div class="progress" aria-hidden="true"></div>
+
+  <button type="button" class="toc-toggle" aria-expanded="false" aria-controls="toc">Оглавление</button>
+
+  <div class="layout">
+    <aside class="toc" id="toc">
+      <p class="toc__brand">Ru BizGen</p>
+      <p class="toc__sub">Gradle · сборка</p>
+      <nav aria-label="Содержание">
+        <a href="#intro"><span class="toc__num">01</span> Введение</a>
+        <a href="#popularity"><span class="toc__num">02</span> Популярность</a>
+        <a href="#vs-maven"><span class="toc__num">03</span> Gradle vs Maven</a>
+        <a href="#model-run"><span class="toc__num">04</span> Модель и запуск</a>
+        <a href="#lifecycle"><span class="toc__num">05</span> Lifecycle и граф</a>
+        <a href="#caches"><span class="toc__num">06</span> Кэши и скорость</a>
+        <a href="#build-map"><span class="toc__num">07</span> Карта сборки</a>
+        <a href="#conventions"><span class="toc__num">08</span> Composite и conventions</a>
+        <a href="#kotlin-convention"><span class="toc__num">09</span> kotlin-convention</a>
+        <a href="#version-catalog"><span class="toc__num">10</span> Version Catalog</a>
+        <a href="#module-roles"><span class="toc__num">11</span> Роли модулей</a>
+        <a href="#commands-rules"><span class="toc__num">12</span> Команды, CI и правила</a>
+        <a href="#takeaways"><span class="toc__num">13</span> Итог и дальше</a>
+      </nav>
+      <p class="toc__hint">
+        Листать: <kbd>←</kbd> <kbd>→</kbd> или <kbd>J</kbd> <kbd>K</kbd>
+      </p>
+    </aside>
+
+    <main class="main">
+      <div class="deck-chrome">
+        <span class="slide-counter" aria-live="polite">1 / 13</span>
+        <div class="deck-nav">
+          <button type="button" class="deck-nav__btn" data-nav="prev" aria-label="Предыдущий слайд" disabled>
+            <span aria-hidden="true">←</span>
+          </button>
+          <button type="button" class="deck-nav__btn" data-nav="next" aria-label="Следующий слайд">
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-shell">
+      <!-- 01. HERO -->
+      <section class="deck hero is-active" id="intro">
+        <div class="hero__glow" aria-hidden="true"></div>
+        <p class="hero__eyebrow">Ru BizGen Guides · август 2026 · Dmitry Emelyanenko</p>
+        <h1 class="hero__brand">Gradle в Ru BizGen</h1>
+        <p class="hero__title">Как устроена сборка: от lifecycle Gradle до convention plugins в репозитории</p>
+        <p class="hero__lead">
+          Сначала экосистема и модель Gradle, затем карта модулей, composite
+          <code>build-logic</code> и version catalog на коде этого репозитория.
+        </p>
+      </section>
+
+      <!-- 02. POPULARITY — dense: facts + QR + conclusions -->
+      <section class="deck deck--fill" id="popularity">
+        <h2 class="section-title">Популярность Gradle</h2>
+        <p class="section-lead">
+          Gradle — №2 в Java и де-факто стандарт в Android и Kotlin-проектах.
+        </p>
+
+        <div class="history-layout">
+          <div class="history-main">
+            <div class="fact-grid">
+              <div class="fact">
+                <span class="fact__label">Java (JetBrains 2024)</span>
+                <span class="fact__value">~42% vs Maven ~58%</span>
+                <span class="fact__note">среди Java-разработчиков</span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">Android</span>
+                <span class="fact__value">~95% проектов</span>
+                <span class="fact__note">дефолт Android SDK / Android Studio</span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">Новые Kotlin</span>
+                <span class="fact__value">~80%+</span>
+                <span class="fact__note">оценка по GitHub · Gradle Forums</span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">Загрузки</span>
+                <span class="fact__value">20M+/мес</span>
+                <span class="fact__note">оценка Gradle Inc.</span>
+              </div>
+              <div class="fact">
+                <span class="fact__label">Jobs / search</span>
+                <span class="fact__value">Maven ~2–3:1</span>
+                <span class="fact__note">BPF 2024 · дефолт вакансий всё ещё Maven</span>
+              </div>
+            </div>
+
+            <ul class="history-points">
+              <li>Maven шире в классическом enterprise Java и job ads.</li>
+              <li>Gradle доминирует там, где Android, Kotlin и сложный multi-module.</li>
+              <li>Выбор инструмента = экосистема команды, а не только «кто популярнее».</li>
+              <li>Официальный сайт и docs — точка входа в актуальную документацию.</li>
+            </ul>
+
+            <p class="history-links">
+              Официальный сайт:
+              <a href="https://gradle.org" target="_blank" rel="noopener noreferrer">gradle.org</a>
+            </p>
+          </div>
+
+          <aside class="qr-card">
+            <img
+              class="qr-card__img"
+              src="gradle-official-qr.png"
+              width="180"
+              height="180"
+              alt="QR-код на официальный сайт Gradle"
+            />
+            <p class="qr-card__title">Сканируйте → Gradle</p>
+            <p class="qr-card__url">
+              <a href="https://gradle.org" target="_blank" rel="noopener noreferrer">gradle.org</a>
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <!-- 03. VS MAVEN — dense duo + when-to-choose -->
+      <section class="deck deck--fill" id="vs-maven">
+        <h2 class="section-title">Gradle vs Maven</h2>
+        <p class="section-lead">
+          Одна экосистема артефактов — разная модель сборки; плюсы и цена выбора на одном экране.
+        </p>
+
+        <div class="duo-grid">
+          <article class="duo-card">
+            <header class="duo-card__head">
+              <p class="method-card__kicker">Скорость · гибкость</p>
+              <h3 class="method-card__title">Gradle</h3>
+            </header>
+            <ul class="duo-card__list">
+              <li><strong>Модель:</strong> Kotlin DSL, DAG задач, инкрементальность по входам/выходам</li>
+              <li><strong>Скорость:</strong> Configuration Cache, Build Cache, parallel из коробки</li>
+              <li><strong>Гибкость:</strong> Task API и convention plugins без тяжёлого ритуала Maven plugin</li>
+              <li><strong>Масштаб:</strong> multi-project, <code>includeBuild</code>, version catalog для крупных репо</li>
+              <li><strong>Цена:</strong> круче онбординг, чаще churn major, сложнее отлаживать configuration</li>
+            </ul>
+          </article>
+
+          <article class="duo-card">
+            <header class="duo-card__head">
+              <p class="method-card__kicker">Дефолт · предсказуемость</p>
+              <h3 class="method-card__title">Maven</h3>
+            </header>
+            <ul class="duo-card__list">
+              <li><strong>Модель:</strong> декларативный <code>pom.xml</code> и фиксированный lifecycle фаз</li>
+              <li><strong>Предсказуемость:</strong> один «стандарт индустрии», меньше сюрпризов между командами</li>
+              <li><strong>Онбординг:</strong> проще найти людей и готовые корпоративные шаблоны</li>
+              <li><strong>Экосистема:</strong> parent POM, profiles, огромный плагин-каталог</li>
+              <li><strong>Цена:</strong> многословный XML и тяжелее выразить нестандартный граф задач</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="callout callout--cyan">
+          <strong>Когда выбирать.</strong>
+          Бери Gradle — Android/Kotlin, кастомная сборка, multi-module + caches (кейс Ru BizGen).
+          Бери Maven — классический Java-сервис, максимум предсказуемости и совпадения с вакансиями.
+          Общее — Maven Central и GAV-координаты работают в обоих мирах.
+          Не аргумент «только хайп»: смотри на модель сборки и стоимость поддержки скриптов.
+        </div>
+      </section>
+
+      <!-- 04. MODEL + RUN -->
+      <section class="deck deck--fill" id="model-run">
+        <h2 class="section-title">Модель Gradle и запуск</h2>
+        <p class="section-lead">
+          Gradle — движок графа задач; Wrapper и Daemon делают запуск повторяемым и быстрым.
+        </p>
+
+        <div class="method-grid method-grid--2x2">
+          <article class="method-card">
+            <p class="method-card__kicker">Модель</p>
+            <h3 class="method-card__title">DAG, не «фаза Maven»</h3>
+            <p class="method-card__text">
+              <strong>DAG</strong> (Directed Acyclic Graph) — ориентированный ациклический граф задач:
+              узлы = tasks, рёбра = «сначала A, потом B». Циклов в графе быть не может.
+            </p>
+            <ul class="method-card__list">
+              <li>Execute обходит подграф от запрошенной задачи (<code>check</code>, <code>buildPlugin</code>…)</li>
+              <li>рёбра — явный <code>dependsOn</code> и неявные от плагинов</li>
+              <li>входы/выходы решают up-to-date: неизменные узлы пропускаются</li>
+              <li>нет жёсткого набора фаз как у Maven — граф под ваш запрос</li>
+              <li><code>--dry-run</code> печатает план без выполнения</li>
+            </ul>
+          </article>
+          <article class="method-card">
+            <p class="method-card__kicker">Артефакты</p>
+            <h3 class="method-card__title">Тот же Maven Central</h3>
+            <p class="method-card__text">
+              Меняется движок сборки, не формат репозитория.
+              <strong>GAV</strong> — координаты артефакта в Maven-мире.
+            </p>
+            <ul class="method-card__list">
+              <li><strong>G</strong>roup — организация/namespace (<code>org.jetbrains.kotlin</code>)</li>
+              <li><strong>A</strong>rtifact — имя библиотеки (<code>kotlin-stdlib</code>)</li>
+              <li><strong>V</strong>ersion — версия (<code>2.4.0</code>); вместе: <code>group:name:version</code></li>
+              <li>в Gradle то же: <code>implementation(…)</code> / catalog <code>libs.*</code> → Central</li>
+              <li>миграция Maven→Gradle не требует «другого» репозитория артефактов</li>
+            </ul>
+          </article>
+          <article class="method-card">
+            <p class="method-card__kicker">Wrapper</p>
+            <h3 class="method-card__title">Версия в репозитории</h3>
+            <p class="method-card__text">
+              <code>gradlew</code> + <code>gradle/wrapper/</code> фиксируют дистрибутив — CI и ноутбуки совпадают.
+            </p>
+            <ul class="method-card__list">
+              <li>всегда <code>./gradlew</code>, не системный <code>gradle</code></li>
+              <li>обновление Wrapper — осознанный diff</li>
+              <li>без локальной установки Gradle</li>
+            </ul>
+          </article>
+          <article class="method-card">
+            <p class="method-card__kicker">Daemon</p>
+            <h3 class="method-card__title">Тёплая JVM</h3>
+            <p class="method-card__text">
+              Gradle Daemon — долгоживущий фоновый процесс: между запусками не поднимает JVM с нуля.
+            </p>
+            <ul class="method-card__list">
+              <li>переиспользует JIT, классы плагинов и кэш метаданных</li>
+              <li>первая сборка после старта дороже (прогрев), дальше быстрее</li>
+              <li>ускоряет локальные итерации «поправил → <code>./gradlew check</code>»</li>
+              <li>при сбоях/зависаниях: <code>./gradlew --stop</code> и новый daemon</li>
+              <li>в CI — внутри одного job; между чистыми агентами не шарится</li>
+              <li><code>--no-daemon</code> возможен, но для повседневной работы обычно не нужен</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="callout">
+          В Ru BizGen один Wrapper обслуживает core, plugin, mcp, perf и archunit — единый контракт команд.
+        </div>
+      </section>
+
+      <!-- 05. LIFECYCLE + TASK GRAPH -->
+      <section class="deck deck--fill" id="lifecycle">
+        <h2 class="section-title">Lifecycle и граф задач</h2>
+        <p class="section-lead">
+          Init → Configure → Execute строит DAG; up-to-date и кэш решают, что реально бежать.
+        </p>
+
+        <div class="fill-stack">
+          <div class="pipeline" aria-label="Lifecycle сборки Gradle">
+            <span class="pipeline__step">Init · settings, included builds, Wrapper</span>
+            <span class="pipeline__arrow" aria-hidden="true">→</span>
+            <span class="pipeline__step">Configure · проекты и задачи</span>
+            <span class="pipeline__arrow" aria-hidden="true">→</span>
+            <span class="pipeline__step">Execute · устаревшие узлы</span>
+            <span class="pipeline__arrow" aria-hidden="true">→</span>
+            <span class="pipeline__step">Result · артефакты и код выхода</span>
+          </div>
+
+          <div class="graph">
+            <svg viewBox="0 0 480 170" role="img" aria-label="DAG задач: settings/configure, compileKotlin, test, check и ветка jar">
+              <defs>
+                <marker id="arrBlue" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+                  <path d="M0,0 L6,2.5 L0,5 Z" fill="#476bf0" />
+                </marker>
+              </defs>
+
+              <!-- row1: settings/configure → compileKotlin → test → check -->
+              <path class="graph__edge" d="M116,38 L150,38" marker-end="url(#arrBlue)" />
+              <path class="graph__edge" d="M250,38 L286,38" marker-end="url(#arrBlue)" />
+              <path class="graph__edge" d="M350,38 L386,38" marker-end="url(#arrBlue)" />
+              <!-- row2: compileKotlin → jar -->
+              <path class="graph__edge" d="M200,60 L200,100" marker-end="url(#arrBlue)" />
+
+              <g class="graph__node" transform="translate(16,16)">
+                <rect width="100" height="44" rx="5" />
+                <text text-anchor="middle">
+                  <tspan x="50" y="18">settings</tspan>
+                  <tspan x="50" y="34">configure</tspan>
+                </text>
+              </g>
+              <g class="graph__node" transform="translate(150,16)">
+                <rect width="100" height="44" rx="5" />
+                <text text-anchor="middle">
+                  <tspan x="50" y="18">compile</tspan>
+                  <tspan x="50" y="34">Kotlin</tspan>
+                </text>
+              </g>
+              <g class="graph__node" transform="translate(286,20)">
+                <rect width="64" height="36" rx="5" />
+                <text x="32" y="23" text-anchor="middle">test</text>
+              </g>
+              <g class="graph__node" transform="translate(386,20)">
+                <rect width="64" height="36" rx="5" />
+                <text x="32" y="23" text-anchor="middle">check</text>
+              </g>
+              <g class="graph__node" transform="translate(150,100)">
+                <rect width="100" height="36" rx="5" />
+                <text x="50" y="23" text-anchor="middle">jar</text>
+              </g>
+            </svg>
+            <div class="graph__legend">
+              <span class="graph__legend-item"><i class="graph__swatch graph__swatch--solid"></i> dependsOn / implicit</span>
+              <span class="graph__legend-item"><i class="graph__swatch graph__swatch--solid"></i> ветка jar после compileKotlin</span>
+            </div>
+          </div>
+
+          <ul class="history-points">
+            <li>рёбра — зависимости задач (<code>dependsOn</code> и неявные от плагинов);</li>
+            <li>up-to-date пропускает задачу с неизменными входами и выходами;</li>
+            <li><code>--dry-run</code> показывает план без выполнения — удобно учить граф;</li>
+            <li><code>check</code> — агрегатор проверок, не «магическая фаза» как у Maven;</li>
+            <li>Configuration Cache может пропустить повторный Configure, если входы стабильны.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 06. CACHES — facts + rule -->
+      <section class="deck deck--fill" id="caches">
+        <h2 class="section-title">Кэши и скорость</h2>
+        <p class="section-lead">
+          В Ru BizGen скорость сборки завязана на три флага и дисциплину configuration time.
+        </p>
+
+        <div class="fill-stack">
+          <div class="fact-grid">
+            <div class="fact">
+              <span class="fact__label">Configuration Cache</span>
+              <span class="fact__value">true</span>
+              <span class="fact__note">
+                Сериализует Configure на диск; при неизменных входах повтор чаще сразу в Execute.
+                На multi-project — главный выигрыш: не пересчитывать все скрипты снова.
+                Флаг: <code>org.gradle.configuration-cache=true</code>.
+              </span>
+            </div>
+            <div class="fact">
+              <span class="fact__label">Build Cache</span>
+              <span class="fact__value">true</span>
+              <span class="fact__note">
+                Кэширует выходы задач по ключу входов; hit → задача не пересчитывается.
+                Локально и опционально между CI-агентами (remote cache).
+                Флаг: <code>org.gradle.caching=true</code> — не путать с Configuration Cache.
+              </span>
+            </div>
+            <div class="fact">
+              <span class="fact__label">Parallel</span>
+              <span class="fact__value">true</span>
+              <span class="fact__note">
+                Независимые проекты/задачи без рёбер бегут на нескольких воркерах.
+                Выигрыш растёт с числом модулей (core, plugin, mcp, perf, archunit).
+                Флаг: <code>org.gradle.parallel=true</code>.
+              </span>
+            </div>
+            <div class="fact">
+              <span class="fact__label">JVM</span>
+              <span class="fact__value">-Xmx4g</span>
+              <span class="fact__note">
+                Запас heap/metaspace под IntelliJ Platform, Dokka, тесты и daemon.
+                Без запаса CI/локаль ловят OOM на тяжёлой документации и plugin-задачах.
+                Задано в <code>org.gradle.jvmargs</code> в <code>gradle.properties</code>.
+              </span>
+            </div>
+            <div class="fact">
+              <span class="fact__label">Уровни</span>
+              <span class="fact__value">CC ≠ BC</span>
+              <span class="fact__note">
+                Configuration Cache = фаза Configure (структура задач).
+                Build Cache = артефакты Execute (outputs задач).
+                Включайте оба: они дополняют друг друга, а не заменяют.
+              </span>
+            </div>
+          </div>
+
+          <article class="rule">
+            <h3 class="rule__name">Configuration Cache first</h3>
+            <p class="rule__because">
+              На multi-project Configure часто дороже полезной работы Execute.
+            </p>
+            <p class="rule__human">
+              Не читайте окружение «как попало» на configuration time без declaration.
+            </p>
+            <div class="rule__flow">
+              <span class="badge badge--ok">сериализуемая конфигурация</span>
+              <span class="badge badge--bad">скрытые side effects при configure</span>
+            </div>
+            <details class="break">
+              <summary>gradle.properties в Ru BizGen</summary>
+              <div class="break-body">
+                <pre class="code" data-highlight>org.gradle.configuration-cache=true
+org.gradle.caching=true
+org.gradle.parallel=true</pre>
+              </div>
+            </details>
+          </article>
+
+          <div class="callout callout--tight">
+            Все три флага уже включены в репозитории. Build Cache и Configuration Cache — разные механизмы.
+          </div>
+        </div>
+      </section>
+
+      <!-- 07. BUILD MAP -->
+      <section class="deck deck--fill" id="build-map">
+        <h2 class="section-title">Карта сборки Ru BizGen</h2>
+        <p class="section-lead">
+          Root включает пять модулей и composite <code>build-logic</code> с convention plugins.
+        </p>
+
+        <div class="fill-stack">
+          <div class="graph graph--fill">
+            <svg viewBox="0 0 720 230" role="img" aria-label="Карта модулей Ru BizGen и composite build-logic">
+              <defs>
+                <marker id="arrMap" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                  <path d="M0,0 L7,3 L0,6 Z" fill="#476bf0" />
+                </marker>
+                <marker id="arrMapGray" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+                  <path d="M0,0 L7,3 L0,6 Z" fill="#8b95a8" />
+                </marker>
+              </defs>
+
+              <!-- solid: ru-bizgen → modules (end on top edge) -->
+              <path class="graph__edge" d="M360,52 L64,90" marker-end="url(#arrMap)" />
+              <path class="graph__edge" d="M360,52 L212,90" marker-end="url(#arrMap)" />
+              <path class="graph__edge" d="M360,52 L360,90" marker-end="url(#arrMap)" />
+              <path class="graph__edge" d="M360,52 L508,90" marker-end="url(#arrMap)" />
+              <path class="graph__edge" d="M360,52 L656,90" marker-end="url(#arrMap)" />
+              <!-- dashed: build-logic → modules (end on bottom edge) -->
+              <path class="graph__edge graph__edge--dashed" d="M360,175 L64,126" marker-end="url(#arrMapGray)" />
+              <path class="graph__edge graph__edge--dashed" d="M360,175 L212,126" marker-end="url(#arrMapGray)" />
+              <path class="graph__edge graph__edge--dashed" d="M360,175 L360,126" marker-end="url(#arrMapGray)" />
+              <path class="graph__edge graph__edge--dashed" d="M360,175 L508,126" marker-end="url(#arrMapGray)" />
+              <path class="graph__edge graph__edge--dashed" d="M360,175 L656,126" marker-end="url(#arrMapGray)" />
+
+              <g class="graph__node" transform="translate(300,16)">
+                <rect width="120" height="36" rx="6" />
+                <text x="60" y="23" text-anchor="middle">ru-bizgen</text>
+              </g>
+              <g class="graph__node" transform="translate(20,90)">
+                <rect width="88" height="36" rx="6" />
+                <text x="44" y="23" text-anchor="middle">core</text>
+              </g>
+              <g class="graph__node" transform="translate(168,90)">
+                <rect width="88" height="36" rx="6" />
+                <text x="44" y="23" text-anchor="middle">plugin</text>
+              </g>
+              <g class="graph__node" transform="translate(316,90)">
+                <rect width="88" height="36" rx="6" />
+                <text x="44" y="23" text-anchor="middle">mcp</text>
+              </g>
+              <g class="graph__node" transform="translate(464,90)">
+                <rect width="88" height="36" rx="6" />
+                <text x="44" y="23" text-anchor="middle">perf</text>
+              </g>
+              <g class="graph__node" transform="translate(612,90)">
+                <rect width="88" height="36" rx="6" />
+                <text x="44" y="23" text-anchor="middle">archunit</text>
+              </g>
+              <g class="graph__node" transform="translate(300,175)">
+                <rect width="120" height="36" rx="6" />
+                <text x="60" y="23" text-anchor="middle">build-logic</text>
+              </g>
+            </svg>
+            <div class="graph__legend">
+              <span class="graph__legend-item"><i class="graph__swatch graph__swatch--solid"></i> include(…)</span>
+              <span class="graph__legend-item"><i class="graph__swatch graph__swatch--dash"></i> includeBuild → conventions</span>
+            </div>
+          </div>
+
+          <ul class="history-points">
+            <li><code>settings.gradle.kts</code>: <code>includeBuild("build-logic")</code> + пять <code>include(...)</code>;</li>
+            <li><code>build-logic</code> — composite build, не обычный subproject в <code>include</code>;</li>
+            <li><code>core</code> без IntelliJ/Ktor; <code>plugin</code> и <code>mcp</code> переиспользуют generators;</li>
+            <li><code>perf</code> — JMH; <code>archunit</code> — только архитектурные тесты в <code>check</code>;</li>
+            <li>смена convention в <code>build-logic</code> влияет на всех потребителей сразу.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 08. COMPOSITE + CONVENTIONS -->
+      <section class="deck deck--fill" id="conventions">
+        <h2 class="section-title">Composite и conventions</h2>
+        <p class="section-lead">
+          Общая логика сборки живёт в <code>build-logic</code> и подключается как <code>id("ru-bizgen.*-convention")</code>.
+        </p>
+
+        <div class="method-grid method-grid--2x2">
+          <article class="method-card">
+            <p class="method-card__kicker">Composite</p>
+            <h3 class="method-card__title"><code>includeBuild</code></h3>
+            <p class="method-card__text">
+              В <code>settings.gradle.kts</code> — <code>includeBuild("build-logic")</code>:
+              отдельный Gradle-билд с convention plugins, которые модули подключают как обычные <code>id(...)</code>.
+            </p>
+            <ul class="method-card__list">
+              <li>явный аналог buildSrc без «магии» classpath корня</li>
+              <li>модули пишут <code>id("ru-bizgen.*-convention")</code>, без копипасты блоков</li>
+              <li>review «как собираем» = diff в <code>build-logic/</code></li>
+              <li>смена convention сразу у всех потребителей</li>
+            </ul>
+          </article>
+          <article class="method-card">
+            <p class="method-card__kicker">kotlin</p>
+            <h3 class="method-card__title"><code>kotlin-convention</code></h3>
+            <p class="method-card__text">
+              Kotlin JVM + <code>jvmToolchain</code> 21 из version catalog — единый JDK для модулей.
+            </p>
+            <ul class="method-card__list">
+              <li><code>id("ru-bizgen.kotlin-convention")</code></li>
+              <li>без локального <code>jvmToolchain(21)</code></li>
+              <li>смена major JDK через <code>libs.versions.toml</code></li>
+            </ul>
+          </article>
+          <article class="method-card">
+            <p class="method-card__kicker">testing</p>
+            <h3 class="method-card__title"><code>testing-convention</code></h3>
+            <p class="method-card__text">
+              Иногда нужны долгие тесты «на критерии» (у нас — уникальность генераторов).
+              Их нельзя гонять на каждый <code>check</code>/PR — поэтому теги и <code>excludeTags</code>.
+            </p>
+            <ul class="method-card__list">
+              <li>дорогие тесты: <code>@Tag("distanceFinderTests")</code></li>
+              <li>по умолчанию <code>excludeTags(...)</code> — быстрый локальный/CI <code>check</code></li>
+              <li>включение: <code>-PrunDistanceFinderTests</code> или <code>-DrunDistanceFinderTests=true</code></li>
+              <li>полный прогон — <code>ci-all</code>; на push/PR — короткий feedback</li>
+              <li>единый <code>testLogging</code> (FAILED) для модулей с convention</li>
+            </ul>
+          </article>
+          <article class="method-card">
+            <p class="method-card__kicker">docs/cov</p>
+            <h3 class="method-card__title">dokka + kover (+ root)</h3>
+            <p class="method-card__text">
+              Модули отдают Dokka/Kover; root convention собирает презентации в Pages через Dokka —
+              без ручных правок меню на каждую тему.
+            </p>
+            <ul class="method-card__list">
+              <li><code>dokka-convention</code> — HTML модуля, source links, шаблоны <code>.config/dokka</code></li>
+              <li><code>kover-convention</code> — XML/HTML coverage onCheck</li>
+              <li><code>copyPresentationsToDokka</code> — <code>docs/presentations/*/index.html</code> (+ медиа) → <code>dokka/html/images/presentations/</code></li>
+              <li><code>generatePresentationsGuides</code> — <code>guides.json</code> для вкладки Guides</li>
+              <li><code>guides: false</code> в outline скрывает черновик; всё уезжает через <code>syncDocsToDokka</code></li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="callout callout--cyan">
+          Меняйте «как мы собираем» в одном месте — review <code>build-logic</code>, а не пять почти одинаковых <code>build.gradle.kts</code>.
+        </div>
+      </section>
+
+      <!-- 09. KOTLIN CONVENTION CODE -->
+      <section class="deck deck--fill" id="kotlin-convention">
+        <h2 class="section-title">Пример kotlin-convention</h2>
+        <p class="section-lead">
+          Convention подключает Kotlin JVM и читает JDK из catalog; рядом — остальные conventions репозитория.
+        </p>
+
+        <pre class="code" data-highlight>plugins {
+  id("org.jetbrains.kotlin.jvm")
+}
+
+val libs = extensions.getByType&lt;VersionCatalogsExtension&gt;().named("libs")
+
+kotlin {
+  jvmToolchain(libs.findVersion("java").get().requiredVersion.toInt())
+}</pre>
+
+        <ul>
+          <li>модулям не нужно писать <code>jvmToolchain(21)</code> локально;</li>
+          <li><code>java = "21"</code> в <code>libs.versions.toml</code> — рычаг major JDK для kotlin-convention;</li>
+          <li>подключение: <code>id("ru-bizgen.kotlin-convention")</code>.</li>
+        </ul>
+
+        <div class="callout">
+          <strong>Ещё conventions в проекте.</strong>
+          <ul class="history-points">
+            <li><code>ru-bizgen.testing-convention</code> — JUnit Platform; режет <code>distanceFinderTests</code> из быстрого <code>check</code>;</li>
+            <li><code>ru-bizgen.dokka-convention</code> — HTML Dokka модуля, source links на GitHub, шаблоны <code>.config/dokka</code>;</li>
+            <li><code>ru-bizgen.kover-convention</code> — отчёты покрытия XML/HTML при <code>check</code> (onCheck);</li>
+            <li><code>ru-bizgen.dokka-root-convention</code> — только root: Guides/<code>guides.json</code>, копирование презентаций и Kover в Pages.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 10. VERSION CATALOG -->
+      <section class="deck deck--fill" id="version-catalog">
+        <h2 class="section-title">Version Catalog</h2>
+        <p class="section-lead">
+          <code>libs.versions.toml</code> — единый источник версий библиотек, плагинов и bundles.
+        </p>
+
+        <pre class="code" data-highlight>[versions]
+kotlin = "2.4.0"
+java = "21"
+dokka = "2.2.0"
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }</pre>
+
+        <ul>
+          <li>в скриптах: <code>alias(libs.plugins.kotlin)</code>, <code>libs.junit.jupiter.api</code>, <code>libs.bundles.tests.unit</code>;</li>
+          <li><code>[versions]</code> — одна цифра на экосистему (Kotlin, JDK, Dokka, Ktor, ArchUnit…);</li>
+          <li><code>[libraries]</code> — координаты артефактов с <code>version.ref</code>, без «магических» строк по модулям;</li>
+          <li><code>[bundles]</code> — готовые наборы (<code>tests-unit</code>, <code>tests-integration</code>) для одинакового тест-стека;</li>
+          <li><code>[plugins]</code> — id плагинов с теми же <code>version.ref</code>, что и у библиотек;</li>
+          <li>build-logic тянет marker artifacts плагинов из catalog — conventions не хардкодят версии;</li>
+          <li>Dependabot/ручной bump = один файл и один понятный diff на review;</li>
+          <li>в этой презентации только Kotlin DSL-доступ к catalog (<code>libs.*</code>).</li>
+        </ul>
+
+        <div class="callout callout--cyan">
+          Смена версии в catalog + зелёный CI важнее локального «у меня уже обновил в одном модуле».
+        </div>
+      </section>
+
+      <!-- 11. MODULE ROLES -->
+      <section class="deck deck--fill" id="module-roles">
+        <h2 class="section-title">Роли модулей</h2>
+        <p class="section-lead">
+          Пять модулей — разные форм-факторы одного ядра генераторов.
+        </p>
+
+        <div class="fact-grid">
+          <div class="fact">
+            <span class="fact__label">core</span>
+            <span class="fact__value">31 генератор</span>
+            <span class="fact__note">чистая JVM-логика без IntelliJ и Ktor</span>
+          </div>
+          <div class="fact">
+            <span class="fact__label">plugin</span>
+            <span class="fact__value">IDE UI/actions</span>
+            <span class="fact__note">IntelliJ Platform; детали сборки плагина — отдельная тема</span>
+          </div>
+          <div class="fact">
+            <span class="fact__label">mcp</span>
+            <span class="fact__value">MCP-сервер</span>
+            <span class="fact__note">Ktor/Netty + SDK, тот же GeneratorInfoProvider</span>
+          </div>
+          <div class="fact">
+            <span class="fact__label">perf</span>
+            <span class="fact__value">JMH</span>
+            <span class="fact__note">бенчмарки 1:1 с генераторами + markdown-отчёты</span>
+          </div>
+          <div class="fact">
+            <span class="fact__label">archunit</span>
+            <span class="fact__value">границы</span>
+            <span class="fact__note">исполняемые правила модулей/слоёв в check</span>
+          </div>
+        </div>
+
+        <ul class="history-points">
+          <li>зависимость «вниз к core», а не наоборот;</li>
+          <li>Gradle склеивает разнородные артефакты одним Wrapper и общими conventions;</li>
+          <li>onboarding: сначала карта модулей, потом <code>build-logic</code>, потом флаги CI.</li>
+        </ul>
+      </section>
+
+      <!-- 12. COMMANDS + CI + RULES -->
+      <section class="deck deck--fill" id="commands-rules">
+        <h2 class="section-title">Команды, CI и правила</h2>
+        <p class="section-lead">
+          Один контракт <code>./gradlew</code> для локали и CI плюс правила, чтобы сборка оставалась API проекта.
+        </p>
+
+        <div class="duo-grid">
+          <article class="duo-card">
+            <header class="duo-card__head">
+              <p class="method-card__kicker">Локаль · CI</p>
+              <h3 class="method-card__title">Команды и CI</h3>
+            </header>
+            <ul class="duo-card__list">
+              <li>Быстрый <code>./gradlew check</code> — без distance/integration по умолчанию</li>
+              <li><code>./gradlew buildPlugin</code> — артефакт IDE-плагина</li>
+              <li><code>./gradlew dokkaGenerateHtml</code> — Dokka + презентации в Pages</li>
+              <li><code>-PrunDistanceFinderTests</code> / <code>ci-all</code> — полный прогон уникальности</li>
+              <li><code>-PrunIntegrationTests</code> / ночной <code>ci-integration</code> — UI Starter + Driver</li>
+              <li>Push/PR <code>ci-main</code>/<code>ci-dev</code> — <code>check</code> + <code>buildPlugin</code> для быстрого feedback</li>
+              <li><code>docs.yml</code> — публикация Dokka HTML и Guides</li>
+              <li>тег <code>distanceFinderTests</code> режется в <code>testing-convention</code>, пока флаг не включён</li>
+            </ul>
+          </article>
+
+          <article class="duo-card">
+            <header class="duo-card__head">
+              <p class="method-card__kicker">Контракт сборки</p>
+              <h3 class="method-card__title">Правила сборки</h3>
+            </header>
+            <ul class="duo-card__list">
+              <li>версии только в <code>libs.versions.toml</code>, не хардкод по модулям</li>
+              <li>общая логика в <code>build-logic</code> conventions, не copy-paste</li>
+              <li>локально и в CI — только <code>./gradlew</code> (Wrapper = версия)</li>
+              <li>не отключать configuration/build cache без замера</li>
+              <li>тяжёлые тест-теги — явными флагами, не всегда в <code>check</code></li>
+              <li>configuration time чистый — иначе Configuration Cache мешает</li>
+              <li>новая «магия сборки» сначала в convention, потом в модуле</li>
+              <li>одно место правды дешевле, чем «у меня локально собирается»</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="callout callout--cyan">
+          Тяжёлые теги включайте явно — быстрый PR-check важнее полного прогона на каждый коммит.
+        </div>
+      </section>
+
+      <!-- 13. TAKEAWAYS + NEXT -->
+      <section class="deck deck--fill" id="takeaways">
+        <h2 class="section-title">Итог и дальше</h2>
+        <p class="section-lead">
+          Четыре опоры сборки Ru BizGen и куда идти после этого Guides.
+        </p>
+
+        <div class="method-grid method-grid--2x2">
+          <article class="method-card">
+            <p class="method-card__kicker">Модель</p>
+            <h3 class="method-card__title">Lifecycle + DAG</h3>
+            <p class="method-card__text">
+              Configure отделён от Execute — сначала поймите граф, потом оптимизируйте.
+            </p>
+            <ul class="method-card__list">
+              <li>up-to-date и <code>--dry-run</code></li>
+              <li>не мыслите только «фазами Maven»</li>
+              <li>Wrapper = одна версия у всех</li>
+            </ul>
+          </article>
+          <article class="method-card">
+            <p class="method-card__kicker">Скорость</p>
+            <h3 class="method-card__title">Cache + parallel</h3>
+            <p class="method-card__text">
+              Три флага в <code>gradle.properties</code> уже включены — берегите configuration time.
+            </p>
+            <ul class="method-card__list">
+              <li>Configuration Cache ≠ Build Cache</li>
+              <li>не читайте env «втихаря» при configure</li>
+              <li>parallel для независимых модулей</li>
+            </ul>
+          </article>
+          <article class="method-card">
+            <p class="method-card__kicker">Структура</p>
+            <h3 class="method-card__title">Modules + composite</h3>
+            <p class="method-card__text">
+              <code>core</code> переиспользуется plugin/mcp; логика сборки вынесена в <code>build-logic</code>.
+            </p>
+            <ul class="method-card__list">
+              <li>пять модулей — разные форм-факторы</li>
+              <li><code>includeBuild</code> вместо копипасты</li>
+              <li>ArchUnit стережёт границы</li>
+            </ul>
+          </article>
+          <article class="method-card">
+            <p class="method-card__kicker">Контракт</p>
+            <h3 class="method-card__title">Catalog + conventions</h3>
+            <p class="method-card__text">
+              Версии и правила в одном контуре; модули пишут <code>id("ru-bizgen.*-convention")</code>.
+            </p>
+            <ul class="method-card__list">
+              <li>bump только в <code>libs.versions.toml</code></li>
+              <li>тяжёлые теги — явными флагами</li>
+              <li>сборка = API проекта</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="callout">
+          <strong>Дальше.</strong>
+          <ul class="history-points">
+            <li>docs: <a href="https://gradle.org" target="_blank" rel="noopener noreferrer">gradle.org</a> — Configuration Cache, Build Cache, Composite Builds;</li>
+            <li>User Guide стоит читать точечно под ваши боли (кэш, included builds), не «всё подряд»;</li>
+            <li>в репозитории: ArchUnit Guides уже в Dokka; эта презентация тоже в Guides;</li>
+            <li>следующая отдельная презентация: IntelliJ Platform Plugin build (signing/publish вне скоупа здесь).</li>
+          </ul>
+        </div>
+      </section>
+      </div>
+    </main>
+  </div>
+
+  <p class="kbd-bar" aria-hidden="true"><kbd>←</kbd> <kbd>→</kbd> · <kbd>J</kbd> <kbd>K</kbd></p>
+  <script src="../../presentation-template/app.js"></script>
+</body>
+</html>
