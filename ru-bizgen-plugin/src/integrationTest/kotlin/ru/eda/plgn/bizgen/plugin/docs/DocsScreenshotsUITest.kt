@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import org.junit.jupiter.api.io.TempDir
 import ru.eda.plgn.bizgen.plugin.base.BaseUIIntegrationTest
+import java.awt.Dimension
 import javax.swing.JList
 import java.nio.file.Files
 import java.nio.file.Path
@@ -63,12 +64,19 @@ internal class DocsScreenshotsUITest : BaseUIIntegrationTest() {
 
     val outputDir = resolveOutputDir()
     Files.createDirectories(outputDir)
+    val marketplace = System.getProperty("bizgen.docs.marketplace") == "true"
 
     runIdea("docsScreenshots", projectDir, runTimeout = 5.minutes) {
       ideFrame {
         // Фиксированный размер окна: от него зависят размеры попапа и диалога настроек,
         // иначе композиция кадра едет вслед за монитором, на котором его сняли.
-        driver.cast(component, Window::class).setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT)
+        val frame = component
+        driver.cast(frame, Window::class).setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT)
+
+        // Панели инструментов убираются: редактор занимает почти всё окно, и кадр Marketplace
+        // (1280x800 вокруг попапа) целиком помещается внутрь редактора — без дерева проекта,
+        // тулбара и бейджа лицензии тестовой IDE.
+        driver.invokeAction("HideAllWindows")
 
         driver.openFile(SAMPLE_FILE_NAME, waitForCodeAnalysis = false)
         driver.invokeAction("ru.eda.plgn.bizgen.BizGenMainAction")
@@ -99,6 +107,16 @@ internal class DocsScreenshotsUITest : BaseUIIntegrationTest() {
           layers = arrayOf(editor().component, generatorsPopup.component),
         )
 
+        if (marketplace) {
+          driver.paintToFile(
+            target = outputDir.resolve("marketplace-generators.png"),
+            focus = generatorsPopup.component,
+            margin = MARKETPLACE_MARGIN,
+            layers = arrayOf(editor().component, generatorsPopup.component),
+            canvas = MARKETPLACE_CANVAS,
+          )
+        }
+
         keyboard { escape() }
 
         openSettingsDialog()
@@ -116,13 +134,16 @@ internal class DocsScreenshotsUITest : BaseUIIntegrationTest() {
           // и у самого экрана настроек (дерево слева / страница справа).
           content {
             val generatorList = list { byType(JList::class.java) }
-            val widthBeforeSplit = generatorList.component.getBounds().width
 
             driver.cast(x { byType(SPLITTER_CLASS) }.component, SplitterRef::class)
               .setProportion(DOCS_SPLITTER_PROPORTION)
 
-            waitFor("Generator list should get wider after moving the splitter", 10.seconds) {
-              generatorList.component.getBounds().width > widthBeforeSplit
+            // Ждём не "стало шире", а достижения ожидаемой ширины: OnePixelSplitter хранит
+            // пропорцию по ключу в конфиге, и в песочнице она переживает прошлый прогон —
+            // на повторном запуске ширина уже правильная и не меняется.
+            val expectedListWidth = (DIALOG_WIDTH * DOCS_SPLITTER_PROPORTION * SPLITTER_TOLERANCE).toInt()
+            waitFor("Generator list should be at least $expectedListWidth px wide", 10.seconds) {
+              generatorList.component.getBounds().width >= expectedListWidth
             }
           }
 
@@ -132,6 +153,19 @@ internal class DocsScreenshotsUITest : BaseUIIntegrationTest() {
             margin = PADDING,
             layers = arrayOf(component),
           )
+
+          if (marketplace) {
+            // Под диалогом рисуется окно IDE — на кадре 1280x800 вокруг диалога остаётся рамка,
+            // и он не выглядит вырезанным из пустоты.
+            driver.paintToFile(
+              target = outputDir.resolve("marketplace-settings.png"),
+              focus = component,
+              margin = MARKETPLACE_MARGIN,
+              layers = arrayOf(frame, component),
+              canvas = MARKETPLACE_CANVAS,
+            )
+          }
+
           cancelButton.click()
         }
         waitForNoOpenedDialogs()
@@ -150,24 +184,48 @@ internal class DocsScreenshotsUITest : BaseUIIntegrationTest() {
    * обрезаются этой рамкой, поэтому крупный слой (например, весь редактор) попадает в кадр только
    * тем куском, что вокруг фокуса.
    *
+   * [canvas] задаёт фиксированный размер кадра в логических пикселях (для Marketplace — 1280x800):
+   * фокус центрируется, а если он в кадр не помещается (список из 31 генератора выше 800 px),
+   * кадр прижимается к его верхнему краю — то есть попап показывается так, как его видит
+   * пользователь, с прокруткой.
+   *
    * Масштаб [SCALE] — картинка рисуется крупнее логического размера, чтобы не мылила на HiDPI.
    *
    * @param target путь итогового PNG
    * @param focus компонент, задающий рамку кадра
    * @param margin поля вокруг [focus] в логических пикселях
    * @param layers компоненты снизу вверх
+   * @param canvas фиксированный размер кадра; `null` — размер по [focus] и [margin]
    */
-  private fun Driver.paintToFile(target: Path, focus: Component, margin: Int, layers: Array<Component>) {
+  private fun Driver.paintToFile(
+    target: Path,
+    focus: Component,
+    margin: Int,
+    layers: Array<Component>,
+    canvas: Dimension? = null,
+  ) {
     val focusBounds = focus.getBounds()
     if (focusBounds.width <= 0 || focusBounds.height <= 0) {
       fail { "Component for ${target.fileName} has empty bounds: ${focusBounds.width}x${focusBounds.height}" }
     }
 
-    val canvasWidth = focusBounds.width + margin * 2
-    val canvasHeight = focusBounds.height + margin * 2
+    val canvasWidth = canvas?.width ?: (focusBounds.width + margin * 2)
+    val canvasHeight = canvas?.height ?: (focusBounds.height + margin * 2)
     val focusLocation = focus.getLocationOnScreen()
-    val originX = focusLocation.x - margin
-    val originY = focusLocation.y - margin
+
+    // Кадр прижимается к границам нижнего слоя: попап стоит у левого края редактора, и без этого
+    // центрирование уводило рамку за его пределы — в кадре появлялась пустая полоса заливки.
+    val base = layers.first()
+    val baseLocation = base.getLocationOnScreen()
+    val baseBounds = base.getBounds()
+    val originX = clampToBase(
+      focusLocation.x - offsetFor(focusBounds.width, canvasWidth, margin),
+      baseLocation.x, baseBounds.width, canvasWidth,
+    )
+    val originY = clampToBase(
+      focusLocation.y - offsetFor(focusBounds.height, canvasHeight, margin),
+      baseLocation.y, baseBounds.height, canvasHeight,
+    )
 
     withContext(OnDispatcher.EDT) {
       val image = new(BufferedImageRef::class, canvasWidth * SCALE, canvasHeight * SCALE, TYPE_INT_RGB)
@@ -200,6 +258,29 @@ internal class DocsScreenshotsUITest : BaseUIIntegrationTest() {
   }
 
   /**
+   * Отступ от края кадра до края фокуса: если фокус помещается в кадр — центрируем, если нет —
+   * прижимаем к краю с полями [margin], чтобы не срезать начало содержимого.
+   *
+   * @param focusSize размер фокуса по оси
+   * @param canvasSize размер кадра по той же оси
+   * @param margin минимальные поля
+   */
+  private fun offsetFor(focusSize: Int, canvasSize: Int, margin: Int): Int =
+    if (focusSize + margin * 2 <= canvasSize) (canvasSize - focusSize) / 2 else margin
+
+  /**
+   * Держит начало кадра внутри нижнего слоя, чтобы в кадр не попала пустая заливка за его краем.
+   * Если слой уже кадра — прижимаем к его началу, растягивать нечего.
+   *
+   * @param origin желаемое начало кадра по оси
+   * @param baseOrigin начало нижнего слоя по той же оси
+   * @param baseSize размер нижнего слоя
+   * @param canvasSize размер кадра
+   */
+  private fun clampToBase(origin: Int, baseOrigin: Int, baseSize: Int, canvasSize: Int): Int =
+    origin.coerceIn(baseOrigin, maxOf(baseOrigin, baseOrigin + baseSize - canvasSize))
+
+  /**
    * Каталог для готовых картинок: system property `bizgen.docs.img.dir` (выставляется gradle-задачей
    * `docsScreenshots`), fallback — `.github/img` относительно модуля (ручной запуск из IDE).
    */
@@ -207,14 +288,24 @@ internal class DocsScreenshotsUITest : BaseUIIntegrationTest() {
     Path.of(System.getProperty("bizgen.docs.img.dir") ?: "../.github/img")
 
   private companion object {
-    /** Файл-фикстура за попапом: код на фоне делает кадр узнаваемым. */
-    const val SAMPLE_FILE_NAME = "Main.java"
+    /**
+     * Файл-фикстура за попапом. Это фон кадра, поэтому класс осмысленный: видно, куда и зачем
+     * вставляются значения. Пустой редактор давал полкадра чёрного поля.
+     */
+    const val SAMPLE_FILE_NAME = "BankClientTestData.java"
 
     val SAMPLE_FILE_CONTENT = """
-      public class Main {
+      public class BankClientTestData {
+
+        private static final String INN = "7728168971";
+        private static final String KPP = "773001001";
+        private static final String OGRN = "1027700132195";
+        private static final String ACCOUNT = "40702810900000012345";
+        private static final String BIC = "044525225";
+        private static final String SNILS = "";
 
         public static void main(String[] args) {
-
+          System.out.println(INN);
         }
       }
     """.trimIndent()
@@ -224,18 +315,30 @@ internal class DocsScreenshotsUITest : BaseUIIntegrationTest() {
     const val FRAME_HEIGHT = 1300
 
     /** Размер диалога настроек: шире окна по умолчанию, чтобы имена генераторов не резались. */
-    const val DIALOG_WIDTH = 1280
-    const val DIALOG_HEIGHT = 860
+    const val DIALOG_WIDTH = 1180
+    const val DIALOG_HEIGHT = 740
 
     /** Сплиттер настроек: в проде 0.25, для кадра список нужен шире. */
     const val SPLITTER_CLASS = "com.intellij.ui.OnePixelSplitter"
     const val DOCS_SPLITTER_PROPORTION = 0.42f
+
+    /** Запас на рамки и границы при проверке ширины списка после сдвига сплиттера. */
+    const val SPLITTER_TOLERANCE = 0.7f
 
     /** Поля вокруг компонента, чтобы кадр не обрезался впритык. */
     const val PADDING = 12
 
     /** Поля вокруг попапа: в них видно код редактора под ним. */
     const val POPUP_MARGIN = 90
+
+    /**
+     * Кадр для Marketplace: рекомендованные JetBrains 1280x800 (16:10), с [SCALE] на выходе
+     * получается 2560x1600 — на HiDPI не мылит, при даунскейле до 1280x800 кириллица читается.
+     */
+    val MARKETPLACE_CANVAS: Dimension = Dimension(1280, 800)
+
+    /** Минимальные поля в кадре Marketplace, когда содержимое в него не помещается. */
+    const val MARKETPLACE_MARGIN = 24
 
     /** Во сколько раз картинка крупнее логического размера компонента. */
     const val SCALE = 2
